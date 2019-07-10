@@ -1,21 +1,15 @@
-import React, {useState} from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import MUIDataTable from "mui-datatables";
 import { MuiThemeProvider } from '@material-ui/core/styles';
-
 import { getMuiTheme } from './muiTheme';
-import Cell from './Cell';
-import CustomToolbar from './CustomToolbar';
+import { Cell, Toolbar } from '../';
 
-import { parseDataTables } from './helpers';
+import { DataTableContext, DataTableContextProvider } from './DataTable.context';
 
-function DataTable ({
-  original,
-  translation,
+function DataTableComponent ({
   options,
-  delimiters,
   config: {
-    compositeKeyIndices,
     columnsFilter,
     columnsShowDefault,
     rowHeader,
@@ -24,6 +18,7 @@ function DataTable ({
 }) {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [preview, setPreview] = useState(true);
+  const {columnNames, data} = useContext(DataTableContext).state;
 
   const togglePreview = () => setPreview(!preview);
   const onSave = () => {};
@@ -40,29 +35,18 @@ function DataTable ({
     download: false,
     print: false,
     customToolbar: () => (
-      <CustomToolbar
-        preview={preview}
-        onPreview={togglePreview}
-        onSave={onSave}
-      />
+      <Toolbar preview={preview} onPreview={togglePreview} onSave={onSave} />
     ),
     ...options
   };
   
   let columns = [];
-  let data = [];
-  if (original && translation) {
-    const dataTable = parseDataTables({
-      original,
-      translation,
-      compositeKeyIndices,
-      delimiters,
-      columnsFilter,
-    });
+  let _data = [...data];
+  if (columnNames && data) {
     const customBodyRender = (value, tableMeta, updateValue) => (
       <Cell value={value} rowHeader={rowHeader} tableMeta={tableMeta} preview={preview} />
     );
-    columns = dataTable.columnNames.map((name, index) => ({
+    columns = columnNames.map((name, index) => ({
       name,
       searchable: true,
       options: {
@@ -81,31 +65,30 @@ function DataTable ({
         },
       };
       columns.unshift(headerColumn);
-      data = dataTable.data.map(row => ['rowHeader', ...row]);
-    } else {
-      data = dataTable.data;
+      _data = data.map(row => ['rowHeader', ...row]);
     }
   }
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
-      <MUIDataTable
-        columns={columns}
-        data={data}
-        options={_options}
-        {...props}
-      />
+      <MUIDataTable columns={columns} data={_data} options={_options} {...props} />
     </MuiThemeProvider>
-  )
+  );
+}
+
+function DataTable({ config, options, ...props }) {
+  return (
+    <DataTableContextProvider config={config} {...props}>
+      <DataTableComponent config={config} options={options} />
+    </DataTableContextProvider>
+  );
 }
 
 DataTable.propTypes = {
-  /** @ignore */
-  classes: PropTypes.object.isRequired,
   /** Original DataTable raw string or file contents */
-  original: PropTypes.string.isRequired,
+  sourceFile: PropTypes.string.isRequired,
   /** Translated DataTable raw string or file contents */
-  translation: PropTypes.string.isRequired,
+  targetFile: PropTypes.string.isRequired,
   /** The delimiters for converting the file into rows/columns */
   delimiters: PropTypes.shape({
     /** Delimiters to convert a files into rows "\n" */
@@ -125,17 +108,16 @@ DataTable.propTypes = {
      * `rowHeader(rowData) => React Component`
     */
     rowHeader: PropTypes.func,
-  }),
+  }).isRequired,
   /** Options to override or pass through to MUIDataTables */
   options: PropTypes.object,
 };
 
 DataTable.defaultProps = {
-  config: {},
   delimiters: {
     row: '\n',
     cell: '\t'
   }
-}
+};
 
 export default DataTable;

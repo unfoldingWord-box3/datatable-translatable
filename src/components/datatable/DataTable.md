@@ -1,8 +1,8 @@
 
 ```js
   import { Typography } from '@material-ui/core';
-  import original from './mocks/en_tn_57-TIT';
-  import translation from './mocks/tn_57-TIT';
+  import sourceFile from './mocks/en_tn_57-TIT';
+  import targetFile from './mocks/tn_57-TIT';
   const rowHeader = (rowData) => {
     const book = rowData[0].split('\t')[0];
     const chapter = rowData[1].split('\t')[0];
@@ -32,8 +32,8 @@
   };
 
   <DataTable
-    original={original}
-    translation={translation}
+    sourceFile={sourceFile}
+    targetFile={targetFile}
     delimiters={delimiters}
     config={config}
     options={options}

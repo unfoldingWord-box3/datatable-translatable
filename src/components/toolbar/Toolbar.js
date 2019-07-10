@@ -11,7 +11,7 @@ import {
   SaveOutlined,
 } from '@material-ui/icons';
 
-function CustomToolbar({
+function Toolbar({
   classes,
   preview,
   onPreview,
@@ -39,6 +39,6 @@ const styles = {
   iconButton: {}
 };
 
-export default withStyles(styles, { name: "CustomToolbar" })(
-  CustomToolbar
+export default withStyles(styles, { name: "Toolbar" })(
+  Toolbar
 );
