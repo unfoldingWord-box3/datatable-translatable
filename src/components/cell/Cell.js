@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 
 import { BlockEditable } from 'markdown-translatable';
+
+import { DataTableContext } from '../datatable/DataTable.context';
 
 const inputFilters = [[/<br>/gi, '\n']];
 const outputFilters = [[/\n/gi, '<br>']];
@@ -21,17 +23,17 @@ const Cell = ({
   rowHeader,
   preview,
 }) => {
+  const {actions} = useContext(DataTableContext);
+  const {cellEdit} = actions;
   const [original, translation] = value.split('\t');
   let component;
 
-  const blockEditableStyle = {
-    marginBottom: '-8px',
-  };
+  const blockEditableStyle = {marginBottom: '-8px'};
 
   const onEdit = (markdown) => {
-    debugger
-    // editCell({rowIndex, columnIndex, value: markdown});
-  };
+    let _columnIndex = !rowHeader ?  columnIndex : columnIndex -1;
+    cellEdit({rowIndex, columnIndex: _columnIndex, value: markdown});
+  }
 
   if (value === 'rowHeader' && rowHeader) {
     const rowHeaderComponent = rowHeader(rowData.slice(1));

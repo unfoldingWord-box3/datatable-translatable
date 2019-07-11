@@ -3,6 +3,8 @@
   import { Typography } from '@material-ui/core';
   import sourceFile from './mocks/en_tn_57-TIT';
   import targetFile from './mocks/tn_57-TIT';
+  const [savedFile, setSavedFile] = React.useState(targetFile);
+
   const rowHeader = (rowData) => {
     const book = rowData[0].split('\t')[0];
     const chapter = rowData[1].split('\t')[0];
@@ -26,14 +28,19 @@
     rowHeader,
   };
   const options = {
-    page: 8,
+    page: 0,
     rowsPerPage: 10,
     rowsPerPageOptions: [10, 25, 50, 100],
   };
+  const onSave = (_savedFile) => {
+    setSavedFile(_savedFile);
+    alert(_savedFile);
+  }
 
   <DataTable
     sourceFile={sourceFile}
-    targetFile={targetFile}
+    targetFile={savedFile}
+    onSave={onSave}
     delimiters={delimiters}
     config={config}
     options={options}

@@ -15,6 +15,7 @@ export function DataTableContextProvider({
 }) {
   const [sourceData, setSourceData] = useState();
   const [targetData, setTargetData] = useState();
+  const [changed, setChanged] = useState(false);
   const [data, setData] = useState();
   const [columnNames, setColumnNames] = useState();
 
@@ -28,6 +29,7 @@ export function DataTableContextProvider({
     const dataTable = helpers.parseDataTable({table: targetFile, delimiters});
     setColumnNames(dataTable.columnNames);
     setTargetData(dataTable.data);
+    setChanged(false);
   }, [targetFile, delimiters]);
   // correlate data by compositeKeyIndices when sourceData or targetData updated
   useEffect(() => {
@@ -38,33 +40,39 @@ export function DataTableContextProvider({
   }, [sourceData, targetData, compositeKeyIndices]);
 
   const rowMoveAbove = ({rowIndex}) => {
-    const _targetData = helpers.rowMoveAbove({targetData, rowIndex});
+    const _targetData = helpers.rowMoveAbove({data: targetData, rowIndex});
     setTargetData(_targetData);
+    setChanged(true);
   };
   const rowMoveBelow = ({rowIndex}) => {
-    const _targetData = helpers.rowMoveBelow({targetData, rowIndex});
+    const _targetData = helpers.rowMoveBelow({data: targetData, rowIndex});
     setTargetData(_targetData);
+    setChanged(true);
   };
   const rowAddBelow = ({rowIndex, newRow}) => {
-    const _targetData = helpers.rowAddBelow({targetData, rowIndex, newRow});
+    const _targetData = helpers.rowAddBelow({data: targetData, rowIndex, newRow});
     setTargetData(_targetData);
+    setChanged(true);
   };
   const rowDelete = ({rowIndex}) => {
-    let _targetData = helpers.rowDelete({targetData, rowIndex});
+    let _targetData = helpers.rowDelete({data: targetData, rowIndex});
     setTargetData(_targetData);
+    setChanged(true);
   };
   const cellEdit = ({rowIndex, columnIndex, value}) => {
-    let _targetData = helpers.cellEdit({targetData, rowIndex, columnIndex, value});
+    let _targetData = helpers.cellEdit({data: targetData, rowIndex, columnIndex, value});
     setTargetData(_targetData);
+    setChanged(true);
   };
 
-  const stringify = () => helpers.stringify({columnNames, targetData, delimiters});
+  const stringify = () => helpers.stringify({columnNames, data: targetData, delimiters});
 
   const state = {
     sourceData,
     targetData,
     columnNames,
     data,
+    changed,
   };
 
   const actions = {

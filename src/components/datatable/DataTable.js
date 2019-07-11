@@ -14,14 +14,20 @@ function DataTableComponent ({
     columnsShowDefault,
     rowHeader,
   },
+  onSave,
   ...props
 }) {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [preview, setPreview] = useState(true);
-  const {columnNames, data} = useContext(DataTableContext).state;
+  const {state, actions} = useContext(DataTableContext);
+  const {columnNames, data, changed} = state;
+  const {stringify} = actions;
 
   const togglePreview = () => setPreview(!preview);
-  const onSave = () => {};
+  const _onSave = () => {
+    const savedFile = stringify();
+    onSave(savedFile);
+  };
 
   const _options = {
     responsive: 'scroll',
@@ -35,7 +41,7 @@ function DataTableComponent ({
     download: false,
     print: false,
     customToolbar: () => (
-      <Toolbar preview={preview} onPreview={togglePreview} onSave={onSave} />
+      <Toolbar preview={preview} onPreview={togglePreview} changed={changed} onSave={_onSave} />
     ),
     ...options
   };
@@ -79,7 +85,7 @@ function DataTableComponent ({
 function DataTable({ config, options, ...props }) {
   return (
     <DataTableContextProvider config={config} {...props}>
-      <DataTableComponent config={config} options={options} />
+      <DataTableComponent config={config} options={options} {...props} />
     </DataTableContextProvider>
   );
 }
@@ -89,6 +95,8 @@ DataTable.propTypes = {
   sourceFile: PropTypes.string.isRequired,
   /** Translated DataTable raw string or file contents */
   targetFile: PropTypes.string.isRequired,
+  /** The callback to save the edited targetFile */
+  onSave: PropTypes.func.isRequired,
   /** The delimiters for converting the file into rows/columns */
   delimiters: PropTypes.shape({
     /** Delimiters to convert a files into rows "\n" */

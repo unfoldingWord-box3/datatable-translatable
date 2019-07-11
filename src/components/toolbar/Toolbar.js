@@ -15,9 +15,10 @@ function Toolbar({
   classes,
   preview,
   onPreview,
-  canSave,
+  changed,
   onSave,
 }) {
+  const saveDisabled = !changed;
 
   return (
     <React.Fragment>
@@ -27,8 +28,8 @@ function Toolbar({
         </IconButton>
       </Tooltip>
       <Tooltip title="Save">
-        <IconButton className={classes.iconButton} onClick={onSave}>
-          { canSave ? <Save /> : <SaveOutlined /> }
+        <IconButton disabled={saveDisabled} className={classes.iconButton} onClick={onSave}>
+          { changed ? <Save /> : <SaveOutlined /> }
         </IconButton>
       </Tooltip>
     </React.Fragment>
