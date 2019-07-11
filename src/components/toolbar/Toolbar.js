@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
   IconButton,
@@ -28,17 +29,35 @@ function Toolbar({
         </IconButton>
       </Tooltip>
       <Tooltip title="Save">
-        <IconButton disabled={saveDisabled} className={classes.iconButton} onClick={onSave}>
-          { changed ? <Save /> : <SaveOutlined /> }
-        </IconButton>
+        <div className={classes.inlineDiv}>
+          <IconButton disabled={saveDisabled} className={classes.iconButton} onClick={onSave}>
+            { changed ? <Save /> : <SaveOutlined /> }
+          </IconButton>
+        </div>
       </Tooltip>
     </React.Fragment>
   );
 }
 
 const styles = {
-  iconButton: {}
+  iconButton: {},
+  inlineDiv: {
+    display: 'inline-block',
+  },
 };
+
+Toolbar.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
+  /** Current state of preview toggle */
+  preview: PropTypes.bool,
+  /** Handle click of Preview Button  */
+  onPreview: PropTypes.func.isRequired,
+  /** Has the file changed for Save to be enabled */
+  changed: PropTypes.bool,
+  /** Handle click of Save Button */
+  onSave: PropTypes.func.isRequired,
+}
 
 export default withStyles(styles, { name: "Toolbar" })(
   Toolbar
