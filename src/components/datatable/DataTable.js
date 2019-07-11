@@ -117,7 +117,9 @@ DataTable.propTypes = {
     */
     rowHeader: PropTypes.func,
   }).isRequired,
-  /** Options to override or pass through to MUIDataTables */
+  /** Options to override or pass through to MUIDataTables.
+   *  https://github.com/gregnb/mui-datatables
+   */
   options: PropTypes.object,
 };
 
