@@ -8,10 +8,11 @@ const tableMeta = {
   columnData: {name: 'Column A'},
   rowData: ['a','b','c','d'],
 };
-
+const onEdit = (object) => alert(JSON.stringify(object));
 <Cell
   value={value}
   tableMeta={tableMeta}
   preview
+  onEdit={onEdit}
 />
 ```

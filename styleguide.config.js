@@ -29,8 +29,8 @@ module.exports = {
       content: './readme.md',
       components: () => ([
         Path.resolve(__dirname, `src/components/datatable`, `DataTable.js`),
-        Path.resolve(__dirname, `src/components/datatable`, `Cell.js`),
-        Path.resolve(__dirname, `src/components/datatable`, `CustomToolbar.js`),
+        Path.resolve(__dirname, `src/components/cell`, `Cell.js`),
+        Path.resolve(__dirname, `src/components/toolbar`, `Toolbar.js`),
       ]),
     },
   ]

@@ -21,7 +21,7 @@ function DataTableComponent ({
   const [preview, setPreview] = useState(true);
   const {state, actions} = useContext(DataTableContext);
   const {columnNames, data, changed} = state;
-  const {stringify} = actions;
+  const {stringify, cellEdit} = actions;
 
   const togglePreview = () => setPreview(!preview);
   const _onSave = () => {
@@ -50,7 +50,7 @@ function DataTableComponent ({
   let _data = [...data];
   if (columnNames && data) {
     const customBodyRender = (value, tableMeta, updateValue) => (
-      <Cell value={value} rowHeader={rowHeader} tableMeta={tableMeta} preview={preview} />
+      <Cell value={value} rowHeader={rowHeader} tableMeta={tableMeta} preview={preview} onEdit={cellEdit} />
     );
     columns = columnNames.map((name, index) => ({
       name,

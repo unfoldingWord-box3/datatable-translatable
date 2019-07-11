@@ -1,14 +1,15 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 
 import { BlockEditable } from 'markdown-translatable';
 
-import { DataTableContext } from '../datatable/DataTable.context';
+import styles from './styles';
 
 const inputFilters = [[/<br>/gi, '\n']];
 const outputFilters = [[/\n/gi, '<br>']];
+const blockEditableStyle = {marginBottom: '-8px'};
 
 const Cell = ({
   classes,
@@ -22,34 +23,24 @@ const Cell = ({
   },
   rowHeader,
   preview,
+  onEdit,
 }) => {
-  const {actions} = useContext(DataTableContext);
-  const {cellEdit} = actions;
   const [original, translation] = value.split('\t');
-  let component;
-
-  const blockEditableStyle = {marginBottom: '-8px'};
-
-  const onEdit = (markdown) => {
+  
+  const handleEdit = (markdown) => {
     let _columnIndex = !rowHeader ?  columnIndex : columnIndex -1;
-    cellEdit({rowIndex, columnIndex: _columnIndex, value: markdown});
+    onEdit({rowIndex, columnIndex: _columnIndex, value: markdown});
   }
-
+  
+  let component;
   if (value === 'rowHeader' && rowHeader) {
     const rowHeaderComponent = rowHeader(rowData.slice(1));
     component = (
-      <div className={classes.rowHeader}>
-        {rowHeaderComponent}
-      </div>
+      <div className={classes.rowHeader}>{rowHeaderComponent}</div>
     );
   } else {
     const subheading = (
-      <Typography
-        className={classes.subheading}
-        variant='subtitle2'
-        align='left'
-        color='textSecondary'
-      >
+      <Typography className={classes.subheading} variant='subtitle2' align='left' color='textSecondary'>
         {columnData.name}
       </Typography>
     )
@@ -71,7 +62,7 @@ const Cell = ({
         editable={true}
         inputFilters={inputFilters}
         outputFilters={outputFilters}
-        onEdit={onEdit}
+        onEdit={handleEdit}
       />
     );
     component = (
@@ -97,39 +88,17 @@ const Cell = ({
 Cell.propTypes = {
   /** @ignore */
   classes: PropTypes.object.isRequired,
+  /** Value of the cell */
   value: PropTypes.string.isRequired,
+  /** The tableMeta passed from MUIDataTables */
   tableMeta: PropTypes.object.isRequired,
+  /** The function to render the rowHeader */
   rowHeader: PropTypes.func.isRequired,
+  /** Set html preview mode, false renders raw markdown */
   preview: PropTypes.bool,
 };
 
 const blockStyle = {};
-
-const styles = theme => ({
-  root: {
-  },
-  original: {
-    background: '#eee4',
-    display: 'inline-block',
-    width: '50%',
-  },
-  translation: {
-    display: 'inline-block',
-    width: '50%',
-  },
-  subheading: {
-    margin: '8px 24px -8px 24px',
-    fontSize: '0.8em',
-    fontStyle: 'italic',
-  },
-  rowHeader: {
-    borderBottom: '1px solid #ccc',
-    borderTop: '1px solid #ccc',
-    padding: '20px 24px 16px 24px',
-    position: 'sticky',
-    top: 100,
-  }
-});
 
 const StyleComponent = withStyles(styles)(Cell);
 export default StyleComponent;
