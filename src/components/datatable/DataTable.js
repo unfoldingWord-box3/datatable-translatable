@@ -9,6 +9,7 @@ import { DataTableContext, DataTableContextProvider } from './DataTable.context'
 
 function DataTableComponent ({
   options,
+  delimiters,
   config: {
     columnsFilter,
     columnsShowDefault,
@@ -50,7 +51,20 @@ function DataTableComponent ({
   let _data = [...data];
   if (columnNames && data) {
     const customBodyRender = (value, tableMeta, updateValue) => (
-      <Cell value={value} rowHeader={rowHeader} tableMeta={tableMeta} preview={preview} onEdit={cellEdit} />
+      <Cell
+        value={value}
+        rowHeader={rowHeader}
+        tableMeta={tableMeta}
+        preview={preview}
+        onEdit={cellEdit}
+        columnNames={state.columnNames}
+        delimiters={delimiters}
+        rowGenerate={actions.rowGenerate}
+        rowAdd={actions.rowAddBelow}
+        rowDelete={actions.rowDelete}
+        rowMoveAbove={actions.rowMoveAbove}
+        rowMoveBelow={actions.rowMoveBelow}
+      />
     );
     columns = columnNames.map((name, index) => ({
       name,

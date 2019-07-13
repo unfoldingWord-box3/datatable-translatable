@@ -34,10 +34,10 @@ export function DataTableContextProvider({
   // correlate data by compositeKeyIndices when sourceData or targetData updated
   useEffect(() => {
     if (sourceData && targetData) {
-      const _data = helpers.correlateData({sourceData, targetData, compositeKeyIndices});
+      const _data = helpers.correlateData({sourceData, targetData, compositeKeyIndices, delimiters});
       setData(_data);
     }
-  }, [sourceData, targetData, compositeKeyIndices]);
+  }, [sourceData, targetData, compositeKeyIndices, delimiters]);
 
   const rowMoveAbove = ({rowIndex}) => {
     const _targetData = helpers.rowMoveAbove({data: targetData, rowIndex});
@@ -49,8 +49,8 @@ export function DataTableContextProvider({
     setTargetData(_targetData);
     setChanged(true);
   };
-  const rowAddBelow = ({rowIndex, newRow}) => {
-    const _targetData = helpers.rowAddBelow({data: targetData, rowIndex, newRow});
+  const rowAddBelow = ({rowIndex, rowData}) => {
+    const _targetData = helpers.rowAddBelow({data: targetData, rowIndex, rowData});
     setTargetData(_targetData);
     setChanged(true);
   };
@@ -58,6 +58,10 @@ export function DataTableContextProvider({
     let _targetData = helpers.rowDelete({data: targetData, rowIndex});
     setTargetData(_targetData);
     setChanged(true);
+  };
+  const rowGenerate = ({rowIndex}) => {
+    const _rowData = helpers.rowGenerate({data: targetData, columnNames, rowIndex});
+    return _rowData;
   };
   const cellEdit = ({rowIndex, columnIndex, value}) => {
     let _targetData = helpers.cellEdit({data: targetData, rowIndex, columnIndex, value});
@@ -80,6 +84,7 @@ export function DataTableContextProvider({
     rowMoveBelow,
     rowAddBelow,
     rowDelete,
+    rowGenerate,
     cellEdit,
     stringify,
   };

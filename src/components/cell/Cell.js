@@ -5,6 +5,8 @@ import { Typography } from '@material-ui/core';
 
 import { BlockEditable } from 'markdown-translatable';
 
+import ActionsMenu from '../actions-menu/ActionsMenu';
+
 import styles from './styles';
 
 const inputFilters = [[/<br>/gi, '\n']];
@@ -24,17 +26,37 @@ const Cell = ({
   rowHeader,
   preview,
   onEdit,
+  columnNames,
+  delimiters,
+  rowGenerate,
+  rowAdd,
+  rowDelete,
+  rowMoveAbove,
+  rowMoveBelow,
 }) => {
   const [original, translation] = value.split('\t');
   
   const handleEdit = (markdown) => {
     let _columnIndex = !rowHeader ?  columnIndex : columnIndex -1;
     onEdit({rowIndex, columnIndex: _columnIndex, value: markdown});
-  }
+  };
   
   let component;
   if (value === 'rowHeader' && rowHeader) {
-    const rowHeaderComponent = rowHeader(rowData.slice(1));
+    const actionsMenu = (
+      <ActionsMenu
+        rowData={rowData}
+        rowIndex={rowIndex}
+        columnNames={columnNames}
+        delimiters={delimiters}
+        rowGenerate={rowGenerate}
+        rowAdd={rowAdd}
+        rowDelete={rowDelete}
+        rowMoveAbove={rowMoveAbove}
+        rowMoveBelow={rowMoveBelow}
+      />
+    );
+    const rowHeaderComponent = rowHeader(rowData.slice(1), actionsMenu);
     component = (
       <div className={classes.rowHeader}>{rowHeaderComponent}</div>
     );
@@ -93,7 +115,7 @@ Cell.propTypes = {
   /** The tableMeta passed from MUIDataTables */
   tableMeta: PropTypes.object.isRequired,
   /** The function to render the rowHeader */
-  rowHeader: PropTypes.func.isRequired,
+  rowHeader: PropTypes.func,
   /** Set html preview mode, false renders raw markdown */
   preview: PropTypes.bool,
 };

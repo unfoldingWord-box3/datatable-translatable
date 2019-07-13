@@ -1,21 +1,34 @@
 
 export const rowMoveAbove = ({data, rowIndex}) => arrayMove(data, rowIndex, rowIndex - 1);
 export const rowMoveBelow = ({data, rowIndex}) => arrayMove(data, rowIndex, rowIndex + 1);
-export const rowAddAbove = ({data, rowIndex, newRow}) => [...data].splice(rowIndex - 1, 0, newRow);
-export const rowAddBelow = ({data, rowIndex, newRow}) => [...data].splice(rowIndex + 1, 0, newRow);
-export const rowDelete = ({data, rowIndex}) => [...data].splice(rowIndex, 1);
+export const rowAddAbove = ({data, rowIndex, rowData}) => {
+  const _data = [...data];
+  _data.splice(rowIndex - 1, 0, rowData);
+  return _data;
+};
+export const rowAddBelow = ({data, rowIndex, rowData}) => {
+  const _data = [...data];
+  _data.splice(rowIndex + 1, 0, rowData);
+  return _data;
+};
+export const rowDelete = ({data, rowIndex}) => {
+  const _data = [...data];
+  _data.splice(rowIndex, 1);
+  return _data;
+};
 export const cellEdit = ({data, rowIndex, columnIndex, value}) => {
   let _data = [...data];
   _data[rowIndex][columnIndex] = value;
   return _data;
 };
 
-export const generateNewRow = ({data, columns, row}) => {
+export const rowGenerate = ({data, columnNames, rowIndex}) => {
   let dataIndex = {};
   let lengthIndex = {};
+  const rowData = data[rowIndex];
   data.forEach(_row => {
     _row.forEach((value, index) => {
-      const column = columns[index];
+      const column = columnNames[index];
       if (!dataIndex[column]) dataIndex[column] = {};
       if (!dataIndex[column][value]) dataIndex[column][value] = 0;
       dataIndex[column][value] ++;
@@ -26,8 +39,8 @@ export const generateNewRow = ({data, columns, row}) => {
     });
   });
   const rowCount = data.length;
-  let newRow = row.map((value, index) => {
-    const column = columns[index];
+  let newRow = rowData.map((value, index) => {
+    const column = columnNames[index];
     const values = Object.keys(dataIndex[column]).length;
     const valuesRatio = values / rowCount;
     const duplicateValue = (valuesRatio < 0.5);
@@ -48,25 +61,33 @@ export const generateNewRow = ({data, columns, row}) => {
   return newRow;
 };
 
-export const correlateData = ({sourceData, targetData, compositeKeyIndices}) => {
+export const correlateData = ({sourceData, targetData, compositeKeyIndices, delimiters}) => {
   let data = [];
   if (sourceData[0].length === targetData[0].length) {
     let rowIndex = {};
     targetData.forEach(row => {
       const compositeKey = compositeKeyIndices.map(index => row[index]).join(':');
-      rowIndex[compositeKey] = { translation: row };
+      rowIndex[compositeKey] = { target: row };
     });
     sourceData.forEach(row => {
       const compositeKey = compositeKeyIndices.map(index => row[index]).join(':');
       // rowIndex[compositeKey] = rowIndex[compositeKey] || {};
-      rowIndex[compositeKey] = { original: row, ...rowIndex[compositeKey] };
+      rowIndex[compositeKey] = { source: row, ...rowIndex[compositeKey] };
     });
 
-    data = Object.values(rowIndex).map(row =>
-      row.original.map((originalCell, index) =>
-        `${originalCell}\t${row.translation[index]}`
-      )
-    );
+    data = Object.values(rowIndex).map(row => {
+      let _row;
+      if (row.source) {
+        _row = row.source.map((sourceCell, index) =>
+          `${sourceCell}${delimiters.cell}${row.target ? row.target[index] : ''}`
+        );
+      } else {
+        _row = row.target.map((targetCell, index) =>
+          `${delimiters.cell}${targetCell}`
+        );
+      }
+      return _row;
+    });
   }
   return data;
 };

@@ -16,9 +16,12 @@ const styles = theme => ({
     fontStyle: 'italic',
   },
   rowHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: "center",
     borderBottom: '1px solid #ccc',
     borderTop: '1px solid #ccc',
-    padding: '20px 24px 16px 24px',
+    padding: '0 24px',
     position: 'sticky',
     top: 100,
   }

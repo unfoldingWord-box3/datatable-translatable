@@ -1,0 +1,97 @@
+import React, { useState } from 'react';
+// import PropTypes from 'prop-types';
+import {
+  IconButton,
+  Button,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from '@material-ui/core';
+import {
+  AddCircleOutline,
+} from '@material-ui/icons';
+
+function AddRowMenu({
+  classes,
+  rowData,
+  rowIndex,
+  columnNames,
+  rowGenerate,
+  rowAdd,
+}) {
+  const [open, setOpen] = useState(false);
+  const [newRow, setNewRow] = useState();
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const handleRowAdd = () => {
+      rowAdd({rowIndex, rowData: newRow});
+      handleClose();
+  };
+
+  let dialogComponent = <div />;
+  if (open) {
+    const newRowComponent = columnNames.map((name, i) => {
+      let text = '';
+      if (!newRow) {
+        const _newRow = rowGenerate({rowIndex});
+        setNewRow(_newRow);
+        return text;
+      } else {
+        text = (
+          <DialogContentText key={name + i}>
+            <strong>{name}:</strong>
+            { " " + newRow[i]}
+          </DialogContentText>
+        );
+      }
+      return text;
+    });
+    dialogComponent = (
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="dialog-title"
+        aria-describedby="dialog-description"
+      >
+        <DialogTitle id="dialog-title">
+          Add Row
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="dialog-description">
+            Columns with 50%+ unique values will not be duplicated.
+          </DialogContentText>
+          <Divider />
+          <br/>
+          {newRowComponent}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Cancel
+          </Button>
+          <Button onClick={handleRowAdd} color="secondary">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  return (
+    <>
+      <IconButton onClick={handleOpen}>
+        <AddCircleOutline />
+      </IconButton>
+      {dialogComponent}
+    </>
+  );
+}
+
+AddRowMenu.propTypes = {
+  
+};
+
+export default AddRowMenu;
