@@ -35,6 +35,7 @@ Note: Due to the internal's correlation of source and target datatables, all cel
 
 ```js
 import { Typography } from '@material-ui/core';
+const [rowIndex, setRowIndex] = React.useState(0);
 
 const value = 'rowHeader';
 const cellDelimiter = '\t';
@@ -42,7 +43,7 @@ const columnNames=['a','b','c','d'];
 
 const tableMeta = {
   columnIndex: 0,
-  rowIndex: 0,
+  rowIndex,
   columnData: {name: 'rowHeader'},
   rowData: [
     value,
@@ -54,26 +55,19 @@ const tableMeta = {
 };
 
 const style = {
-  rowHeader: {
-    typography: {
-      lineHeight: '1.0',
-      fontWeight: 'bold',
-    },
-    root: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: "center",
-    },
+  typography: {
+    lineHeight: '1.0',
+    fontWeight: 'bold',
   },
 };
 
 const rowHeader = (rowData, actionsMenu) => (
-  <div style={style.rowHeader.root}>
-    <Typography variant='h6' style={style.rowHeader.typography}>
+  <>
+    <Typography variant='h6' style={style.typography}>
       {`${rowData[0].split('\t')[0]}-${rowData[1].split('\t')[0]}`}
     </Typography>
     {actionsMenu}
-  </div>
+  </>
 );
 
 const onEdit = (object) => alert(JSON.stringify(object));
@@ -88,7 +82,7 @@ const onEdit = (object) => alert(JSON.stringify(object));
   rowGenerate={()=>{}}
   rowAdd={()=>{}}
   rowDelete={()=>{}}
-  rowMoveAbove={()=>{}}
-  rowMoveBelow={()=>{}}
+  rowMoveAbove={() => setRowIndex(rowIndex-1) }
+  rowMoveBelow={() => setRowIndex(rowIndex+1) }
 />
 ```
