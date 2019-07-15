@@ -5,6 +5,11 @@ export const getMuiTheme = createMuiTheme({
     useNextVariants: true,
   },
   overrides: {
+    MuiIconButton: {
+      root: {
+        padding: '8px',
+      },
+    },
     MuiTableCell: {
       root: {
         padding: '0',

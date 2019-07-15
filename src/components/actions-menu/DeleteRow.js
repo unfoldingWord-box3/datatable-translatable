@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 // import PropTypes from 'prop-types';
 import {
-  IconButton,
   Button,
   Divider,
   Dialog,
@@ -11,7 +10,6 @@ import {
   DialogContentText,
 } from '@material-ui/core';
 import {
-  RemoveCircleOutline,
 } from '@material-ui/icons';
 
 function DeleteRowMenu({
@@ -20,6 +18,7 @@ function DeleteRowMenu({
   columnNames,
   rowDelete,
   delimiters,
+  button,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -73,9 +72,9 @@ function DeleteRowMenu({
 
   return (
     <>
-      <IconButton onClick={handleOpen}>
-        <RemoveCircleOutline />
-      </IconButton>
+      <div onClick={handleOpen}>
+        {button}
+      </div>
       {dialogComponent}
     </>
   );

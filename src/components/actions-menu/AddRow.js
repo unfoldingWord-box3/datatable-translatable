@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 // import PropTypes from 'prop-types';
 import {
-  IconButton,
   Button,
   Divider,
   Dialog,
@@ -11,7 +10,6 @@ import {
   DialogContentText,
 } from '@material-ui/core';
 import {
-  AddCircleOutline,
 } from '@material-ui/icons';
 
 function AddRowMenu({
@@ -21,6 +19,7 @@ function AddRowMenu({
   columnNames,
   rowGenerate,
   rowAdd,
+  button,
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
@@ -82,9 +81,9 @@ function AddRowMenu({
 
   return (
     <>
-      <IconButton onClick={handleOpen}>
-        <AddCircleOutline />
-      </IconButton>
+      <div onClick={handleOpen}>
+        {button}
+      </div>
       {dialogComponent}
     </>
   );
