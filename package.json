@@ -1,12 +1,18 @@
 {
   "name": "datatable-translatable",
   "version": "0.1.0",
+  "license": "MIT",
   "description": "A Component Library for Translating DataTables using React and MaterialUI.",
+  "homepage": "https://unfoldingword-box3.github.io/datatable-translatable/",
+  "author": "Christopher Klapp <christopher@klapp.name>",
+  "private": false,
   "main": "src/index.js",
   "scripts": {
     "start": "styleguidist server",
     "build": "styleguidist build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ghpages": "gh-pages -d styleguide",
+    "deploy": "yarn build && yarn ghpages"
   },
   "keywords": [
     "tsv",
@@ -19,8 +25,6 @@
     "react",
     "mui"
   ],
-  "author": "Christopher Klapp <christopher@klapp.name>",
-  "license": "MIT",
   "dependencies": {
     "markdown-translatable": "^0.4.1",
     "mui-datatables": "^2.6.1"
@@ -31,6 +35,7 @@
     "@babel/preset-react": "^7.0.0",
     "@material-ui/core": "^3.2.0",
     "@material-ui/icons": "^3.0.1",
+    "gh-pages": "^2.0.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "^3.0.1",
