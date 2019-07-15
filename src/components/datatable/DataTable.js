@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import MUIDataTable from "mui-datatables";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { getMuiTheme } from './muiTheme';
-import { Cell, Toolbar } from '../';
+import { Cell, Toolbar } from '../../';
 
 import { DataTableContext, DataTableContextProvider } from './DataTable.context';
 
