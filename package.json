@@ -1,6 +1,6 @@
 {
   "name": "datatable-translatable",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "license": "MIT",
   "description": "A Component Library for Translating DataTables using React and MaterialUI.",
   "homepage": "https://unfoldingword-box3.github.io/datatable-translatable/",
@@ -16,7 +16,8 @@
     "predeploy": "yarn styleguide:build",
     "deploy": "gh-pages -d styleguide",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline"
+    "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
+    "postpublish": "yarn deploy"
   },
   "keywords": [
     "tsv",
