@@ -37,7 +37,7 @@ const Cell = ({
   const [original, translation] = value.split('\t');
   
   const handleEdit = (markdown) => {
-    let _columnIndex = !rowHeader ?  columnIndex : columnIndex -1;
+    let _columnIndex = !rowHeader ? columnIndex : columnIndex -1;
     onEdit({rowIndex, columnIndex: _columnIndex, value: markdown});
   };
   
@@ -65,12 +65,13 @@ const Cell = ({
       <Typography className={classes.subheading} variant='subtitle2' align='left' color='textSecondary'>
         {columnData.name}
       </Typography>
-    )
+    );
+    const value = original || '*empty*';
     const originalComponent = (
       <BlockEditable
         style={blockEditableStyle}
         raw={!preview}
-        markdown={original || '*empty*'}
+        markdown={value}
         editable={false}
         inputFilters={inputFilters}
         outputFilters={outputFilters}

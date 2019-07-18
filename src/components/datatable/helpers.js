@@ -1,47 +1,47 @@
 
-export const rowMoveAbove = ({data, rowIndex}) => arrayMove(data, rowIndex, rowIndex - 1);
-export const rowMoveBelow = ({data, rowIndex}) => arrayMove(data, rowIndex, rowIndex + 1);
-export const rowAddAbove = ({data, rowIndex, rowData}) => {
-  const _data = [...data];
-  _data.splice(rowIndex - 1, 0, rowData);
-  return _data;
+export const rowMoveAbove = ({rows, rowIndex}) => arrayMove(rows, rowIndex, rowIndex - 1);
+export const rowMoveBelow = ({rows, rowIndex}) => arrayMove(rows, rowIndex, rowIndex + 1);
+export const rowAddAbove = ({rows, rowIndex, rowData}) => {
+  let _rows = [...rows];
+  _rows.splice(rowIndex - 1, 0, rowData);
+  return _rows;
 };
-export const rowAddBelow = ({data, rowIndex, rowData}) => {
-  const _data = [...data];
-  _data.splice(rowIndex + 1, 0, rowData);
-  return _data;
+export const rowAddBelow = ({rows, rowIndex, rowData}) => {
+  let _rows = [...rows];
+  _rows.splice(rowIndex + 1, 0, rowData);
+  return _rows;
 };
-export const rowDelete = ({data, rowIndex}) => {
-  const _data = [...data];
-  _data.splice(rowIndex, 1);
-  return _data;
+export const rowDelete = ({rows, rowIndex}) => {
+  let _rows = [...rows];
+  _rows.splice(rowIndex, 1);
+  return _rows;
 };
-export const cellEdit = ({data, rowIndex, columnIndex, value}) => {
-  let _data = [...data];
-  _data[rowIndex][columnIndex] = value;
-  return _data;
+export const cellEdit = ({rows, rowIndex, columnIndex, value}) => {
+  let _rows = rows.map(cells => [...cells]);
+  _rows[rowIndex][columnIndex] = value;
+  return _rows;
 };
 
-export const rowGenerate = ({data, columnNames, rowIndex}) => {
-  let dataIndex = {};
+export const rowGenerate = ({rows, columnNames, rowIndex}) => {
+  let rowsIndex = {};
   let lengthIndex = {};
-  const rowData = data[rowIndex];
-  data.forEach(_row => {
+  const rowData = rows[rowIndex];
+  rows.forEach(_row => {
     _row.forEach((value, index) => {
       const column = columnNames[index];
-      if (!dataIndex[column]) dataIndex[column] = {};
-      if (!dataIndex[column][value]) dataIndex[column][value] = 0;
-      dataIndex[column][value] ++;
+      if (!rowsIndex[column]) rowsIndex[column] = {};
+      if (!rowsIndex[column][value]) rowsIndex[column][value] = 0;
+      rowsIndex[column][value] ++;
       const valueLength = value.length;
       if (!lengthIndex[column]) lengthIndex[column] = {};
       if (!lengthIndex[column][valueLength]) lengthIndex[column][valueLength] = 0;
       lengthIndex[column][valueLength] ++;
     });
   });
-  const rowCount = data.length;
+  const rowCount = rows.length;
   let newRow = rowData.map((value, index) => {
     const column = columnNames[index];
-    const values = Object.keys(dataIndex[column]).length;
+    const values = Object.keys(rowsIndex[column]).length;
     const valuesRatio = values / rowCount;
     const duplicateValue = (valuesRatio < 0.5);
 
@@ -61,15 +61,15 @@ export const rowGenerate = ({data, columnNames, rowIndex}) => {
   return newRow;
 };
 
-export const correlateData = ({sourceData, targetData, compositeKeyIndices, delimiters}) => {
+export const correlateData = ({sourceRows, targetRows, compositeKeyIndices, delimiters}) => {
   let data = [];
-  if (sourceData[0].length === targetData[0].length) {
+  if (sourceRows[0].length === targetRows[0].length) {
     let rowIndex = {};
-    targetData.forEach(row => {
+    targetRows.forEach(row => {
       const compositeKey = compositeKeyIndices.map(index => row[index]).join(':');
       rowIndex[compositeKey] = { target: row };
     });
-    sourceData.forEach(row => {
+    sourceRows.forEach(row => {
       const compositeKey = compositeKeyIndices.map(index => row[index]).join(':');
       // rowIndex[compositeKey] = rowIndex[compositeKey] || {};
       rowIndex[compositeKey] = { source: row, ...rowIndex[compositeKey] };
@@ -99,23 +99,23 @@ export const parseDataTable = ({table, delimiters}) => {
   );
   const dataTable = {
     columnNames: getColumnNames(rows),
-    data: getData(rows),
+    rows: getRows(rows),
   }
   return dataTable;
 };
 
-export const stringify = ({columnNames, data, delimiters}) => {
+export const stringify = ({columnNames, rows, delimiters}) => {
   let string = "";
-  if (columnNames && data) {
-    let rows = [columnNames, ...data];
-    string = rows.map(cells => cells.join(delimiters.cell))
+  if (columnNames && rows) {
+    let dataTable = [columnNames, ...rows];
+    string = dataTable.map(cells => cells.join(delimiters.cell))
     .join(delimiters.row);
   }
   return string;
 };
 
 export const getColumnNames = (rows) => rows[0];
-export const getData = (rows) => rows.slice(1);
+export const getRows = (rows) => rows.slice(1);
 
 export const parseRows = ({table, delimiter}) => table.split(delimiter).filter(row => row !== "");
 export const parseCells = ({row, delimiter}) => row.split(delimiter);

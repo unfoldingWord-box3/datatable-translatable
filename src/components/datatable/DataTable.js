@@ -22,11 +22,10 @@ function DataTableComponent ({
   const [preview, setPreview] = useState(true);
   const {state, actions} = useContext(DataTableContext);
   const {columnNames, data, changed} = state;
-  const {stringify, cellEdit} = actions;
 
   const togglePreview = () => setPreview(!preview);
   const _onSave = () => {
-    const savedFile = stringify();
+    const savedFile = state.targetFile;
     onSave(savedFile);
   };
 
@@ -56,7 +55,7 @@ function DataTableComponent ({
         rowHeader={rowHeader}
         tableMeta={tableMeta}
         preview={preview}
-        onEdit={cellEdit}
+        onEdit={actions.cellEdit}
         columnNames={state.columnNames}
         delimiters={delimiters}
         rowGenerate={actions.rowGenerate}
