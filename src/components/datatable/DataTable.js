@@ -25,7 +25,7 @@ function DataTableComponent ({
 
   const togglePreview = () => setPreview(!preview);
   const _onSave = () => {
-    const savedFile = state.targetFile;
+    const savedFile = actions.targetFileSave();
     onSave(savedFile);
   };
 

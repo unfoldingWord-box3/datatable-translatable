@@ -35,13 +35,13 @@ const rowsReducer = (rows, action) => {
 export function DataTableContextProvider({
   children,
   sourceFile,
+  targetFile,
   delimiters,
   config: {
     compositeKeyIndices,
   },
   ...props
 }) {
-  const [targetFile, setTargetFile] = useState(props.targetFile);
   const [sourceRows, setSourceRows] = useState();
   const [targetRows, targetRowsDispatch] = useReducer(rowsReducer, undefined);
   const setTargetRows = (rows) => targetRowsDispatch({type: 'SET_ROWS', value: {rows}});
@@ -49,16 +49,6 @@ export function DataTableContextProvider({
   const [data, setData] = useState();
   const [columnNames, setColumnNames] = useState();
 
-  useEffect(() => {
-    setChanged(true);
-  }, [targetRows]);
-  // update targetFile when targetRows is updated
-  useEffect(() => {
-    if (targetRows) {
-      const _targetFile = helpers.stringify({columnNames, rows: targetRows, delimiters});
-      if (_targetFile !== targetFile) setTargetFile(_targetFile);
-    }
-  }, [targetFile, targetRows, columnNames, delimiters]);
   // parse sourceFile when updated
   useEffect(() => {
     const {rows} = helpers.parseDataTable({table: sourceFile, delimiters});
@@ -81,26 +71,29 @@ export function DataTableContextProvider({
 
   const rowMoveAbove = ({rowIndex}) => {
     targetRowsDispatch({type: 'ROW_MOVE_ABOVE', value: {rowIndex}});
+    setChanged(true);
   };
   const rowMoveBelow = ({rowIndex}) => {
     targetRowsDispatch({type: 'ROW_MOVE_BELOW', value: {rowIndex}});
+    setChanged(true);
   };
   const rowAddBelow = ({rowIndex, rowData}) => {
     targetRowsDispatch({type: 'ROW_ADD_ABOVE', value: {rowIndex, rowData}});
+    setChanged(true);
   };
   const rowDelete = ({rowIndex}) => {
     targetRowsDispatch({type: 'ROW_DELETE', value: {rowIndex}});
+    setChanged(true);
   };
   const cellEdit = ({rowIndex, columnIndex, value}) => {
     targetRowsDispatch({type: 'CELL_EDIT', value: {rowIndex, columnIndex, value}});
+    setChanged(true);
   };
 
-  const rowGenerate = ({rowIndex}) => (
-    helpers.rowGenerate({rows: targetRows, columnNames, rowIndex})
-  );
+  const rowGenerate = ({rowIndex}) => helpers.rowGenerate({rows: targetRows, columnNames, rowIndex});
+  const targetFileSave = () => helpers.stringify({columnNames, rows: targetRows, delimiters});
 
   const state = deepFreeze({
-    targetFile,
     columnNames,
     data,
     changed,
@@ -113,6 +106,7 @@ export function DataTableContextProvider({
     rowDelete,
     rowGenerate,
     cellEdit,
+    targetFileSave,
   };
 
   const value = {
