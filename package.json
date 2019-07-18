@@ -1,6 +1,6 @@
 {
   "name": "datatable-translatable",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "license": "MIT",
   "description": "A Component Library for Translating DataTables using React and MaterialUI.",
   "homepage": "https://unfoldingword-box3.github.io/datatable-translatable/",
@@ -31,6 +31,7 @@
     "mui"
   ],
   "dependencies": {
+    "deep-freeze": "^0.0.1",
     "markdown-translatable": "^0.4.1",
     "mui-datatables": "^2.6.1"
   },
