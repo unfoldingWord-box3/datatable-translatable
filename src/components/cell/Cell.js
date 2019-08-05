@@ -70,7 +70,7 @@ const Cell = ({
     const originalComponent = (
       <BlockEditable
         style={blockEditableStyle}
-        raw={!preview}
+        preview={preview}
         markdown={value}
         editable={false}
         inputFilters={inputFilters}
@@ -80,7 +80,7 @@ const Cell = ({
     const translationComponent = (
       <BlockEditable
         style={blockEditableStyle}
-        raw={!preview}
+        preview={preview}
         markdown={translation}
         editable={true}
         inputFilters={inputFilters}

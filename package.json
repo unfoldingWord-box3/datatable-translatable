@@ -32,7 +32,7 @@
   ],
   "dependencies": {
     "deep-freeze": "^0.0.1",
-    "markdown-translatable": "^0.4.1",
+    "markdown-translatable": "^0.5.0",
     "mui-datatables": "^2.6.1"
   },
   "devDependencies": {
