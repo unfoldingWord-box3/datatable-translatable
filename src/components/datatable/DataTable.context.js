@@ -40,7 +40,6 @@ export function DataTableContextProvider({
   config: {
     compositeKeyIndices,
   },
-  ...props
 }) {
   const [sourceRows, setSourceRows] = useState();
   const [targetRows, targetRowsDispatch] = useReducer(rowsReducer, undefined);
@@ -69,29 +68,30 @@ export function DataTableContextProvider({
     }
   }, [sourceRows, targetRows, compositeKeyIndices, delimiters]);
 
-  const rowMoveAbove = ({rowIndex}) => {
-    targetRowsDispatch({type: 'ROW_MOVE_ABOVE', value: {rowIndex}});
-    setChanged(true);
+  const actions = {
+    rowMoveAbove: ({rowIndex}) => {
+      targetRowsDispatch({type: 'ROW_MOVE_ABOVE', value: {rowIndex}});
+      setChanged(true);
+    },
+    rowMoveBelow: ({rowIndex}) => {
+      targetRowsDispatch({type: 'ROW_MOVE_BELOW', value: {rowIndex}});
+      setChanged(true);
+    },
+    rowAddBelow: ({rowIndex, rowData}) => {
+      targetRowsDispatch({type: 'ROW_ADD_ABOVE', value: {rowIndex, rowData}});
+      setChanged(true);
+    },
+    rowDelete: ({rowIndex}) => {
+      targetRowsDispatch({type: 'ROW_DELETE', value: {rowIndex}});
+      setChanged(true);
+    },
+    cellEdit: ({rowIndex, columnIndex, value}) => {
+      targetRowsDispatch({type: 'CELL_EDIT', value: {rowIndex, columnIndex, value}});
+      setChanged(true);
+    },
+    rowGenerate: ({rowIndex}) => helpers.rowGenerate({rows: targetRows, columnNames, rowIndex}),
+    targetFileSave: () => helpers.stringify({columnNames, rows: targetRows, delimiters}),
   };
-  const rowMoveBelow = ({rowIndex}) => {
-    targetRowsDispatch({type: 'ROW_MOVE_BELOW', value: {rowIndex}});
-    setChanged(true);
-  };
-  const rowAddBelow = ({rowIndex, rowData}) => {
-    targetRowsDispatch({type: 'ROW_ADD_ABOVE', value: {rowIndex, rowData}});
-    setChanged(true);
-  };
-  const rowDelete = ({rowIndex}) => {
-    targetRowsDispatch({type: 'ROW_DELETE', value: {rowIndex}});
-    setChanged(true);
-  };
-  const cellEdit = ({rowIndex, columnIndex, value}) => {
-    targetRowsDispatch({type: 'CELL_EDIT', value: {rowIndex, columnIndex, value}});
-    setChanged(true);
-  };
-
-  const rowGenerate = ({rowIndex}) => helpers.rowGenerate({rows: targetRows, columnNames, rowIndex});
-  const targetFileSave = () => helpers.stringify({columnNames, rows: targetRows, delimiters});
 
   const state = deepFreeze({
     columnNames,
@@ -99,25 +99,10 @@ export function DataTableContextProvider({
     changed,
   });
 
-  const actions = {
-    rowMoveAbove,
-    rowMoveBelow,
-    rowAddBelow,
-    rowDelete,
-    rowGenerate,
-    cellEdit,
-    targetFileSave,
-  };
-
-  const value = {
-    state,
-    actions,
-  };
-
   let component = <></>;
   if (columnNames && data) {
     component = (
-      <DataTableContext.Provider value={value}>
+      <DataTableContext.Provider value={{ state, actions }}>
         {children}
       </DataTableContext.Provider>
     );
