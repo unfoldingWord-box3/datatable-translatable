@@ -7089,11 +7089,12 @@ markdown-to-jsx@^6.9.3:
     prop-types "^15.6.2"
     unquote "^1.1.0"
 
-markdown-translatable@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/markdown-translatable/-/markdown-translatable-0.4.1.tgz#12905aa6f40b0c11202532b44ddbd8d397cd54ca"
-  integrity sha512-tOFsTxjDyZTAfuwyr0tjal49LnSOKsDBIqBGQncHlJ6iggIZa1Rz80f6FTn0yGfb9AsE2ydebWLgXqBt12qAkA==
+markdown-translatable@0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/markdown-translatable/-/markdown-translatable-0.7.1.tgz#f3d725dcf5d0cdadcc75d1f509a746c21d2e47c0"
+  integrity sha512-4LnCqK4rVa0pJOmaHQNffOIs+wagsO5FeOF6ZnnLVZQVCy2mJFN5eD9uix/LTCyUEXy5KlPbHbZM32cLlgzULQ==
   dependencies:
+    deep-freeze "^0.0.1"
     md5 "^2.2.1"
     prop-types "^15.7.2"
     react-markdown "^4.0.6"

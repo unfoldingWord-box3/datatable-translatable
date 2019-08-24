@@ -3,15 +3,15 @@ const styles = theme => ({
   },
   original: {
     background: '#eee4',
-    display: 'inline-block',
+    display: 'table-cell',
     width: '50%',
   },
   translation: {
-    display: 'inline-block',
     width: '50%',
+    display: 'table-cell',
   },
   subheading: {
-    margin: '8px 24px -8px 24px',
+    margin: '8px 24px 0 24px',
     fontSize: '0.8em',
     fontStyle: 'italic',
   },
@@ -24,7 +24,11 @@ const styles = theme => ({
     padding: '0 24px',
     position: 'sticky',
     top: 100,
-  }
+  },
+  row: {
+    display: 'table',
+    width: '100%',
+  },
 });
 
 export default styles;

@@ -11,7 +11,6 @@ import styles from './styles';
 
 const inputFilters = [[/<br>/gi, '\n']];
 const outputFilters = [[/\n/gi, '<br>']];
-const blockEditableStyle = {marginBottom: '-8px'};
 
 const Cell = ({
   classes,
@@ -66,12 +65,14 @@ const Cell = ({
         {columnData.name}
       </Typography>
     );
-    const value = original || '*empty*';
+    const originalValue = original || '*empty*';
+    const translationValue = translation;
+    const blockEditableStyle = preview ? style.htmlBlock : style.markdownBlock;
     const originalComponent = (
       <BlockEditable
         style={blockEditableStyle}
         preview={preview}
-        markdown={value}
+        markdown={originalValue}
         editable={false}
         inputFilters={inputFilters}
         outputFilters={outputFilters}
@@ -81,7 +82,7 @@ const Cell = ({
       <BlockEditable
         style={blockEditableStyle}
         preview={preview}
-        markdown={translation}
+        markdown={translationValue}
         editable={true}
         inputFilters={inputFilters}
         outputFilters={outputFilters}
@@ -89,15 +90,16 @@ const Cell = ({
       />
     );
     component = (
-      <>
-        <div className={classes.original} style={blockStyle}>
+      <div className={classes.row}>
+        <div className={classes.original}>
           {subheading}
           {originalComponent}
         </div>
-        <div className={classes.translation} style={blockStyle}>
+        <div className={classes.translation}>
+          {subheading}
           {translationComponent}
         </div>
-      </>
+      </div>
     );
   }
 
@@ -121,7 +123,12 @@ Cell.propTypes = {
   preview: PropTypes.bool,
 };
 
-const blockStyle = {};
+const style = {
+  htmlBlock: {
+  },
+  markdownBlock: {
+  },
+}
 
 const StyleComponent = withStyles(styles)(Cell);
 export default StyleComponent;
