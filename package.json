@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "license": "MIT",
   "description": "A Component Library for Translating DataTables using React and MaterialUI.",
-  "homepage": "https://unfoldingword-box3.github.io/datatable-translatable/",
+  "homepage": "https://datatable-translatable.netlify.com/",
   "repository": {
     "type": "git",
     "url": "https://github.com/unfoldingWord-box3/datatable-translatable"
@@ -12,9 +12,8 @@
   "private": false,
   "scripts": {
     "start": "styleguidist server",
-    "styleguide:build": "styleguidist build",
-    "predeploy": "yarn styleguide:build",
-    "deploy": "gh-pages -d styleguide",
+    "build": "styleguidist build",
+    "deploy": "git push",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
     "postpublish": "yarn deploy"
