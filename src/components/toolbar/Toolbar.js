@@ -47,8 +47,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 Toolbar.propTypes = {
-  /** @ignore */
-  classes: PropTypes.object.isRequired,
   /** Current state of preview toggle */
   preview: PropTypes.bool,
   /** Handle click of Preview Button  */

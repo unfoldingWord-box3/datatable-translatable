@@ -107,8 +107,6 @@ const Cell = ({
 };
 
 Cell.propTypes = {
-  /** @ignore */
-  classes: PropTypes.object.isRequired,
   /** Value of the cell */
   value: PropTypes.string.isRequired,
   /** The tableMeta passed from MUIDataTables */
