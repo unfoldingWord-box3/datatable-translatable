@@ -1,6 +1,6 @@
 {
   "name": "datatable-translatable",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "license": "MIT",
   "description": "A Component Library for Translating DataTables using React and MaterialUI.",
   "homepage": "https://datatable-translatable.netlify.com/",
@@ -13,7 +13,7 @@
   "scripts": {
     "start": "styleguidist server",
     "build": "styleguidist build",
-    "deploy": "sleep 1 && git push",
+    "deploy": "sleep 2 && git push",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
     "postpublish": "yarn deploy"
