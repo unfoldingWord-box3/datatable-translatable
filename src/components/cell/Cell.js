@@ -1,19 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 
 import { BlockEditable } from 'markdown-translatable';
 
 import ActionsMenu from '../actions-menu/ActionsMenu';
 
-import styles from './styles';
+import useStyles from './styles';
 
 const inputFilters = [[/<br>/gi, '\n']];
 const outputFilters = [[/\n/gi, '<br>']];
 
 const Cell = ({
-  classes,
   value,
   tableMeta,
   tableMeta: {
@@ -33,6 +31,7 @@ const Cell = ({
   rowMoveAbove,
   rowMoveBelow,
 }) => {
+  const classes = useStyles();
   const [original, translation] = value.split('\t');
   
   const handleEdit = (markdown) => {
@@ -67,10 +66,8 @@ const Cell = ({
     );
     const originalValue = original || '*empty*';
     const translationValue = translation;
-    const blockEditableStyle = preview ? style.htmlBlock : style.markdownBlock;
     const originalComponent = (
       <BlockEditable
-        style={blockEditableStyle}
         preview={preview}
         markdown={originalValue}
         editable={false}
@@ -80,7 +77,6 @@ const Cell = ({
     );
     const translationComponent = (
       <BlockEditable
-        style={blockEditableStyle}
         preview={preview}
         markdown={translationValue}
         editable={true}
@@ -123,12 +119,4 @@ Cell.propTypes = {
   preview: PropTypes.bool,
 };
 
-const style = {
-  htmlBlock: {
-  },
-  markdownBlock: {
-  },
-}
-
-const StyleComponent = withStyles(styles)(Cell);
-export default StyleComponent;
+export default Cell;

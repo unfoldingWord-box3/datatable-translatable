@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import {
   IconButton,
 } from '@material-ui/core';
@@ -13,7 +13,6 @@ import AddRow from './AddRow';
 import DeleteRow from './DeleteRow';
 
 function RowMenu({
-  classes,
   rowIndex,
   rowData,
   columnNames,
@@ -24,6 +23,7 @@ function RowMenu({
   rowMoveAbove,
   rowMoveBelow,
 }) {
+  const classes = useStyles();
   const handleMoveAbove = () => rowMoveAbove({rowIndex});
   const handleMoveBelow = () => rowMoveBelow({rowIndex});
 
@@ -68,7 +68,7 @@ function RowMenu({
   );
 }
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     justifyContent: 'flex-end'
@@ -80,7 +80,6 @@ const styles = theme => ({
   button: {
     padding: '8px',
   },
-});
+}));
 
-const StyleComponent = withStyles(styles)(RowMenu);
-export default StyleComponent;
+export default RowMenu;
