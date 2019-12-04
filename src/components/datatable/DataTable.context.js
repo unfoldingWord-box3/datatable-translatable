@@ -78,7 +78,7 @@ export function DataTableContextProvider({
       setChanged(true);
     },
     rowAddBelow: ({rowIndex, rowData}) => {
-      targetRowsDispatch({type: 'ROW_ADD_ABOVE', value: {rowIndex, rowData}});
+      targetRowsDispatch({type: 'ROW_ADD_BELOW', value: {rowIndex, rowData}});
       setChanged(true);
     },
     rowDelete: ({rowIndex}) => {
