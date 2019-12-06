@@ -1,9 +1,10 @@
 
 ```js
-  import { Typography } from '@material-ui/core';
-  import sourceFile from './mocks/en_tn_57-TIT';
-  import targetFile from './mocks/tn_57-TIT';
+import { Typography } from '@material-ui/core';
+import sourceFile from './mocks/en_tn_57-TIT';
+import targetFile from './mocks/tn_57-TIT';
 
+function Component() {
   const [savedFile, setSavedFile] = React.useState(targetFile);
 
   const delimiters = { row: '\n', cell: '\t'};
@@ -37,8 +38,8 @@
 
   const config = {
     compositeKeyIndices: [0,1,2,3],
-    columnsFilter: [1,2,4],
-    columnsShowDefault: [4,5,7,8],
+    columnsFilter: ['Chapter','SupportReference'],
+    columnsShowDefault: ['SupportReference','OrigQuote','Occurrence','OccurrenceNote'],
     rowHeader,
   };
 
@@ -47,12 +48,16 @@
     alert(_savedFile);
   };
 
-  <DataTable
-    sourceFile={sourceFile}
-    targetFile={savedFile}
-    onSave={onSave}
-    delimiters={delimiters}
-    config={config}
-    options={options}
-  />
+  return (
+    <DataTable
+      sourceFile={sourceFile}
+      targetFile={savedFile}
+      onSave={onSave}
+      delimiters={delimiters}
+      config={config}
+      options={options}
+    />
+  );
+}
+<Component />
 ```

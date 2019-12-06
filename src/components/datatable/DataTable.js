@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import MUIDataTable from "mui-datatables";
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -20,8 +20,11 @@ function DataTableComponent ({
 }) {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [preview, setPreview] = useState(true);
+  const [columns, setColumns] = useState([]);
+  const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
   const {state, actions} = useContext(DataTableContext);
   const {columnNames, data, changed} = state;
+  const {cellEdit} = actions;
 
   const togglePreview = () => setPreview(!preview);
   const _onSave = () => {
@@ -29,15 +32,23 @@ function DataTableComponent ({
     onSave(savedFile);
   };
 
+  const onColumnViewChange = useCallback((changedColumn, action) => {
+    let _columnsShow = [...columnsShow];
+    if (action === 'add') _columnsShow.push(changedColumn);
+    else if (action === 'remove') _columnsShow = _columnsShow.filter(col => col !== changedColumn);
+    setColumnsShow(_columnsShow);
+  }, [columnsShow]);
+
   const _options = {
-    responsive: 'scroll',
-    fixedHeader: false,
+    responsive: 'scrollFullHeight',
+    fixedHeaderOptions: {xAxis: false, yAxis: false},
     resizableColumns: false,
     selectableRows: 'none',
     rowHover: false,
     rowsPerPage: rowsPerPage,
     rowsPerPageOptions: [25, 50, 100],
     onChangeRowsPerPage: setRowsPerPage,
+    onColumnViewChange: onColumnViewChange,
     download: false,
     print: false,
     customToolbar: () => (
@@ -46,33 +57,25 @@ function DataTableComponent ({
     ...options
   };
   
-  let columns = [];
-  let _data = [...data];
-  if (columnNames && data) {
+  useEffect(() => {
+    const {columnNames} = state;
     const customBodyRender = (value, tableMeta, updateValue) => (
       <Cell
         value={value}
         rowHeader={rowHeader}
         tableMeta={tableMeta}
         preview={preview}
-        onEdit={actions.cellEdit}
-        columnNames={state.columnNames}
+        onEdit={cellEdit}
         delimiters={delimiters}
-        rowGenerate={actions.rowGenerate}
-        rowAdd={actions.rowAddBelow}
-        rowDelete={actions.rowDelete}
-        rowMoveAbove={actions.rowMoveAbove}
-        rowMoveBelow={actions.rowMoveBelow}
       />
     );
-    columns = columnNames.map((name, index) => ({
+    let _columns = columnNames.map(name => ({
       name,
       searchable: true,
       options: {
-        display: columnsShowDefault.includes(index),
-        filter: columnsFilter.includes(index),
+        display: columnsShow.includes(name),
+        filter: columnsFilter.includes(name),
         customBodyRender,
-        customFilterListRender: (value) => value.split('\t')[0],
       },
     }));
     if (rowHeader) {
@@ -83,9 +86,17 @@ function DataTableComponent ({
           customBodyRender,
         },
       };
-      columns.unshift(headerColumn);
-      _data = data.map(row => ['rowHeader', ...row]);
+      _columns.unshift(headerColumn);
     }
+    setColumns(_columns);
+    return () => {
+      setColumns();
+    };
+  }, [state, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow]);
+  
+  let _data = [...data];
+  if (columnNames && data && rowHeader) {
+    _data = data.map(row => ['rowHeader', ...row]);
   }
 
   return (
@@ -122,9 +133,9 @@ DataTable.propTypes = {
     /** Combined Column Indices to correlate original and translated rows  */
     compositeKeyIndices: PropTypes.arrayOf(PropTypes.number).isRequired,
     /** Filterable columns */
-    columnsFilter: PropTypes.arrayOf(PropTypes.number).isRequired,
+    columnsFilter: PropTypes.arrayOf(PropTypes.string).isRequired,
     /** Columns shown */
-    columnsShowDefault: PropTypes.arrayOf(PropTypes.number).isRequired,
+    columnsShowDefault: PropTypes.arrayOf(PropTypes.string).isRequired,
     /** Function to render the row header.
      * `rowHeader(rowData) => React Component`
     */

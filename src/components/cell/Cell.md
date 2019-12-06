@@ -35,54 +35,59 @@ Note: Due to the internal's correlation of source and target datatables, all cel
 
 ```js
 import { Typography } from '@material-ui/core';
-const [rowIndex, setRowIndex] = React.useState(0);
+import { DataTableContextProvider } from '../datatable/DataTable.context';
 
-const value = 'rowHeader';
-const cellDelimiter = '\t';
-const columnNames=['a','b','c','d'];
+function Component() {
+  const [rowIndex, setRowIndex] = React.useState(0);
 
-const tableMeta = {
-  columnIndex: 0,
-  rowIndex,
-  columnData: {name: 'rowHeader'},
-  rowData: [
-    value,
-    ['a','a'].join(cellDelimiter),
-    ['b','b'].join(cellDelimiter),
-    ['c','c'].join(cellDelimiter),
-    ['d','d'].join(cellDelimiter),
-  ],
+  const value = 'rowHeader';
+  const cellDelimiter = '\t';
+  const columnNames=['a','b','c','d'];
+
+  const tableMeta = {
+    columnIndex: 0,
+    rowIndex,
+    columnData: {name: 'rowHeader'},
+    rowData: [
+      value,
+      ['a','a'].join(cellDelimiter),
+      ['b','b'].join(cellDelimiter),
+      ['c','c'].join(cellDelimiter),
+      ['d','d'].join(cellDelimiter),
+    ],
+  };
+
+  const style = {
+    typography: {
+      lineHeight: '1.0',
+      fontWeight: 'bold',
+    },
+  };
+
+  const rowHeader = (rowData, actionsMenu) => (
+    <>
+      <Typography variant='h6' style={style.typography}>
+        {`${rowData[0].split('\t')[0]}-${rowData[1].split('\t')[0]}`}
+      </Typography>
+      {actionsMenu}
+    </>
+  );
+
+  const onEdit = (object) => alert(JSON.stringify(object));
+
+  return (
+    <Cell
+      value={value}
+      tableMeta={tableMeta}
+      rowHeader={rowHeader}
+      preview
+      onEdit={onEdit}
+      columnNames={columnNames}
+    />
+  );
 };
-
-const style = {
-  typography: {
-    lineHeight: '1.0',
-    fontWeight: 'bold',
-  },
-};
-
-const rowHeader = (rowData, actionsMenu) => (
-  <>
-    <Typography variant='h6' style={style.typography}>
-      {`${rowData[0].split('\t')[0]}-${rowData[1].split('\t')[0]}`}
-    </Typography>
-    {actionsMenu}
-  </>
-);
-
-const onEdit = (object) => alert(JSON.stringify(object));
-
-<Cell
-  value={value}
-  tableMeta={tableMeta}
-  rowHeader={rowHeader}
-  preview
-  onEdit={onEdit}
-  columnNames={columnNames}
-  rowGenerate={()=>{}}
-  rowAdd={()=>{}}
-  rowDelete={()=>{}}
-  rowMoveAbove={() => setRowIndex(rowIndex-1) }
-  rowMoveBelow={() => setRowIndex(rowIndex+1) }
-/>
+// TODO: finish example to make Cell render
+<DataTableContextProvider config={{}}>
+  <Component />
+</DataTableContextProvider>
 ```

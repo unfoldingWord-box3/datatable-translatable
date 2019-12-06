@@ -32,7 +32,7 @@
   "dependencies": {
     "deep-freeze": "^0.0.1",
     "markdown-translatable": "0.7.1",
-    "mui-datatables": "^2.6.1"
+    "mui-datatables": "^2.13.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.0",

@@ -23,13 +23,7 @@ const Cell = ({
   rowHeader,
   preview,
   onEdit,
-  columnNames,
   delimiters,
-  rowGenerate,
-  rowAdd,
-  rowDelete,
-  rowMoveAbove,
-  rowMoveBelow,
 }) => {
   const classes = useStyles();
   const [original, translation] = value.split('\t');
@@ -45,13 +39,7 @@ const Cell = ({
       <ActionsMenu
         rowData={rowData}
         rowIndex={rowIndex}
-        columnNames={columnNames}
         delimiters={delimiters}
-        rowGenerate={rowGenerate}
-        rowAdd={rowAdd}
-        rowDelete={rowDelete}
-        rowMoveAbove={rowMoveAbove}
-        rowMoveBelow={rowMoveBelow}
       />
     );
     const rowHeaderComponent = rowHeader(rowData.slice(1), actionsMenu);

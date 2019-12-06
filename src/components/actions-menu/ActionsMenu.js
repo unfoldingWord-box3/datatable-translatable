@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {
   IconButton,
@@ -12,18 +12,25 @@ import {
 import AddRow from './AddRow';
 import DeleteRow from './DeleteRow';
 
+import { DataTableContext } from '../datatable/DataTable.context';
+
 function RowMenu({
   rowIndex,
   rowData,
-  columnNames,
   delimiters,
-  rowGenerate,
-  rowAdd,
-  rowDelete,
-  rowMoveAbove,
-  rowMoveBelow,
 }) {
   const classes = useStyles();
+  const {state, actions} = useContext(DataTableContext);
+  const {
+    columnNames,
+  } = state;
+  const {
+    rowGenerate,
+    rowAdd,
+    rowDelete,
+    rowMoveAbove,
+    rowMoveBelow,
+  } = actions;
   const handleMoveAbove = () => rowMoveAbove({rowIndex});
   const handleMoveBelow = () => rowMoveBelow({rowIndex});
 
