@@ -79,6 +79,12 @@ function DataTableComponent ({
         filter: columnsFilter.includes(name),
         customBodyRender,
         filterList: columnsFilterList[rowHeader ? index+1 : index],
+        customFilterListOptions: {
+          render: (value) => (
+            `${name} - ${value.split ? value.split(delimiters.cell)[0] : ''}`  
+          ),
+          update: setColumnsFilterList,
+        }
       },
     }));
     if (rowHeader) {
