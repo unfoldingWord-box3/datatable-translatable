@@ -22,6 +22,7 @@ function DataTableComponent ({
   const [preview, setPreview] = useState(true);
   const [columns, setColumns] = useState([]);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
+  const [columnsFilterList, setColumnsFilterList] = useState([]);
   const {state, actions} = useContext(DataTableContext);
   const {columnNames, data, changed} = state;
   const {cellEdit} = actions;
@@ -49,6 +50,7 @@ function DataTableComponent ({
     rowsPerPageOptions: [25, 50, 100],
     onChangeRowsPerPage: setRowsPerPage,
     onColumnViewChange: onColumnViewChange,
+    onFilterChange: (columnName, filterList) => setColumnsFilterList(filterList),
     download: false,
     print: false,
     customToolbar: () => (
@@ -69,13 +71,20 @@ function DataTableComponent ({
         delimiters={delimiters}
       />
     );
-    let _columns = columnNames.map(name => ({
+    let _columns = columnNames.map((name, index) => ({
       name,
       searchable: true,
       options: {
         display: columnsShow.includes(name),
         filter: columnsFilter.includes(name),
         customBodyRender,
+        filterList: columnsFilterList[rowHeader ? index+1 : index],
+        customFilterListOptions: {
+          render: (value) => (
+            `${name} - ${value.split ? value.split(delimiters.cell)[0] : ''}`  
+          ),
+          update: setColumnsFilterList,
+        }
       },
     }));
     if (rowHeader) {
@@ -92,7 +101,7 @@ function DataTableComponent ({
     return () => {
       setColumns();
     };
-  }, [state, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow]);
+  }, [state, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterList]);
   
   let _data = [...data];
   if (columnNames && data && rowHeader) {
