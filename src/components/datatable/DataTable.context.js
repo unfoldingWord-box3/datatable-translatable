@@ -50,15 +50,19 @@ export function DataTableContextProvider({
 
   // parse sourceFile when updated
   useEffect(() => {
-    const {rows} = helpers.parseDataTable({table: sourceFile, delimiters});
-    setSourceRows(rows);
+    if (delimiters) {
+      const {rows} = helpers.parseDataTable({table: sourceFile, delimiters});
+      setSourceRows(rows);
+    }
   }, [sourceFile, delimiters]);
   // parse targetFile when updated
   useEffect(() => {
-    const {columnNames, rows} = helpers.parseDataTable({table: targetFile, delimiters});
-    setColumnNames(columnNames);
-    setTargetRows(rows);
-    setChanged(false);
+    if (delimiters) {
+      const {columnNames, rows} = helpers.parseDataTable({table: targetFile, delimiters});
+      setColumnNames(columnNames);
+      setTargetRows(rows);
+      setChanged(false);
+    }
   }, [targetFile, delimiters]);
   // correlate data by compositeKeyIndices when sourceRows or targetRows updated
   useEffect(() => {
