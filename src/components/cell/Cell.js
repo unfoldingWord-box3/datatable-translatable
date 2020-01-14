@@ -53,7 +53,7 @@ const Cell = ({
       </Typography>
     );
     const originalValue = original || '*empty*';
-    const translationValue = translation;
+    const translationValue = translation || '';
     const originalComponent = (
       <BlockEditable
         preview={preview}
