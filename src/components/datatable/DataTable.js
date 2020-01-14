@@ -22,7 +22,7 @@ function DataTableComponent ({
   const [preview, setPreview] = useState(true);
   const [columns, setColumns] = useState([]);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
-  const [columnsFilterList, setColumnsFilterList] = useState({});
+  const [columnsFilterList, setColumnsFilterList] = useState([]);
   const {state, actions} = useContext(DataTableContext);
   const {columnNames, data, changed} = state;
   const {cellEdit} = actions;
