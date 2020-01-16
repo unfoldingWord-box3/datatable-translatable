@@ -1,5 +1,5 @@
-import React, {useContext} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useContext } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   IconButton,
 } from '@material-ui/core';
@@ -20,22 +20,22 @@ function RowMenu({
   delimiters,
 }) {
   const classes = useStyles();
-  const {state, actions} = useContext(DataTableContext);
+  const { state, actions } = useContext(DataTableContext);
   const {
     columnNames,
   } = state;
   const {
     rowGenerate,
-    rowAdd,
+    rowAddBelow,
     rowDelete,
     rowMoveAbove,
     rowMoveBelow,
   } = actions;
-  const handleMoveAbove = () => rowMoveAbove({rowIndex});
-  const handleMoveBelow = () => rowMoveBelow({rowIndex});
+  const handleMoveAbove = () => rowMoveAbove({ rowIndex });
+  const handleMoveBelow = () => rowMoveBelow({ rowIndex });
 
   const disableMoveAbove = rowIndex === 0;
-  
+
   const addRowButton = (
     <IconButton className={classes.button}>
       <AddCircleOutline />
@@ -57,7 +57,7 @@ function RowMenu({
         rowIndex={rowIndex}
         columnNames={columnNames}
         rowGenerate={rowGenerate}
-        rowAdd={rowAdd}
+        rowAddBelow={rowAddBelow}
         button={addRowButton}
       />
       <DeleteRow
