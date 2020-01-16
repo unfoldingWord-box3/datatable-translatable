@@ -5,8 +5,6 @@ env:
   CHILD_CONCURRENCY: 1
   NODE_ENV: test
   COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-  CYPRESS_TEST_USERNAME: ${{ secrets.CYPRESS_TEST_USERNAME }}
-  CYPRESS_TEST_PASSWORD: ${{ secrets.CYPRESS_TEST_PASSWORD }}
 jobs:
   test:
     runs-on: macos-latest
@@ -42,21 +40,5 @@ jobs:
       - name: Install Packages
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn;
-      - name: Run Unit Tests
-        run: yarn test:unit;
       - name: Run Coverage Tests
         run: yarn test;
-      - name: Create Badge For Coverage Results
-        run: yarn create-coverage-badge;
-      - name: Commit Coverage Results
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add ./coverage/shields.json -f
-          git checkout .
-          git diff-index --quiet HEAD || git commit -m "Add Coverage Results"
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.ACTIONS_TOKEN }}
-          branch: ${{ env.BRANCH }}
