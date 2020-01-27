@@ -5,7 +5,11 @@ import path from 'path';
 describe('Bidirectional TSV Tests', () => {
 
   it('should convert en_tn_57-TIT tsv string to JSON and back', () => {
-    generateTest('en_tn_57-TIT')
+    generateTest('en_tn_57-TIT');
+  });
+
+  it('should convert tn_57-TIT tsv string to JSON and back', () => {
+    generateTest('tn_57-TIT');
   });
 })
 
