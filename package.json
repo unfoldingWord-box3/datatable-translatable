@@ -14,7 +14,7 @@
     "start": "styleguidist server",
     "build": "styleguidist build",
     "deploy": "sleep 2 && git push",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest __tests__ && cat ./coverage/lcov.info | coveralls",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline"
   },
   "keywords": [
@@ -40,11 +40,14 @@
     "@babel/preset-react": "^7.0.0",
     "@material-ui/core": "^4.6.1",
     "@material-ui/icons": "^4.5.1",
+    "@types/jest": "24.0.22",
+    "coveralls": "^3.0.9",
     "react": "^16.8.6",
     "react-docgen": "4.1.1",
     "react-dom": "^16.8.6",
     "react-scripts": "^3.0.1",
     "react-styleguidist": "^9.1.11",
+    "react-test-renderer": "^16.12.0",
     "webpack": "^4.0.0"
   },
   "peerDependencies": {
@@ -59,5 +62,13 @@
   "main": "dist/index.js",
   "files": [
     "dist/*"
-  ]
+  ],
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/core/**.{js,jsx,ts}",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ]
+  }
 }

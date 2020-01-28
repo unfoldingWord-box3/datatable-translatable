@@ -7,7 +7,7 @@ import { Cell, Toolbar } from '../../';
 
 import { DataTableContext, DataTableContextProvider } from './DataTable.context';
 
-function DataTableComponent ({
+function DataTableComponent({
   options,
   delimiters,
   config: {
@@ -23,9 +23,9 @@ function DataTableComponent ({
   const [columns, setColumns] = useState([]);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
   const [columnsFilterList, setColumnsFilterList] = useState([]);
-  const {state, actions} = useContext(DataTableContext);
-  const {columnNames, data, changed} = state;
-  const {cellEdit} = actions;
+  const { state, actions } = useContext(DataTableContext);
+  const { columnNames, data, changed } = state;
+  const { cellEdit } = actions;
 
   const togglePreview = () => setPreview(!preview);
   const _onSave = () => {
@@ -42,7 +42,7 @@ function DataTableComponent ({
 
   const _options = {
     responsive: 'scrollFullHeight',
-    fixedHeaderOptions: {xAxis: false, yAxis: false},
+    fixedHeaderOptions: { xAxis: false, yAxis: false },
     resizableColumns: false,
     selectableRows: 'none',
     rowHover: false,
@@ -58,19 +58,21 @@ function DataTableComponent ({
     ),
     ...options
   };
-  
+
   useEffect(() => {
-    const {columnNames} = state;
-    const customBodyRender = (value, tableMeta, updateValue) => (
-      <Cell
-        value={value}
-        rowHeader={rowHeader}
-        tableMeta={tableMeta}
-        preview={preview}
-        onEdit={cellEdit}
-        delimiters={delimiters}
-      />
-    );
+    const { columnNames } = state;
+    const customBodyRender = (value, tableMeta, updateValue) => {
+      return (
+        <Cell
+          value={value}
+          rowHeader={rowHeader}
+          tableMeta={tableMeta}
+          preview={preview}
+          onEdit={cellEdit}
+          delimiters={delimiters}
+        />
+      )
+    };
     let _columns = columnNames.map((name, index) => ({
       name,
       searchable: true,
@@ -78,10 +80,10 @@ function DataTableComponent ({
         display: columnsShow.includes(name),
         filter: columnsFilter.includes(name),
         customBodyRender,
-        filterList: columnsFilterList[rowHeader ? index+1 : index],
+        filterList: columnsFilterList[rowHeader ? index + 1 : index],
         customFilterListOptions: {
           render: (value) => (
-            `${name} - ${value.split ? value.split(delimiters.cell)[0] : ''}`  
+            `${name} - ${value.split ? value.split(delimiters.cell)[0] : ''}`
           ),
           update: setColumnsFilterList,
         }
@@ -102,7 +104,7 @@ function DataTableComponent ({
       setColumns();
     };
   }, [state, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterList]);
-  
+
   let _data = [...data];
   if (columnNames && data && rowHeader) {
     _data = data.map(row => ['rowHeader', ...row]);

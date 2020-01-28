@@ -27,12 +27,12 @@ const Cell = ({
 }) => {
   const classes = useStyles();
   const [original, translation] = value.split('\t');
-  
+
   const handleEdit = (markdown) => {
-    let _columnIndex = !rowHeader ? columnIndex : columnIndex -1;
-    onEdit({rowIndex, columnIndex: _columnIndex, value: markdown});
+    let _columnIndex = !rowHeader ? columnIndex : columnIndex - 1;
+    onEdit({ rowIndex, columnIndex: _columnIndex, value: markdown });
   };
-  
+
   let component;
   if (value === 'rowHeader' && rowHeader) {
     const actionsMenu = (

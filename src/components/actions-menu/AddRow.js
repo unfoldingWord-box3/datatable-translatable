@@ -18,7 +18,7 @@ function AddRowMenu({
   rowIndex,
   columnNames,
   rowGenerate,
-  rowAdd,
+  rowAddBelow,
   button,
 }) {
   const [open, setOpen] = useState(false);
@@ -27,8 +27,8 @@ function AddRowMenu({
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleRowAdd = () => {
-      rowAdd({rowIndex, rowData: newRow});
-      handleClose();
+    rowAddBelow({ rowIndex, rowData: newRow });
+    handleClose();
   };
 
   let dialogComponent = <div />;
@@ -36,14 +36,14 @@ function AddRowMenu({
     const newRowComponent = columnNames.map((name, i) => {
       let text = '';
       if (!newRow) {
-        const _newRow = rowGenerate({rowIndex});
+        const _newRow = rowGenerate({ rowIndex });
         setNewRow(_newRow);
         return text;
       } else {
         text = (
           <DialogContentText key={name + i}>
             <strong>{name}:</strong>
-            { " " + newRow[i]}
+            {" " + newRow[i]}
           </DialogContentText>
         );
       }
@@ -64,7 +64,7 @@ function AddRowMenu({
             Columns with 50%+ unique values will not be duplicated.
           </DialogContentText>
           <Divider />
-          <br/>
+          <br />
           {newRowComponent}
         </DialogContent>
         <DialogActions>
@@ -90,7 +90,7 @@ function AddRowMenu({
 }
 
 AddRowMenu.propTypes = {
-  
+
 };
 
 export default AddRowMenu;
