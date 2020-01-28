@@ -1,6 +1,6 @@
 {
   "name": "datatable-translatable",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "license": "MIT",
   "description": "A Component Library for Translating DataTables using React and MaterialUI.",
   "homepage": "https://datatable-translatable.netlify.com/",
@@ -30,7 +30,7 @@
   ],
   "dependencies": {
     "deep-freeze": "^0.0.1",
-    "markdown-translatable": "0.9.1",
+    "markdown-translatable": "0.10.1",
     "mui-datatables": "^2.13.3"
   },
   "devDependencies": {
