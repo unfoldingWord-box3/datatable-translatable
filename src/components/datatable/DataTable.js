@@ -5,6 +5,14 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import { getMuiTheme } from './muiTheme';
 import { Cell, Toolbar } from '../../';
 
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Input,
+} from '@material-ui/core';
+
 import { DataTableContext, DataTableContextProvider } from './DataTable.context';
 
 function DataTableComponent({
@@ -24,7 +32,7 @@ function DataTableComponent({
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
   const [columnsFilterList, setColumnsFilterList] = useState([]);
   const { state, actions } = useContext(DataTableContext);
-  const { columnNames, data, changed } = state;
+  const { columnNames, data, changed, columnsFilterOptions } = state;
   const { cellEdit } = actions;
 
   const togglePreview = () => setPreview(!preview);
@@ -73,22 +81,68 @@ function DataTableComponent({
         />
       )
     };
-    let _columns = columnNames.map((name, index) => ({
-      name,
-      searchable: true,
-      options: {
-        display: columnsShow.includes(name),
-        filter: columnsFilter.includes(name),
-        customBodyRender,
-        filterList: columnsFilterList[rowHeader ? index + 1 : index],
-        customFilterListOptions: {
-          render: (value) => (
-            `${name} - ${value.split ? value.split(delimiters.cell)[0] : ''}`
-          ),
-          update: setColumnsFilterList,
+    let _columns = columnNames.map((name, index) => {
+      let filterOptions;
+      if (columnsFilter.includes(name)) {
+        filterOptions = {
+          logic: (value, filters) => {
+            const [source, target] = value.split(delimiters.cell);
+            let include = true;
+            if (filters.length) {
+              const matchAll = filters.includes('All');
+              const matchSource = filters.includes(source);
+              const matchTarget = filters.includes(target);
+              include = (matchAll || matchSource || matchTarget); 
+            }
+            return !include;
+          },
+          display: (filterList, onChange, filterIndex, column) => {
+            const offset = rowHeader ? 1 : 0;
+            const optionValues = columnsFilterOptions[filterIndex - offset] || [];
+            const handleChange = (event) => {
+              const value = event.target.value !== 'All' ? event.target.value : undefined;
+              if (value) onChange(value, filterIndex, column.name);
+            }
+            return (
+              <FormControl key={filterIndex} fullWidth>
+                <InputLabel htmlFor={column.name}>{column.label}</InputLabel>
+                <Select
+                  fullWidth
+                  value={filterList[filterIndex].length ? filterList[filterIndex].toString() : 'All'}
+                  name={column.name}
+                  onChange={handleChange}
+                  input={<Input name={column.name} id={column.name} />}>
+                  <MenuItem value={'All'} key={0}>
+                    {'All'}
+                  </MenuItem>
+                  {optionValues.map((filterValue, _filterIndex) => (
+                    <MenuItem value={filterValue} key={_filterIndex + 1}>
+                      {filterValue != null ? filterValue.toString() : ''}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            );
+          }
         }
-      },
-    }));
+      };
+      return {
+        name,
+        searchable: true,
+        options: {
+          display: columnsShow.includes(name),
+          filter: columnsFilter.includes(name),
+          filterType: columnsFilter.includes(name) ? 'custom' : undefined,
+          filterOptions,
+          customBodyRender,
+          filterList: columnsFilterList[rowHeader ? index + 1 : index],
+          customFilterListOptions: {
+            render: (value) => (`${name} - ${value}`),
+            update: setColumnsFilterList,
+          }
+        },
+      };
+    });
     if (rowHeader) {
       const headerColumn = {
         name: 'rowHeader',
@@ -103,7 +157,7 @@ function DataTableComponent({
     return () => {
       setColumns();
     };
-  }, [state, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterList]);
+  }, [state, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterList, columnsFilterOptions]);
 
   let _data = [...data];
   if (columnNames && data && rowHeader) {

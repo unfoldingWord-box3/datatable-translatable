@@ -1,7 +1,10 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import deepFreeze from 'deep-freeze';
 
-import { rowMoveAbove, rowMoveBelow, rowAddBelow, rowDelete, cellEdit, parseDataTable, correlateData, rowGenerate, stringify } from '../../core/datatable';
+import {
+  rowMoveAbove, rowMoveBelow, rowAddBelow, rowDelete, cellEdit,
+  parseDataTable, correlateData, rowGenerate, stringify, getColumnsFilterOptions,
+ } from '../../core/datatable';
 
 export const DataTableContext = React.createContext();
 
@@ -39,6 +42,7 @@ export function DataTableContextProvider({
   delimiters,
   config: {
     compositeKeyIndices,
+    columnsFilter,
   },
 }) {
   const [sourceRows, setSourceRows] = useState();
@@ -47,7 +51,16 @@ export function DataTableContextProvider({
   const [changed, setChanged] = useState(false);
   const [data, setData] = useState();
   const [columnNames, setColumnNames] = useState();
+  const [columnsFilterOptions, setColumnsFilterOptions] = useState([]);
 
+  // populate columnsFilterOptions when ready
+  useEffect(() => {
+    if (columnsFilter && columnNames && data) {
+      const columnIndices = columnsFilter.map(columnName => columnNames.indexOf(columnName));
+      const _columnsFilterOptions = getColumnsFilterOptions({columnIndices, data, delimiters});
+      setColumnsFilterOptions(_columnsFilterOptions);
+    }
+  }, [columnsFilter, columnNames, data, delimiters]);
   // parse sourceFile when updated
   useEffect(() => {
     if (delimiters) {
@@ -101,6 +114,7 @@ export function DataTableContextProvider({
     columnNames,
     data,
     changed,
+    columnsFilterOptions,
   });
 
   let component = <></>;

@@ -26,7 +26,7 @@ const Cell = ({
   delimiters,
 }) => {
   const classes = useStyles();
-  const [original, translation] = value.split('\t');
+  const [original, translation] = value.split(delimiters.cell);
 
   const handleEdit = (markdown) => {
     let _columnIndex = !rowHeader ? columnIndex : columnIndex - 1;

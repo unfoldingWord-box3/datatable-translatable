@@ -92,6 +92,22 @@ export const correlateData = ({ sourceRows, targetRows, compositeKeyIndices, del
   return data;
 };
 
+export const getColumnsFilterOptions = ({columnIndices, data, delimiters}) => {
+  const _columnsFilterOptions = [];
+  data.forEach(row => {
+    columnIndices.forEach(columnIndex => {
+      if (!_columnsFilterOptions[columnIndex]) _columnsFilterOptions[columnIndex] = [];
+      const values = row[columnIndex].split(delimiters.cell);
+      values.forEach(value => {
+        if (!_columnsFilterOptions[columnIndex].includes(value)) {
+          _columnsFilterOptions[columnIndex].push(value);
+        }
+      });
+    });
+  });
+  return _columnsFilterOptions;
+};
+
 export const parseDataTable = ({ table, delimiters }) => {
   const rows = parseRows({ table, delimiter: delimiters.row })
     .map(row =>
