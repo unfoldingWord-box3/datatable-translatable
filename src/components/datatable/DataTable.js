@@ -6,7 +6,7 @@ import { getMuiTheme } from './muiTheme';
 import { Cell, Toolbar } from '../../';
 
 import { DataTableContext, DataTableContextProvider } from './DataTable.context';
-
+let dataTableElement = null;
 function DataTableComponent({
   options,
   delimiters,
@@ -40,6 +40,12 @@ function DataTableComponent({
     setColumnsShow(_columnsShow);
   }, [columnsShow]);
 
+  const scrollToTop = useCallback(() => {
+    if (dataTableElement && dataTableElement.tableRef) {
+      window.scrollTo(0, dataTableElement.tableRef.offsetParent.offsetTop);
+    }
+  }, []);
+
   const _options = {
     responsive: 'scrollFullHeight',
     fixedHeaderOptions: { xAxis: false, yAxis: false },
@@ -48,9 +54,15 @@ function DataTableComponent({
     rowHover: false,
     rowsPerPage: rowsPerPage,
     rowsPerPageOptions: [25, 50, 100],
-    onChangeRowsPerPage: setRowsPerPage,
+    onChangeRowsPerPage: (rows) => {
+      setRowsPerPage(rows);
+      scrollToTop();
+    },
     onColumnViewChange: onColumnViewChange,
     onFilterChange: (columnName, filterList) => setColumnsFilterList(filterList),
+    onChangePage: () => {
+      scrollToTop()
+    },
     download: false,
     print: false,
     customToolbar: () => (
@@ -80,6 +92,7 @@ function DataTableComponent({
         display: columnsShow.includes(name),
         filter: columnsFilter.includes(name),
         customBodyRender,
+
         filterList: columnsFilterList[rowHeader ? index + 1 : index],
         customFilterListOptions: {
           render: (value) => (
@@ -112,7 +125,7 @@ function DataTableComponent({
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
-      <MUIDataTable columns={columns} data={_data} options={_options} {...props} />
+      <MUIDataTable ref={(element) => dataTableElement = element} columns={columns} data={_data} options={_options} {...props} />
     </MuiThemeProvider>
   );
 }
