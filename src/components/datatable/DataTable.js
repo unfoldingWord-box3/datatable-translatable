@@ -4,14 +4,7 @@ import MUIDataTable from "mui-datatables";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { getMuiTheme } from './muiTheme';
 import { Cell, Toolbar } from '../../';
-
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Input,
-} from '@material-ui/core';
+import { filterLogic, filterDisplay } from '../column-filter/helpers';
 
 import { DataTableContext, DataTableContextProvider } from './DataTable.context';
 
@@ -35,6 +28,16 @@ function DataTableComponent({
   const { columnNames, data, changed, columnsFilterOptions } = state;
   const { cellEdit } = actions;
 
+  const updateColumnsFilterList = (filterList, _, columnIndex) => {
+    let _filterList = filterList.slice(0);
+    _filterList[columnIndex] = [];
+    setColumnsFilterList(_filterList);
+  };
+
+  // useEffect(() => {
+  //   console.log(columnsFilterList);
+  // }, [columnsFilterList]);
+
   const togglePreview = () => setPreview(!preview);
   const _onSave = () => {
     const savedFile = actions.targetFileSave();
@@ -54,10 +57,10 @@ function DataTableComponent({
     resizableColumns: false,
     selectableRows: 'none',
     rowHover: false,
-    rowsPerPage: rowsPerPage,
+    rowsPerPage,
     rowsPerPageOptions: [25, 50, 100],
     onChangeRowsPerPage: setRowsPerPage,
-    onColumnViewChange: onColumnViewChange,
+    onColumnViewChange,
     onFilterChange: (columnName, filterList) => setColumnsFilterList(filterList),
     download: false,
     print: false,
@@ -82,50 +85,19 @@ function DataTableComponent({
       )
     };
     let _columns = columnNames.map((name, index) => {
+      const offset = rowHeader ? 1 : 0;
       let filterOptions;
       if (columnsFilter.includes(name)) {
         filterOptions = {
-          logic: (value, filters) => {
-            const [source, target] = value.split(delimiters.cell);
-            let include = true;
-            if (filters.length) {
-              const matchAll = filters.includes('All');
-              const matchSource = filters.includes(source);
-              const matchTarget = filters.includes(target);
-              include = (matchAll || matchSource || matchTarget); 
-            }
-            return !include;
-          },
-          display: (filterList, onChange, filterIndex, column) => {
-            const offset = rowHeader ? 1 : 0;
-            const optionValues = columnsFilterOptions[filterIndex - offset] || [];
-            const handleChange = (event) => {
-              const value = event.target.value !== 'All' ? event.target.value : undefined;
-              if (value) onChange(value, filterIndex, column.name);
-            }
-            return (
-              <FormControl key={filterIndex} fullWidth>
-                <InputLabel htmlFor={column.name}>{column.label}</InputLabel>
-                <Select
-                  fullWidth
-                  value={filterList[filterIndex].length ? filterList[filterIndex].toString() : 'All'}
-                  name={column.name}
-                  onChange={handleChange}
-                  input={<Input name={column.name} id={column.name} />}>
-                  <MenuItem value={'All'} key={0}>
-                    {'All'}
-                  </MenuItem>
-                  {optionValues.map((filterValue, _filterIndex) => (
-                    <MenuItem value={filterValue} key={_filterIndex + 1}>
-                      {filterValue != null ? filterValue.toString() : ''}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            );
-          }
-        }
+          logic: (value, filters) => filterLogic({value, filters, delimiters}),
+          display: (filterList, onChange, filterIndex, column) => (
+            filterDisplay({
+              filterList, onChange, column, offset, columnsFilterOptions, filterIndex,
+            })
+          ),
+        };
       };
+      const filterList = columnsFilterList[index + offset];
       return {
         name,
         searchable: true,
@@ -135,10 +107,10 @@ function DataTableComponent({
           filterType: columnsFilter.includes(name) ? 'custom' : undefined,
           filterOptions,
           customBodyRender,
-          filterList: columnsFilterList[rowHeader ? index + 1 : index],
+          filterList,
           customFilterListOptions: {
             render: (value) => (`${name} - ${value}`),
-            update: setColumnsFilterList,
+            update: updateColumnsFilterList,
           }
         },
       };
