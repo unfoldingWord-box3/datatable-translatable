@@ -15,7 +15,7 @@ function ColumnFilter({
   optionValues,
 }) {
   const handleChange = (event) => {
-    const value = event.target.value !== 'All' ? event.target.value : undefined;
+    const value = event.target.value;
     if (value) onChange(value, filterIndex, column.name);
   };
 
