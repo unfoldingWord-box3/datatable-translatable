@@ -24,20 +24,9 @@ function DataTableComponent({
   const [preview, setPreview] = useState(true);
   const [columns, setColumns] = useState([]);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
-  const [columnsFilterList, setColumnsFilterList] = useState([]);
   const { state, actions } = useContext(DataTableContext);
   const { columnNames, data, changed, columnsFilterOptions } = state;
   const { cellEdit } = actions;
-
-  const updateColumnsFilterList = (filterList, _, columnIndex) => {
-    let _filterList = filterList.slice(0);
-    _filterList[columnIndex] = [];
-    setColumnsFilterList(_filterList);
-  };
-
-  // useEffect(() => {
-  //   console.log(columnsFilterList);
-  // }, [columnsFilterList]);
 
   const togglePreview = () => setPreview(!preview);
   const _onSave = () => {
@@ -71,7 +60,6 @@ function DataTableComponent({
       scrollToTop();
     },
     onColumnViewChange,
-    onFilterChange: (columnName, filterList) => setColumnsFilterList(filterList),
     onChangePage: () => {
       scrollToTop()
     },
@@ -86,16 +74,8 @@ function DataTableComponent({
   useEffect(() => {
     const { columnNames } = state;
     const customBodyRender = (value, tableMeta, updateValue) => {
-      return (
-        <Cell
-          value={value}
-          rowHeader={rowHeader}
-          tableMeta={tableMeta}
-          preview={preview}
-          onEdit={cellEdit}
-          delimiters={delimiters}
-        />
-      )
+      const cellProps = { value, rowHeader, tableMeta, preview, onEdit: cellEdit, delimiters };
+      return (<Cell {...cellProps} />);
     };
 
     let _columns = columnNames.map((name, index) => {
@@ -111,7 +91,6 @@ function DataTableComponent({
           ),
         };
       };
-      const filterList = columnsFilterList[index + offset];
       return {
         name,
         searchable: true,
@@ -121,10 +100,8 @@ function DataTableComponent({
           filterType: columnsFilter.includes(name) ? 'custom' : undefined,
           filterOptions,
           customBodyRender,
-          filterList,
           customFilterListOptions: {
             render: (value) => (`${name} - ${value}`),
-            update: updateColumnsFilterList,
           }
         },
       };
@@ -143,7 +120,7 @@ function DataTableComponent({
     return () => {
       setColumns();
     };
-  }, [state, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterList, columnsFilterOptions]);
+  }, [state, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterOptions]);
 
   let _data = [...data];
   if (columnNames && data && rowHeader) {

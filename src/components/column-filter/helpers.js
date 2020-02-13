@@ -21,7 +21,5 @@ export const filterDisplay = ({
   filterIndex,
 }) => {
   const optionValues = columnsFilterOptions[filterIndex - offset] || [];
-  return ColumnFilter({
-    filterList, onChange, filterIndex, column, optionValues
-  });
+  return ColumnFilter({filterList, onChange, filterIndex, column, optionValues});
 };
