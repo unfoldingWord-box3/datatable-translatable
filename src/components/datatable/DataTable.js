@@ -15,6 +15,7 @@ function DataTableComponent({
     columnsShowDefault,
     rowHeader,
   },
+  onRef,
   onSave,
   ...props
 }) {
@@ -125,15 +126,18 @@ function DataTableComponent({
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
-      <MUIDataTable ref={(element) => dataTableElement = element} columns={columns} data={_data} options={_options} {...props} />
+      <MUIDataTable ref={(element) => {
+        onRef(element);
+        dataTableElement = element
+      }} columns={columns} data={_data} options={_options} {...props} />
     </MuiThemeProvider>
   );
 }
 
-function DataTable({ config, options, ...props }) {
+function DataTable({ config, options, onRef, ...props }) {
   return (
     <DataTableContextProvider config={config} {...props}>
-      <DataTableComponent config={config} options={options} {...props} />
+      <DataTableComponent config={config} options={options} onRef={onRef} {...props} />
     </DataTableContextProvider>
   );
 }
