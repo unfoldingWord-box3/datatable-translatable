@@ -143,6 +143,8 @@ function DataTable({ config, options, onRef, ...props }) {
 }
 
 DataTable.propTypes = {
+  /** Callback for datatable reference */
+  onRef: PropTypes.func,
   /** Original DataTable raw string or file contents */
   sourceFile: PropTypes.string.isRequired,
   /** Translated DataTable raw string or file contents */
