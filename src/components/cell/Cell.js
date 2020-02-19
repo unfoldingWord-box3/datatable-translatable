@@ -26,7 +26,7 @@ const Cell = ({
   delimiters,
 }) => {
   const classes = useStyles();
-  const [original, translation] = value.split('\t');
+  const [original, translation] = value.split(delimiters.cell);
 
   const handleEdit = (markdown) => {
     let _columnIndex = !rowHeader ? columnIndex : columnIndex - 1;
@@ -103,6 +103,20 @@ Cell.propTypes = {
   rowHeader: PropTypes.func,
   /** Set html preview mode, false renders raw markdown */
   preview: PropTypes.bool,
+  /** The delimiters for converting the file into rows/columns */
+  delimiters: PropTypes.shape({
+    /** Delimiters to convert a files into rows "\n" */
+    row: PropTypes.string.isRequired,
+    /** Delimiters to convert a row into cells "\t" */
+    cell: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
+Cell.defaultProps = {
+  delimiters: {
+    row: '\n',
+    cell: '\t'
+  }
 };
 
 export default Cell;

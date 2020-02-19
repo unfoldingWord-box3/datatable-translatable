@@ -4,9 +4,10 @@ import MUIDataTable from "mui-datatables";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { getMuiTheme } from './muiTheme';
 import { Cell, Toolbar } from '../../';
+import { filterLogic, filterDisplay } from '../column-filter/helpers';
 
 import { DataTableContext, DataTableContextProvider } from './DataTable.context';
-let dataTableElement = null;
+
 function DataTableComponent({
   options,
   delimiters,
@@ -18,13 +19,13 @@ function DataTableComponent({
   onSave,
   ...props
 }) {
+  const [dataTableElement, setDataTableElement] = useState();
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [preview, setPreview] = useState(true);
   const [columns, setColumns] = useState([]);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
-  const [columnsFilterList, setColumnsFilterList] = useState([]);
   const { state, actions } = useContext(DataTableContext);
-  const { columnNames, data, changed } = state;
+  const { columnNames, data, changed, columnsFilterOptions } = state;
   const { cellEdit } = actions;
 
   const togglePreview = () => setPreview(!preview);
@@ -44,7 +45,7 @@ function DataTableComponent({
     if (dataTableElement && dataTableElement.tableRef) {
       window.scrollTo(0, dataTableElement.tableRef.offsetParent.offsetTop);
     }
-  }, []);
+  }, [dataTableElement]);
 
   const _options = {
     responsive: 'scrollFullHeight',
@@ -52,14 +53,13 @@ function DataTableComponent({
     resizableColumns: false,
     selectableRows: 'none',
     rowHover: false,
-    rowsPerPage: rowsPerPage,
+    rowsPerPage,
     rowsPerPageOptions: [25, 50, 100],
     onChangeRowsPerPage: (rows) => {
       setRowsPerPage(rows);
       scrollToTop();
     },
-    onColumnViewChange: onColumnViewChange,
-    onFilterChange: (columnName, filterList) => setColumnsFilterList(filterList),
+    onColumnViewChange,
     onChangePage: () => {
       scrollToTop()
     },
@@ -74,34 +74,38 @@ function DataTableComponent({
   useEffect(() => {
     const { columnNames } = state;
     const customBodyRender = (value, tableMeta, updateValue) => {
-      return (
-        <Cell
-          value={value}
-          rowHeader={rowHeader}
-          tableMeta={tableMeta}
-          preview={preview}
-          onEdit={cellEdit}
-          delimiters={delimiters}
-        />
-      )
+      const cellProps = { value, rowHeader, tableMeta, preview, onEdit: cellEdit, delimiters };
+      return (<Cell {...cellProps} />);
     };
-    let _columns = columnNames.map((name, index) => ({
-      name,
-      searchable: true,
-      options: {
-        display: columnsShow.includes(name),
-        filter: columnsFilter.includes(name),
-        customBodyRender,
 
-        filterList: columnsFilterList[rowHeader ? index + 1 : index],
-        customFilterListOptions: {
-          render: (value) => (
-            `${name} - ${value.split ? value.split(delimiters.cell)[0] : ''}`
+    let _columns = columnNames.map((name, index) => {
+      const offset = rowHeader ? 1 : 0;
+      let filterOptions;
+      if (columnsFilter.includes(name)) {
+        filterOptions = {
+          logic: (value, filters) => filterLogic({value, filters, delimiters}),
+          display: (filterList, onChange, filterIndex, column) => (
+            filterDisplay({
+              filterList, onChange, column, offset, columnsFilterOptions, filterIndex,
+            })
           ),
-          update: setColumnsFilterList,
-        }
-      },
-    }));
+        };
+      };
+      return {
+        name,
+        searchable: true,
+        options: {
+          display: columnsShow.includes(name),
+          filter: columnsFilter.includes(name),
+          filterType: columnsFilter.includes(name) ? 'custom' : undefined,
+          filterOptions,
+          customBodyRender,
+          customFilterListOptions: {
+            render: (value) => (`${name} - ${value}`),
+          }
+        },
+      };
+    });
     if (rowHeader) {
       const headerColumn = {
         name: 'rowHeader',
@@ -116,7 +120,7 @@ function DataTableComponent({
     return () => {
       setColumns();
     };
-  }, [state, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterList]);
+  }, [state, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterOptions]);
 
   let _data = [...data];
   if (columnNames && data && rowHeader) {
@@ -125,7 +129,7 @@ function DataTableComponent({
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
-      <MUIDataTable ref={(element) => dataTableElement = element} columns={columns} data={_data} options={_options} {...props} />
+      <MUIDataTable ref={setDataTableElement} columns={columns} data={_data} options={_options} {...props} />
     </MuiThemeProvider>
   );
 }
