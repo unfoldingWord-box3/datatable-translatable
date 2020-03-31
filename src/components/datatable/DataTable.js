@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useContext, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import MUIDataTable from "mui-datatables";
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -17,9 +17,10 @@ function DataTableComponent({
     rowHeader,
   },
   onSave,
+  sourceFile,
   ...props
 }) {
-  const [dataTableElement, setDataTableElement] = useState();
+  const dataTableElement = useRef();
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [preview, setPreview] = useState(true);
   const [columns, setColumns] = useState([]);
@@ -27,6 +28,14 @@ function DataTableComponent({
   const { state, actions } = useContext(DataTableContext);
   const { columnNames, data, changed, columnsFilterOptions } = state;
   const { cellEdit } = actions;
+
+  const changePage = useCallback(function (page) {
+    dataTableElement.current.changePage(page);
+  }, [dataTableElement])
+
+  useEffect(() => {
+    changePage(0)
+  }, [changePage, sourceFile])
 
   const togglePreview = () => setPreview(!preview);
   const _onSave = () => {
@@ -42,8 +51,8 @@ function DataTableComponent({
   }, [columnsShow]);
 
   const scrollToTop = useCallback(() => {
-    if (dataTableElement && dataTableElement.tableRef) {
-      window.scrollTo(0, dataTableElement.tableRef.offsetParent.offsetTop);
+    if (dataTableElement && dataTableElement.current) {
+      window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
     }
   }, [dataTableElement]);
 
@@ -83,7 +92,7 @@ function DataTableComponent({
       let filterOptions;
       if (columnsFilter.includes(name)) {
         filterOptions = {
-          logic: (value, filters) => filterLogic({value, filters, delimiters}),
+          logic: (value, filters) => filterLogic({ value, filters, delimiters }),
           display: (filterList, onChange, filterIndex, column) => (
             filterDisplay({
               filterList, onChange, column, offset, columnsFilterOptions, filterIndex,
@@ -129,7 +138,7 @@ function DataTableComponent({
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
-      <MUIDataTable ref={setDataTableElement} columns={columns} data={_data} options={_options} {...props} />
+      <MUIDataTable ref={dataTableElement} columns={columns} data={_data} options={_options} {...props} />
     </MuiThemeProvider>
   );
 }
