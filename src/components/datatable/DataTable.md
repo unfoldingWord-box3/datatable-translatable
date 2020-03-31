@@ -1,11 +1,17 @@
 
 ```js
 import { Typography } from '@material-ui/core';
-import sourceFile from './mocks/en_tn_57-TIT';
+import _sourceFile from './mocks/en_tn_57-TIT';
 import targetFile from './mocks/tn_57-TIT';
 
 function Component() {
+  const [sourceFile, setSourceFile] = React.useState(_sourceFile);
   const [savedFile, setSavedFile] = React.useState(targetFile);
+
+  //Uncomment this to test a page change from a new source file
+  // setTimeout(() => {
+  //   setSourceFile(targetFile);
+  // }, 5000)
 
   const delimiters = { row: '\n', cell: '\t'};
 
