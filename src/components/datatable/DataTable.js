@@ -81,7 +81,6 @@ function DataTableComponent({
   };
 
   useEffect(() => {
-    const { columnNames } = state;
     const customBodyRender = (value, tableMeta, updateValue) => {
       const cellProps = { value, rowHeader, tableMeta, preview, onEdit: cellEdit, delimiters };
       return (<Cell {...cellProps} />);
@@ -129,7 +128,7 @@ function DataTableComponent({
     return () => {
       setColumns();
     };
-  }, [state, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterOptions]);
+  }, [columnNames, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterOptions]);
 
   let _data = [...data];
   if (columnNames && data && rowHeader) {
