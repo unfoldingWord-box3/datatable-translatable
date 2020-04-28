@@ -8,11 +8,13 @@ import {
   AddCircleOutline,
   RemoveCircleOutline,
 } from '@material-ui/icons';
+import { Tooltip } from '@material-ui/core';
 
 import AddRow from './AddRow';
 import DeleteRow from './DeleteRow';
 
 import { DataTableContext } from '../datatable/DataTable.context';
+import { localString } from '../../core/localStrings';
 
 function RowMenu({
   rowIndex,
@@ -37,21 +39,27 @@ function RowMenu({
   const disableMoveAbove = rowIndex === 0;
 
   const addRowButton = (
+    <Tooltip title={localString('AddRow')} arrow>
     <IconButton className={classes.button}>
       <AddCircleOutline />
     </IconButton>
+    </Tooltip>
   );
   const deleteRowButton = (
+    <Tooltip title={localString('DeleteRow')} arrow>
     <IconButton className={classes.button}>
       <RemoveCircleOutline />
     </IconButton>
+    </Tooltip>
   );
 
   return (
     <div className={classes.root}>
+      <Tooltip title={localString('MoveRowUp')} arrow>
       <IconButton className={classes.flipY} disabled={disableMoveAbove} onClick={handleMoveAbove}>
         <ArrowDropDownCircleOutlined />
       </IconButton>
+      </Tooltip>
       <AddRow
         rowData={rowData}
         rowIndex={rowIndex}
@@ -68,9 +76,11 @@ function RowMenu({
         delimiters={delimiters}
         button={deleteRowButton}
       />
+      <Tooltip title={localString('MoveRowDown')} arrow>
       <IconButton className={classes.button} onClick={handleMoveBelow}>
         <ArrowDropDownCircleOutlined />
       </IconButton>
+      </Tooltip>
     </div>
   );
 }
