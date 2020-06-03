@@ -157,3 +157,16 @@ const arrayMove = (array, oldIndex, newIndex) => {
   }
   return _array;
 };
+
+export const getRowElement = (generateRowId, rowData, position) => {
+  const id = generateRowId(rowData)
+  const currentHeader = document.getElementById(id);
+  const previousSiblingHeader = getSiblingByClassName(currentHeader, '.header-row', position);
+  return previousSiblingHeader;
+}
+
+function getSiblingByClassName(div, className, position) {
+  const allInstances = Array.from(document.querySelectorAll(className));
+  const indexOfCurrentElement = allInstances.indexOf(div);
+  return allInstances[indexOfCurrentElement + position];
+}

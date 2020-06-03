@@ -11,20 +11,21 @@ import useStyles from './styles';
 const inputFilters = [[/<br>/gi, '\n']];
 const outputFilters = [[/\n/gi, '<br>']];
 
-const Cell = ({
-  value,
-  tableMeta,
-  tableMeta: {
+const Cell = (props) => {
+ const { 
+   value,
+   tableMeta: {
     columnData,
     columnIndex,
     rowIndex,
     rowData,
   },
-  rowHeader,
-  preview,
-  onEdit,
-  delimiters,
-}) => {
+    rowHeader,
+    preview,
+    onEdit,
+    delimiters,
+    generateRowId = () => {}
+  } = props;
   const classes = useStyles();
   const [original, translation] = value.split(delimiters.cell);
 
@@ -37,6 +38,7 @@ const Cell = ({
   if (value === 'rowHeader' && rowHeader) {
     const actionsMenu = (
       <ActionsMenu
+        generateRowId={generateRowId}
         rowData={rowData}
         rowIndex={rowIndex}
         delimiters={delimiters}
@@ -86,9 +88,9 @@ const Cell = ({
       </div>
     );
   }
-
+  const containerClassName = value === 'rowHeader' ? 'header-row ' : 'cell ';
   return (
-    <div className={classes.root}>
+    <div className={containerClassName + classes.root} id={value === 'rowHeader' && rowHeader ? generateRowId(rowData) : null}>
       {component}
     </div>
   );

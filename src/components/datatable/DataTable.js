@@ -18,6 +18,7 @@ function DataTableComponent({
   },
   onSave,
   sourceFile,
+  generateRowId,
   ...props
 }) {
   const dataTableElement = useRef();
@@ -82,7 +83,7 @@ function DataTableComponent({
 
   useEffect(() => {
     const customBodyRender = (value, tableMeta, updateValue) => {
-      const cellProps = { value, rowHeader, tableMeta, preview, onEdit: cellEdit, delimiters };
+      const cellProps = { generateRowId, value, rowHeader, tableMeta, preview, onEdit: cellEdit, delimiters };
       return (<Cell {...cellProps} />);
     };
 
@@ -128,7 +129,7 @@ function DataTableComponent({
     return () => {
       setColumns();
     };
-  }, [columnNames, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterOptions]);
+  }, [columnNames, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterOptions, generateRowId]);
 
   let _data = [...data];
   if (columnNames && data && rowHeader) {

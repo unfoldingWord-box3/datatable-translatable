@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 // import PropTypes from 'prop-types';
+import $ from 'jquery';
 import {
   Button,
   Divider,
@@ -11,6 +12,7 @@ import {
 } from '@material-ui/core';
 import {
 } from '@material-ui/icons';
+import { getRowElement } from '../../core/datatable';
 
 function DeleteRowMenu({
   rowData,
@@ -19,14 +21,24 @@ function DeleteRowMenu({
   rowDelete,
   delimiters,
   button,
+  generateRowId,
 }) {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleRowDelete = () => {
-    rowDelete({rowIndex});
+    const rowAbove = getRowElement(generateRowId, rowData, -2);
+    rowDelete({ rowIndex });
     handleClose();
+    setTimeout(() => {
+      if (rowAbove) {
+        const top = $(rowAbove).offset().top;
+        $([document.body, document.documentElement]).animate({
+          scrollTop: top - 20
+        }, 200);
+      }
+    }, 1000)
   };
 
   const hasRowHeader = rowData[0] === "rowHeader";
@@ -44,29 +56,29 @@ function DeleteRowMenu({
     ))
     dialogComponent = (
       <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle id="alert-dialog-title">{"Delete this row?"}</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          There is no undo feature, this is permanent.
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Delete this row?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            There is no undo feature, this is permanent.
         </DialogContentText>
-        <Divider />
-        <br/>
-        {deleteRowComponent}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary" autoFocus>
-          Cancel
+          <Divider />
+          <br />
+          {deleteRowComponent}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Cancel
         </Button>
-        <Button onClick={handleRowDelete} color="secondary">
-          Delete
+          <Button onClick={handleRowDelete} color="secondary">
+            Delete
         </Button>
-      </DialogActions>
-    </Dialog>
+        </DialogActions>
+      </Dialog>
     );
   }
 
@@ -81,7 +93,7 @@ function DeleteRowMenu({
 }
 
 DeleteRowMenu.propTypes = {
-  
+
 };
 
 export default DeleteRowMenu;

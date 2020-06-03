@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import $ from 'jquery';
 // import PropTypes from 'prop-types';
 import {
   Button,
@@ -11,6 +12,7 @@ import {
 } from '@material-ui/core';
 import {
 } from '@material-ui/icons';
+import { getRowElement } from '../../core/datatable';
 
 function AddRowMenu({
   classes,
@@ -20,6 +22,7 @@ function AddRowMenu({
   rowGenerate,
   rowAddBelow,
   button,
+  generateRowId,
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
@@ -29,6 +32,14 @@ function AddRowMenu({
   const handleRowAdd = () => {
     rowAddBelow({ rowIndex, rowData: newRow });
     handleClose();
+    setTimeout(() => {
+      const rowBelow = getRowElement(generateRowId, rowData, 1);
+      if (rowBelow) {
+        $([document.documentElement, document.body]).animate({
+          scrollTop: $(rowBelow).offset().top - $(rowBelow).height() - 20
+      }, 500);
+      }
+    }, 200)
   };
 
   let dialogComponent = <div />;

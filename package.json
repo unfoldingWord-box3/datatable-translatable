@@ -30,6 +30,7 @@
   ],
   "dependencies": {
     "deep-freeze": "^0.0.1",
+    "jquery": "^3.5.1",
     "markdown-translatable": "0.10.1",
     "mui-datatables": "^2.14.0"
   },
