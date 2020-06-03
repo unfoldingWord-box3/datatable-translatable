@@ -28,7 +28,11 @@ function DeleteRowMenu({
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleRowDelete = () => {
-    const rowAbove = getRowElement(generateRowId, rowData, -2);
+    let position = -2;
+    if (rowIndex === 0) {
+      position = -1;
+    }
+    const rowAbove = getRowElement(generateRowId, rowData, position);
     rowDelete({ rowIndex });
     handleClose();
     setTimeout(() => {
