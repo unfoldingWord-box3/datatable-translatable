@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import $ from 'jquery';
 // import PropTypes from 'prop-types';
 import {
   Button,
@@ -12,7 +11,7 @@ import {
 } from '@material-ui/core';
 import {
 } from '@material-ui/icons';
-import { getRowElement } from '../../core/datatable';
+import { getRowElement, getOffset } from '../../core/datatable';
 
 function AddRowMenu({
   classes,
@@ -35,9 +34,9 @@ function AddRowMenu({
     setTimeout(() => {
       const rowBelow = getRowElement(generateRowId, rowData, 1);
       if (rowBelow) {
-        $([document.documentElement, document.body]).animate({
-          scrollTop: $(rowBelow).offset().top - $(rowBelow).height() - 20
-      }, 500);
+        const top = getOffset(rowBelow).top - rowBelow.offsetHeight
+        document.documentElement.scrollTop = top - 20;
+        document.body.scrollTop = top - 20;
       }
     }, 200)
   };

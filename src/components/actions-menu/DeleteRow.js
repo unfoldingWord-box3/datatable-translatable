@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 // import PropTypes from 'prop-types';
-import $ from 'jquery';
 import {
   Button,
   Divider,
@@ -12,7 +11,7 @@ import {
 } from '@material-ui/core';
 import {
 } from '@material-ui/icons';
-import { getRowElement } from '../../core/datatable';
+import { getRowElement, getOffset } from '../../core/datatable';
 
 function DeleteRowMenu({
   rowData,
@@ -37,10 +36,9 @@ function DeleteRowMenu({
     handleClose();
     setTimeout(() => {
       if (rowAbove) {
-        const top = $(rowAbove).offset().top;
-        $([document.body, document.documentElement]).animate({
-          scrollTop: top - 20
-        }, 200);
+        const top = getOffset(rowAbove).top;
+        document.documentElement.scrollTop = top - 20;
+        document.body.scrollTop = top - 20;
       }
     }, 1000)
   };
