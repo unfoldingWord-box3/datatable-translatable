@@ -20,6 +20,7 @@ function RowMenu({
   rowIndex,
   rowData,
   delimiters,
+  generateRowId,
 }) {
   const classes = useStyles();
   const { state, actions } = useContext(DataTableContext);
@@ -67,6 +68,7 @@ function RowMenu({
         rowGenerate={rowGenerate}
         rowAddBelow={rowAddBelow}
         button={addRowButton}
+        generateRowId={generateRowId}
       />
       <DeleteRow
         rowData={rowData}
@@ -75,6 +77,7 @@ function RowMenu({
         rowDelete={rowDelete}
         delimiters={delimiters}
         button={deleteRowButton}
+        generateRowId={generateRowId}
       />
       <Tooltip title={localString('MoveRowDown')} arrow>
       <IconButton className={classes.button} onClick={handleMoveBelow}>

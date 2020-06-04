@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import {
 } from '@material-ui/icons';
+import { getRowElement, getOffset } from '../../core/datatable';
 
 function AddRowMenu({
   classes,
@@ -20,6 +21,7 @@ function AddRowMenu({
   rowGenerate,
   rowAddBelow,
   button,
+  generateRowId,
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
@@ -29,6 +31,14 @@ function AddRowMenu({
   const handleRowAdd = () => {
     rowAddBelow({ rowIndex, rowData: newRow });
     handleClose();
+    setTimeout(() => {
+      const rowBelow = getRowElement(generateRowId, rowData, 1);
+      if (rowBelow) {
+        const top = getOffset(rowBelow).top - rowBelow.offsetHeight
+        document.documentElement.scrollTop = top - 20;
+        document.body.scrollTop = top - 20;
+      }
+    }, 200)
   };
 
   let dialogComponent = <div />;

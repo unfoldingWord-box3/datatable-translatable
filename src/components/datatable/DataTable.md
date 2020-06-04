@@ -54,6 +54,13 @@ function Component() {
     alert(_savedFile);
   };
 
+  const generateRowId = (rowData) => {
+    const [chapter] = rowData[2].split(delimiters.cell);
+    const [verse] = rowData[3].split(delimiters.cell);
+    const [uid] = rowData[4].split(delimiters.cell);
+    return `header-${chapter}-${verse}-${uid}`;
+  }
+
   return (
     <DataTable
       sourceFile={sourceFile}
@@ -62,6 +69,7 @@ function Component() {
       delimiters={delimiters}
       config={config}
       options={options}
+      generateRowId={generateRowId}
     />
   );
 }
