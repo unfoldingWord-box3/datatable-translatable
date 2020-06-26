@@ -7462,10 +7462,10 @@ markdown-to-jsx@^6.9.3:
     prop-types "^15.6.2"
     unquote "^1.1.0"
 
-markdown-translatable@0.10.1:
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/markdown-translatable/-/markdown-translatable-0.10.1.tgz#cf01c3a42ac579884873420964e3ecb433a4efc6"
-  integrity sha512-f1cAw3HYl1l7rllwGUXzyO7wNOrvGtd76B2yG6aphOEdTC2V+3RmG+J+9nodZz9N5IguQqPWd7yVf6HzkVeRvw==
+markdown-translatable@1.0.2-rc.1:
+  version "1.0.2-rc.1"
+  resolved "https://registry.yarnpkg.com/markdown-translatable/-/markdown-translatable-1.0.2-rc.1.tgz#23a6695974eeccf013b6b9a7df50a9e40355d87b"
+  integrity sha512-PoBAteBobLsCGcyby7S39bDz7b2JY2u8u+oxbTBsqVO8iT84C/h7KCTg/AbzXnBTY0jr7UXubNWru7bhrs8l7A==
   dependencies:
     deep-freeze "^0.0.1"
     md5 "^2.2.1"
