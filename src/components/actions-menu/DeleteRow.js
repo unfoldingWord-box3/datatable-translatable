@@ -40,7 +40,7 @@ function DeleteRowMenu({
         document.documentElement.scrollTop = top - 20;
         document.body.scrollTop = top - 20;
       }
-    }, 1000)
+    }, 200)
   };
 
   const hasRowHeader = rowData[0] === "rowHeader";

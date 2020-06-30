@@ -11,6 +11,7 @@
   "author": "Christopher Klapp <christopher@klapp.name>",
   "private": false,
   "scripts": {
+    "watch": "onchange 'src/**/*.js' -- yalc publish",
     "start": "styleguidist server",
     "build": "styleguidist build",
     "deploy": "sleep 2 && git push",
