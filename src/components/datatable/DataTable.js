@@ -5,11 +5,10 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import { getMuiTheme } from './muiTheme';
 import { Cell, Toolbar } from '../../';
 import { filterLogic, filterDisplay } from '../column-filter/helpers';
-
 import { DataTableContext, DataTableContextProvider } from './DataTable.context';
 
 function DataTableComponent({
-  options,
+  options = {},
   delimiters,
   config: {
     columnsFilter,
@@ -22,7 +21,8 @@ function DataTableComponent({
   ...props
 }) {
   const dataTableElement = useRef();
-  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [page, setPage] = useState(options.page || 0);
+  const [rowsPerPage, setRowsPerPage] = useState(options.rowsPerPage || 25);
   const [preview, setPreview] = useState(true);
   const [columns, setColumns] = useState([]);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
@@ -70,7 +70,8 @@ function DataTableComponent({
       scrollToTop();
     },
     onColumnViewChange,
-    onChangePage: () => {
+    onChangePage: (_page) => {
+      setPage(_page)
       scrollToTop()
     },
     download: false,
@@ -83,10 +84,11 @@ function DataTableComponent({
 
   useEffect(() => {
     const customBodyRender = (value, tableMeta, updateValue) => {
-      const cellProps = { generateRowId, value, rowHeader, tableMeta, preview, onEdit: cellEdit, delimiters };
-      return (<Cell {...cellProps} />);
+      const {tableState = {}} = tableMeta;
+      const { rowsPerPage, page } = tableState || {};
+      const cellProps = { generateRowId, value, tableMeta, rowHeader, preview, onEdit: cellEdit, delimiters, rowsPerPage, page };
+      return (<Cell {...cellProps}/>);
     };
-
     let _columns = columnNames.map((name, index) => {
       const offset = rowHeader ? 1 : 0;
       let filterOptions;
@@ -129,7 +131,7 @@ function DataTableComponent({
     return () => {
       setColumns();
     };
-  }, [columnNames, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterOptions, generateRowId]);
+  }, [columnNames, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterOptions, generateRowId, rowsPerPage, page]);
 
   let _data = [...data];
   if (columnNames && data && rowHeader) {

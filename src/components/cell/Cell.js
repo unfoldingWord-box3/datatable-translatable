@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo, useRef, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 
@@ -11,7 +11,7 @@ import useStyles from './styles';
 const inputFilters = [[/<br>/gi, '\n']];
 const outputFilters = [[/\n/gi, '<br>']];
 
-const Cell = (props) => {
+function Cell(props) {
  const { 
    value,
    tableMeta: {
@@ -24,14 +24,23 @@ const Cell = (props) => {
     preview,
     onEdit,
     delimiters,
-    generateRowId = () => {}
+    generateRowId = () => {},
   } = props;
+  //TODO: refactor to not use useRef but instead props directly
+  const latestProps = useRef(props);
+  useEffect(() => {
+    latestProps.current = props;
+  });
   const classes = useStyles();
   const [original, translation] = value.split(delimiters.cell);
-
-  const handleEdit = (markdown) => {
+  function handleEdit(markdown){
+    const {
+      rowsPerPage, 
+      page
+    } = latestProps.current;
     let _columnIndex = !rowHeader ? columnIndex : columnIndex - 1;
-    onEdit({ rowIndex, columnIndex: _columnIndex, value: markdown });
+    const rowIndexWithPage = rowsPerPage * page;
+    onEdit({ rowIndex:rowIndexWithPage, columnIndex: _columnIndex, value: markdown });
   };
 
   let component;
@@ -65,16 +74,6 @@ const Cell = (props) => {
         outputFilters={outputFilters}
       />
     );
-    const translationComponent = (
-      <BlockEditable
-        preview={preview}
-        markdown={translationValue}
-        editable={true}
-        inputFilters={inputFilters}
-        outputFilters={outputFilters}
-        onEdit={handleEdit}
-      />
-    );
     component = (
       <div className={classes.row}>
         <div className={classes.original}>
@@ -83,7 +82,14 @@ const Cell = (props) => {
         </div>
         <div className={classes.translation}>
           {subheading}
-          {translationComponent}
+          <BlockEditable
+            preview={preview}
+            markdown={translationValue}
+            editable={true}
+            inputFilters={inputFilters}
+            outputFilters={outputFilters}
+            onEdit={handleEdit}
+          />
         </div>
       </div>
     );
@@ -121,4 +127,4 @@ Cell.defaultProps = {
   }
 };
 
-export default Cell;
+export default memo(Cell, (prevProps, nextProps) => JSON.stringify(prevProps) === JSON.stringify(nextProps));
