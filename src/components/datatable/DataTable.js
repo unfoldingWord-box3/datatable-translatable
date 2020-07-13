@@ -84,9 +84,7 @@ function DataTableComponent({
 
   useEffect(() => {
     const customBodyRender = (value, tableMeta, updateValue) => {
-      const {tableState = {}} = tableMeta;
-      const { rowsPerPage, page } = tableState || {};
-      const cellProps = { generateRowId, value, tableMeta, rowHeader, preview, onEdit: cellEdit, delimiters, rowsPerPage, page };
+      const cellProps = { generateRowId, value, tableMeta, rowHeader, preview, onEdit: cellEdit, delimiters, };
       return (<Cell {...cellProps}/>);
     };
     let _columns = columnNames.map((name, index) => {
