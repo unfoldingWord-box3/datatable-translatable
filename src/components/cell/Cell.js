@@ -39,7 +39,7 @@ function Cell(props) {
       page
     } = latestProps.current;
     let _columnIndex = !rowHeader ? columnIndex : columnIndex - 1;
-    const rowIndexWithPage = rowsPerPage * page;
+    const rowIndexWithPage = (rowsPerPage * page) + rowIndex;
     onEdit({ rowIndex:rowIndexWithPage, columnIndex: _columnIndex, value: markdown });
   };
 
