@@ -81,14 +81,14 @@ function DataTableComponent({
     ),
     ...options
   };
-
+  const customBodyRender = useCallback((value, tableMeta, updateValue) => {
+    const {tableState = {}} = tableMeta;
+    const { rowsPerPage, page } = tableState || {};
+    const cellProps = { generateRowId, value, tableMeta, rowHeader, onEdit: cellEdit, delimiters, rowsPerPage, page, preview };
+    return (<Cell {...cellProps}/>);
+  }, [cellEdit, delimiters, generateRowId, preview, rowHeader]);
   useEffect(() => {
-    const customBodyRender = (value, tableMeta, updateValue) => {
-      const {tableState = {}} = tableMeta;
-      const { rowsPerPage, page } = tableState || {};
-      const cellProps = { generateRowId, value, tableMeta, rowHeader, preview, onEdit: cellEdit, delimiters, rowsPerPage, page };
-      return (<Cell {...cellProps}/>);
-    };
+    debugger;
     let _columns = columnNames.map((name, index) => {
       const offset = rowHeader ? 1 : 0;
       let filterOptions;
@@ -131,7 +131,8 @@ function DataTableComponent({
     return () => {
       setColumns();
     };
-  }, [columnNames, cellEdit, delimiters, preview, rowHeader, columnsFilter, columnsShow, columnsFilterOptions, generateRowId, rowsPerPage, page]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [columnNames, cellEdit, delimiters, rowHeader, columnsFilter, columnsShow, columnsFilterOptions, generateRowId, rowsPerPage, page]);
 
   let _data = [...data];
   if (columnNames && data && rowHeader) {
