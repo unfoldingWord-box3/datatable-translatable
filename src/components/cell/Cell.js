@@ -26,21 +26,11 @@ function Cell(props) {
     delimiters,
     generateRowId = () => {},
   } = props;
-  //TODO: refactor to not use useRef but instead props directly
-  const latestProps = useRef(props);
-  useEffect(() => {
-    latestProps.current = props;
-  });
   const classes = useStyles();
   const [original, translation] = value.split(delimiters.cell);
   function handleEdit(markdown){
-    const {
-      rowsPerPage, 
-      page
-    } = latestProps.current;
     let _columnIndex = !rowHeader ? columnIndex : columnIndex - 1;
-    const rowIndexWithPage = (rowsPerPage * page) + rowIndex;
-    onEdit({ rowIndex:rowIndexWithPage, columnIndex: _columnIndex, value: markdown });
+    onEdit({ rowIndex, columnIndex: _columnIndex, value: markdown });
   };
 
   let component;
@@ -94,7 +84,7 @@ function Cell(props) {
       </div>
     );
   }
-  const containerClassName = value === 'rowHeader' ? 'header-row ' : 'cell ';
+  const containerClassName = value === 'rowHeader' ? 'header-row ' : `cell-${rowIndex}-${columnIndex} `;
   return (
     <div className={containerClassName + classes.root} id={value === 'rowHeader' && rowHeader ? generateRowId(rowData) : null}>
       {component}
