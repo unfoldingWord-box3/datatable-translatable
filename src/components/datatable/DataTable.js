@@ -1,4 +1,5 @@
-import React, { useState, useContext, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useContext, useRef, useCallback } from 'react';
+import useEffect from 'use-deep-compare-effect'
 import PropTypes from 'prop-types';
 import MUIDataTable from "mui-datatables";
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -21,7 +22,6 @@ function DataTableComponent({
   ...props
 }) {
   const dataTableElement = useRef();
-  const [page, setPage] = useState(options.page || 0);
   const [rowsPerPage, setRowsPerPage] = useState(options.rowsPerPage || 25);
   const [preview, setPreview] = useState(true);
   const [columns, setColumns] = useState([]);
@@ -71,8 +71,7 @@ function DataTableComponent({
     },
     onColumnViewChange,
     onChangePage: (_page) => {
-      setPage(_page)
-      scrollToTop()
+      scrollToTop();
     },
     download: false,
     print: false,
@@ -81,14 +80,17 @@ function DataTableComponent({
     ),
     ...options
   };
-  const customBodyRender = useCallback((value, tableMeta, updateValue) => {
+  const customBodyRender = useCallback((value, tableMeta, updateValue, ) => {
     const {tableState = {}} = tableMeta;
     const { rowsPerPage, page } = tableState || {};
     const cellProps = { generateRowId, value, tableMeta, rowHeader, onEdit: cellEdit, delimiters, rowsPerPage, page, preview };
     return (<Cell {...cellProps}/>);
   }, [cellEdit, delimiters, generateRowId, preview, rowHeader]);
-  useEffect(() => {
-    debugger;
+
+  const makeColumns = useCallback(({
+    columnNames, columnsFilter, columnsFilterOptions, 
+    columnsShow, customBodyRender , delimiters, rowHeader
+  }) => {
     let _columns = columnNames.map((name, index) => {
       const offset = rowHeader ? 1 : 0;
       let filterOptions;
@@ -127,12 +129,15 @@ function DataTableComponent({
       };
       _columns.unshift(headerColumn);
     }
+    return _columns;
+  }, [])
+  useEffect(() => {
+    const _columns = makeColumns({    
+      columnNames, columnsFilter, columnsFilterOptions, 
+      columnsShow, customBodyRender, delimiters, rowHeader
+    });
     setColumns(_columns);
-    return () => {
-      setColumns();
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [columnNames, cellEdit, delimiters, rowHeader, columnsFilter, columnsShow, columnsFilterOptions, generateRowId, rowsPerPage, page]);
+  }, [columnNames, delimiters, rowHeader, columnsFilter, columnsShow, columnsFilterOptions, customBodyRender, makeColumns]);
 
   let _data = [...data];
   if (columnNames && data && rowHeader) {
