@@ -80,18 +80,20 @@ function DataTableComponent({
     ),
     ...options
   };
-  const customBodyRender = useCallback((value, tableMeta, updateValue, ) => {
-    const {tableState = {}} = tableMeta;
+  const customBodyRender = useCallback((value, tableMeta, updateValue,) => {
+    const { tableState = {} } = tableMeta;
     const { rowsPerPage, page } = tableState || {};
     const cellProps = { generateRowId, value, tableMeta, rowHeader, onEdit: cellEdit, delimiters, rowsPerPage, page, preview };
-    return (<Cell {...cellProps}/>);
+    return (<Cell {...cellProps} />);
   }, [cellEdit, delimiters, generateRowId, preview, rowHeader]);
 
   const makeColumns = useCallback(({
-    columnNames, columnsFilter, columnsFilterOptions, 
-    columnsShow, customBodyRender , delimiters, rowHeader
+    columnNames, columnsFilter, columnsFilterOptions,
+    columnsShow, customBodyRender, delimiters, rowHeader
   }) => {
-    let _columns = columnNames.map((name, index) => {
+    let _columns = columnNames.map((_name, index) => {
+      const name = _name?.trim();
+
       const offset = rowHeader ? 1 : 0;
       let filterOptions;
       if (columnsFilter.includes(name)) {
@@ -132,8 +134,8 @@ function DataTableComponent({
     return _columns;
   }, [])
   useEffect(() => {
-    const _columns = makeColumns({    
-      columnNames, columnsFilter, columnsFilterOptions, 
+    const _columns = makeColumns({
+      columnNames, columnsFilter, columnsFilterOptions,
       columnsShow, customBodyRender, delimiters, rowHeader
     });
     setColumns(_columns);
