@@ -27,7 +27,10 @@ function AddRowMenu({
   const [newRow, setNewRow] = useState();
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setNewRow();
+  };
   const handleRowAdd = () => {
     rowAddBelow({ rowIndex, rowData: newRow });
     handleClose();
@@ -38,7 +41,7 @@ function AddRowMenu({
         document.documentElement.scrollTop = top - 20;
         document.body.scrollTop = top - 20;
       }
-    }, 200)
+    }, 200);
   };
 
   let dialogComponent = <div />;
