@@ -1,6 +1,7 @@
-import React, {memo, useRef, useEffect} from 'react';
+import React, {memo} from 'react';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
+import isEqual from 'lodash.isequal';
 
 import { BlockEditable } from 'markdown-translatable';
 
@@ -117,4 +118,6 @@ Cell.defaultProps = {
   }
 };
 
-export default memo(Cell, (prevProps, nextProps) => JSON.stringify(prevProps) === JSON.stringify(nextProps));
+const shouldRender = (prevProps, nextProps) => isEqual(prevProps.value, nextProps.value);
+
+export default memo(Cell, shouldRender);
