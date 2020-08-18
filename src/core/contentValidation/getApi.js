@@ -131,7 +131,7 @@ async function fetchFileFromServer({ username, repository, path, branch = 'maste
 
 // This is the function that we call the most from the outside
 export async function getFile({ username, repository, path, branch }) {
-  // console.log(`getFile(${username}, ${repository}, ${path}, ${branch})…`);
+  console.log(`getFile(${username}, ${repository}, ${path}, ${branch})…`);
   let file;
   file = await getFileFromZip({ username, repository, path, branch });
   if (!file) {
@@ -269,18 +269,18 @@ export async function getFilelistFromZip({ username, repository, branch, optiona
 
 
 async function getFileFromZip({ username, repository, path, branch }) {
-  // console.log(`getFileFromZip(${username}, ${repository}, ${path}, ${branch})…`);
+  console.log(`getFileFromZip(${username}, ${repository}, ${path}, ${branch})…`);
   let file;
   const uri = zipUri({ username, repository, branch });
   const zipBlob = await zipStore.getItem(uri);
   try {
     if (zipBlob) {
-      // console.log(`  Got zipBlob for uri=${uri}`);
+      console.log(`  Got zipBlob for uri=${uri}`);
       const zip = await JSZip.loadAsync(zipBlob);
       const zipPath = Path.join(repository.toLowerCase(), path);
-      // console.log(`  zipPath=${zipPath}`);
+      console.log(`  zipPath=${zipPath}`);
       file = await zip.file(zipPath).async('string');
-      // console.log(`    Got zipBlob ${file.length} bytes`);
+      console.log(`    Got zipBlob ${file.length} bytes`);
     }
     // else console.log("  No zipBlob");
   } catch (error) {

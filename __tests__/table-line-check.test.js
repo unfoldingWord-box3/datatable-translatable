@@ -1,6 +1,9 @@
 /* eslint-env jest */
 
+import fs from 'fs-extra';
+import Path from "path";
 import checkTN_TSVDataRow from '../src/core/contentValidation/table-line-check';
+import { getFile } from '../src/core/contentValidation/getApi';
 
 // Empty, Header, Nonsense, Good, Bad, Very bad, and Actual line samples
 const lineE = "";
@@ -23,31 +26,53 @@ const lineA4 = "GEN\t1\t3\td7qw\tfigs-imperative\t\t0\tLet there be light\tThis 
 const lineA5 = "GEN\t1\t5\tjc2d\tfigs-merism\t\t0\tevening and morning\tThis refers to the whole day. The writer speaks of the whole day as if it were these two parts. In the Jewish culture, a day begins when the sun sets. (See: [[rc://en/ta/man/translate/figs-merism]])";
 const lineA6 = "GEN\t1\t6\turb3\tfigs-imperative\t\t0\tLet there be an expanse…let it divide\tThese are commands. By commanding that the expanse should exist and that it divide the waters, God made it exist and divide the waters. (See: [[rc://en/ta/man/translate/figs-imperative]])";
 const lineA7 = "GEN\t1\t8\tss9r\tfigs-merism\t\t0\tevening and morning\tThis refers to the whole day. The writer speaks of the whole day as if it were these two parts. In the Jewish culture, a day begins when the sun sets. See how you translated this in [Genesis 1:5](../01/05.md). (See: [[rc://en/ta/man/translate/figs-merism]])";
-// You can choose any of the above lines here
-//  (to demonstrate differing results)
 
-// const rawResults = checkTN_TSVDataRow(chosenLine, 'GEN','1','2', 'that was supplied');
-// if (!rawResults.successList || !rawResults.successList.length)
-//   rawResults.successList = ["Done TSV table line checks"];
+// This is the function that we call the most from the outside
+export async function getFileMock({ username, repository, path, branch }) {
+  let data = null;
+  try {
+    const mockPath = Path.join('./__tests__/fixtures',path);
+    console.log(`getFileMock(${path})`);
+    if (fs.existsSync(mockPath)) {
+      data = fs.readFileSync(mockPath).toString();
+      console.log('getFileMock() data', data.substring(0, 100));
+    } else {
+      console.log(`not found: ${mockPath}`);
+    }
+  } catch (e) {
+    console.error('getFileMock() fail', e);
+  }
+  return data;
+}
 
 describe('checkTN_TSVDataRow()', () => {
+
   it('should fail lots of checks', async () => {
     const chosenLine = "GIN\t200\t9\tW-3r5\tLaugh\t\t17\tBad ellipse...\t<br>Boo hoo,,<br> lost my shoe !";
-    const optionalCheckingOptions = { originalLanguageVerseText: 'וַ⁠יִּקְרָ֧א אֱלֹהִ֛ים לָֽ⁠רָקִ֖יעַ שָׁמָ֑יִם וַֽ⁠יְהִי־ עֶ֥רֶב וַֽ⁠יְהִי־ בֹ֖קֶר י֥וֹם שֵׁנִֽי׃פ'};
+    const optionalCheckingOptions = {
+      originalLanguageVerseText: 'וַ⁠יִּקְרָ֧א אֱלֹהִ֛ים לָֽ⁠רָקִ֖יעַ שָׁמָ֑יִם וַֽ⁠יְהִי־ עֶ֥רֶב וַֽ⁠יְהִי־ בֹ֖קֶר י֥וֹם שֵׁנִֽי׃פ',
+      getFile: getFileMock
+    };
     const rawResults = await checkTN_TSVDataRow(chosenLine, 'GEN','1','8', 'that was supplied', optionalCheckingOptions);
     expect(rawResults).toMatchSnapshot();
   });
 
   it('should succeed', async () => {
-    const chosenLine = "GEN\t1\t9\tzu6f\tfigs-activepassive\tי֥וֹם\t0\tLet the waters…be gathered\tThis can be translated with an active verb. This is a command. By commanding that the waters gather together, God made them gather together. Alternate translation: “Let the waters…gather” or “Let the waters…come together” (See: [[rc://en/ta/man/translate/figs-activepassive]] and [[rc://en/ta/man/translate/figs-imperative]])";
-    const optionalCheckingOptions = { originalLanguageVerseText: 'וַ⁠יִּקְרָ֧א אֱלֹהִ֛ים לָֽ⁠רָקִ֖יעַ שָׁמָ֑יִם וַֽ⁠יְהִי־ עֶ֥רֶב וַֽ⁠יְהִי־ בֹ֖קֶר י֥וֹם שֵׁנִֽי׃פ'};
+    const chosenLine = "GEN\t1\t9\tzu6f\tfigs-activepassive\tי֥וֹם\t1\tLet the waters…be gathered\tThis can be translated with an active verb. This is a command. By commanding that the waters gather together, God made them gather together. Alternate translation: “Let the waters…gather” or “Let the waters…come together” (See: [[rc://en/ta/man/translate/figs-activepassive]] and [[rc://en/ta/man/translate/figs-imperative]])";
+    const optionalCheckingOptions = {
+      originalLanguageVerseText: 'וַ⁠יִּקְרָ֧א אֱלֹהִ֛ים לָֽ⁠רָקִ֖יעַ שָׁמָ֑יִם וַֽ⁠יְהִי־ עֶ֥רֶב וַֽ⁠יְהִי־ בֹ֖קֶר י֥וֹם שֵׁנִֽי׃פ',
+      getFile: getFileMock
+    };
     const rawResults = await checkTN_TSVDataRow(chosenLine, 'GEN','1','8', 'that was supplied', optionalCheckingOptions);
     expect(rawResults.noticeList.length).toEqual(0);
   });
 
   it('should fail ', async () => {
     const chosenLine = "GEN\t1\t9\tzu6f\tfigs-activepassive\tי֥וֹם\t0\tLet the waters…be gathered\tThis can be translated with an active verb. This is a command. By commanding that the waters gather together, God made them gather together. Alternate translation: “Let the waters…gather” or “Let the waters…come together” (See: [[rc://en/ta/man/translate/figs-activepassive]] and [[rc://en/ta/man/translate/figs-imperative]])";
-    const optionalCheckingOptions = { originalLanguageVerseText: 'וַ⁠יִּקְרָ֧א אֱלֹהִ֛ים לָֽ⁠רָקִ֖יעַ שָׁמָ֑יִם וַֽ⁠יְהִי־ עֶ֥רֶב וַֽ⁠יְהִי־ בֹ֖קֶר י֥וֹם שֵׁנִֽי׃פ'};
+    const optionalCheckingOptions = {
+      originalLanguageVerseText: 'וַ⁠יִּקְרָ֧א אֱלֹהִ֛ים לָֽ⁠רָקִ֖יעַ שָׁמָ֑יִם וַֽ⁠יְהִי־ עֶ֥רֶב וַֽ⁠יְהִי־ בֹ֖קֶר י֥וֹם שֵׁנִֽי׃פ',
+      getFile: getFileMock
+    };
     const rawResults = await checkTN_TSVDataRow(chosenLine, 'GEN','1','8', 'that was supplied', optionalCheckingOptions);
     expect(rawResults).toMatchSnapshot();
   });

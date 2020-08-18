@@ -12,6 +12,7 @@ module.exports = {
   },
   webpackConfig: require('react-scripts/config/webpack.config')('development'),
   // serverPort: 3000,
+  devtool: 'source-map',
   styles,
   theme,
   getComponentPathLine: (componentPath) => {
