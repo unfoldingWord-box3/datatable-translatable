@@ -118,6 +118,11 @@ Cell.defaultProps = {
   }
 };
 
-const shouldRender = (prevProps, nextProps) => isEqual(prevProps.value, nextProps.value);
 
-export default memo(Cell, shouldRender);
+const shouldReRender = (prevProps, nextProps) => 
+isEqual(prevProps.tableMeta, nextProps.tableMeta) && 
+isEqual(prevProps.preview, nextProps.preview) && 
+isEqual(prevProps.value, nextProps.value) && 
+isEqual(prevProps.page, nextProps.page);
+
+export default memo(Cell, shouldReRender);
