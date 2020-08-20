@@ -7963,10 +7963,10 @@ ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-mui-datatables@3.3.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/mui-datatables/-/mui-datatables-3.3.1.tgz#27bb9ea461eab26eb93dda85d1eb658542422851"
-  integrity sha512-R23quz9FRknkmOHbjg7w6sXmNh8hQCe6PfV3+epMsiWKSZhV8FPy9UOIq1owMas1odpQxRpVWP6MwWR+GZFJog==
+mui-datatables@3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/mui-datatables/-/mui-datatables-3.4.0.tgz#ca782a89fae73a5412b8434c8be29863bbac1ad0"
+  integrity sha512-ccJMIsDOuvxNC6vT5HgGTUYBE2AROoz9twQlZnWrL96ZTn7LzeY1f+YXkw5sA/ath7TPRTaGIBY5TAsJ2+cC/Q==
   dependencies:
     clsx "^1.1.1"
     lodash.assignwith "^4.2.0"
