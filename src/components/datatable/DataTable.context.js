@@ -1,37 +1,46 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, {
+  useState, useReducer, useEffect,
+} from 'react';
 import deepFreeze from 'deep-freeze';
 
 import {
   rowMoveAbove, rowMoveBelow, rowAddBelow, rowDelete, cellEdit,
   parseDataTable, correlateData, rowGenerate, stringify, getColumnsFilterOptions,
- } from '../../core/datatable';
+} from '../../core/datatable';
 
 export const DataTableContext = React.createContext();
 
 const rowsReducer = (rows, action) => {
   let _rows;
   const { type, value } = action;
-  const { rowIndex, rowData, columnIndex } = value;
+  const {
+    rowIndex, rowData, columnIndex,
+  } = value;
+
   switch (type) {
-    case 'SET_ROWS':
-      return deepFreeze(value.rows);
-    case 'ROW_MOVE_ABOVE':
-      _rows = rowMoveAbove({ rows, rowIndex });
-      return deepFreeze(_rows);
-    case 'ROW_MOVE_BELOW':
-      _rows = rowMoveBelow({ rows, rowIndex });
-      return deepFreeze(_rows);
-    case 'ROW_ADD_BELOW':
-      _rows = rowAddBelow({ rows, rowIndex, rowData });
-      return deepFreeze(_rows);
-    case 'ROW_DELETE':
-      _rows = rowDelete({ rows, rowIndex });
-      return deepFreeze(_rows);
-    case 'CELL_EDIT':
-      _rows = cellEdit({ rows, rowIndex, columnIndex, value: value.value });
-      return deepFreeze(_rows);
-    default:
-      throw new Error(`Unsupported action type: ${action.type}`);
+  case 'SET_ROWS':
+    return deepFreeze(value.rows);
+  case 'ROW_MOVE_ABOVE':
+    _rows = rowMoveAbove({ rows, rowIndex });
+    return deepFreeze(_rows);
+  case 'ROW_MOVE_BELOW':
+    _rows = rowMoveBelow({ rows, rowIndex });
+    return deepFreeze(_rows);
+  case 'ROW_ADD_BELOW':
+    _rows = rowAddBelow({
+      rows, rowIndex, rowData,
+    });
+    return deepFreeze(_rows);
+  case 'ROW_DELETE':
+    _rows = rowDelete({ rows, rowIndex });
+    return deepFreeze(_rows);
+  // case 'CELL_EDIT':
+  //   _rows = cellEdit({
+  //     rows, rowIndex, columnIndex, value: value.value,
+  //   });
+  //   return deepFreeze(_rows);
+  default:
+    throw new Error(`Unsupported action type: ${action.type}`);
   };
 };
 
@@ -57,7 +66,9 @@ export function DataTableContextProvider({
   useEffect(() => {
     if (columnsFilter && columnNames && data) {
       const columnIndices = columnsFilter.map(columnName => columnNames.indexOf(columnName));
-      const _columnsFilterOptions = getColumnsFilterOptions({columnIndices, data, delimiters});
+      const _columnsFilterOptions = getColumnsFilterOptions({
+        columnIndices, data, delimiters,
+      });
       setColumnsFilterOptions(_columnsFilterOptions);
     }
   }, [columnsFilter, columnNames, data, delimiters]);
@@ -80,7 +91,9 @@ export function DataTableContextProvider({
   // correlate data by compositeKeyIndices when sourceRows or targetRows updated
   useEffect(() => {
     if (sourceRows && targetRows) {
-      const _data = correlateData({ sourceRows, targetRows, compositeKeyIndices, delimiters });
+      const _data = correlateData({
+        sourceRows, targetRows, compositeKeyIndices, delimiters,
+      });
       setData(_data);
     }
   }, [sourceRows, targetRows, compositeKeyIndices, delimiters]);
@@ -102,12 +115,22 @@ export function DataTableContextProvider({
       targetRowsDispatch({ type: 'ROW_DELETE', value: { rowIndex } });
       setChanged(true);
     },
-    cellEdit: ({ rowIndex, columnIndex, value }) => {
-      targetRowsDispatch({ type: 'CELL_EDIT', value: { rowIndex, columnIndex, value } });
-      setChanged(true);
+    cellEdit: ({
+      rowIndex, columnIndex, value,
+    }) => {
+      // targetRowsDispatch({
+      //   type: 'CELL_EDIT', value: {
+      //     rowIndex, columnIndex, value,
+      //   },
+      // });
+      // setChanged(true);
     },
-    rowGenerate: ({ rowIndex }) => rowGenerate({ rows: targetRows, columnNames, rowIndex }),
-    targetFileSave: () => stringify({ columnNames, rows: targetRows, delimiters }),
+    rowGenerate: ({ rowIndex }) => rowGenerate({
+      rows: targetRows, columnNames, rowIndex,
+    }),
+    targetFileSave: () => stringify({
+      columnNames, rows: targetRows, delimiters,
+    }),
   };
 
   const state = deepFreeze({
@@ -118,6 +141,7 @@ export function DataTableContextProvider({
   });
 
   let component = <></>;
+
   if (columnNames && data) {
     component = (
       <DataTableContext.Provider value={{ state, actions }}>

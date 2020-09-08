@@ -1,12 +1,14 @@
-import React, { useState, useContext, useRef, useCallback } from 'react';
-import useEffect from 'use-deep-compare-effect'
+import React, {
+  useState, useContext, useRef, useCallback,
+} from 'react';
+import useEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
-import MUIDataTable from "mui-datatables";
+import MUIDataTable from 'mui-datatables';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import { Cell, Toolbar } from '../..';
 import { getMuiTheme } from './muiTheme';
-import { Cell, Toolbar } from '../../';
-import { filterLogic, filterDisplay } from '../column-filter/helpers';
 import { DataTableContext, DataTableContextProvider } from './DataTable.context';
+import { getColumns, getData } from './helpers';
 
 function DataTableComponent({
   options = {},
@@ -14,31 +16,39 @@ function DataTableComponent({
   config: {
     columnsFilter,
     columnsShowDefault,
-    rowHeader,
+    rowHeader:_rowHeader,
   },
   onSave,
   sourceFile,
-  generateRowId,
+  generateRowId: _generateRowId,
   ...props
 }) {
   const dataTableElement = useRef();
   const [rowsPerPage, setRowsPerPage] = useState(options.rowsPerPage || 25);
   const [preview, setPreview] = useState(true);
-  const [columns, setColumns] = useState([]);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
   const { state, actions } = useContext(DataTableContext);
-  const { columnNames, data, changed, columnsFilterOptions } = state;
-  const { cellEdit } = actions;
+  const {
+    columnNames, data, changed, columnsFilterOptions,
+  } = state;
+  const { cellEdit:_cellEdit } = actions;
+
+  const rowHeader = useCallback(_rowHeader, []);
+
+  const generateRowId = useCallback(_generateRowId, []);
+
+  const cellEdit = useCallback(_cellEdit, []);
 
   const changePage = useCallback(function (page) {
     dataTableElement.current.changePage(page);
-  }, [dataTableElement])
+  }, [dataTableElement]);
 
   useEffect(() => {
-    changePage(0)
-  }, [changePage, sourceFile])
+    changePage(0);
+  }, [changePage, sourceFile]);
 
   const togglePreview = () => setPreview(!preview);
+
   const _onSave = () => {
     const savedFile = actions.targetFileSave();
     onSave(savedFile);
@@ -46,8 +56,12 @@ function DataTableComponent({
 
   const onColumnViewChange = useCallback((changedColumn, action) => {
     let _columnsShow = [...columnsShow];
-    if (action === 'add') _columnsShow.push(changedColumn);
-    else if (action === 'remove') _columnsShow = _columnsShow.filter(col => col !== changedColumn);
+
+    if (action === 'add') {
+      _columnsShow.push(changedColumn);
+    } else if (action === 'remove') {
+      _columnsShow = _columnsShow.filter(col => col !== changedColumn);
+    }
     setColumnsShow(_columnsShow);
   }, [columnsShow]);
 
@@ -70,81 +84,24 @@ function DataTableComponent({
       scrollToTop();
     },
     onColumnViewChange,
-    onChangePage: (_page) => {
-      scrollToTop();
-    },
+    onChangePage: () => scrollToTop(),
     download: false,
     print: false,
     customToolbar: () => (
       <Toolbar preview={preview} onPreview={togglePreview} changed={changed} onSave={_onSave} />
     ),
-    ...options
+    ...options,
   };
-  const customBodyRender = useCallback((value, tableMeta, updateValue,) => {
-    const { tableState = {} } = tableMeta;
-    const { rowsPerPage, page } = tableState || {};
-    const cellProps = { generateRowId, value, tableMeta, rowHeader, onEdit: cellEdit, delimiters, rowsPerPage, page, preview };
-    return (<Cell {...cellProps} />);
-  }, [cellEdit, delimiters, generateRowId, preview, rowHeader]);
 
-  const makeColumns = useCallback(({
+  const _data = getData({
+    data, columnNames, rowHeader,
+  });
+
+  const columns = getColumns({
     columnNames, columnsFilter, columnsFilterOptions,
-    columnsShow, customBodyRender, delimiters, rowHeader
-  }) => {
-    let _columns = columnNames.map((_name, index) => {
-      const name = _name?.trim();
-
-      const offset = rowHeader ? 1 : 0;
-      let filterOptions;
-      if (columnsFilter.includes(name)) {
-        filterOptions = {
-          logic: (value, filters) => filterLogic({ value, filters, delimiters }),
-          display: (filterList, onChange, filterIndex, column) => (
-            filterDisplay({
-              filterList, onChange, column, offset, columnsFilterOptions, filterIndex,
-            })
-          ),
-        };
-      };
-      return {
-        name,
-        searchable: true,
-        options: {
-          display: columnsShow.includes(name),
-          filter: columnsFilter.includes(name),
-          filterType: columnsFilter.includes(name) ? 'custom' : undefined,
-          filterOptions,
-          customBodyRender,
-          customFilterListOptions: {
-            render: (value) => (`${name} - ${value}`),
-          }
-        },
-      };
-    });
-    if (rowHeader) {
-      const headerColumn = {
-        name: 'rowHeader',
-        options: {
-          filter: false,
-          customBodyRender,
-        },
-      };
-      _columns.unshift(headerColumn);
-    }
-    return _columns;
-  }, [])
-  useEffect(() => {
-    const _columns = makeColumns({
-      columnNames, columnsFilter, columnsFilterOptions,
-      columnsShow, customBodyRender, delimiters, rowHeader
-    });
-    setColumns(_columns);
-  }, [columnNames, delimiters, rowHeader, columnsFilter, columnsShow, columnsFilterOptions, customBodyRender, makeColumns]);
-
-  let _data = [...data];
-  if (columnNames && data && rowHeader) {
-    _data = data.map(row => ['rowHeader', ...row]);
-  }
+    columnsShow, delimiters, rowHeader,
+    generateRowId, cellEdit, preview,
+  });
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
@@ -153,7 +110,9 @@ function DataTableComponent({
   );
 }
 
-function DataTable({ config, options, ...props }) {
+function DataTable({
+  config, options, ...props
+}) {
   return (
     <DataTableContextProvider config={config} {...props}>
       <DataTableComponent config={config} options={options} {...props} />
@@ -197,8 +156,8 @@ DataTable.propTypes = {
 DataTable.defaultProps = {
   delimiters: {
     row: '\n',
-    cell: '\t'
-  }
+    cell: '\t',
+  },
 };
 
 export default DataTable;
