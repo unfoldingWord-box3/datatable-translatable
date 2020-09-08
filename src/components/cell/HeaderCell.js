@@ -16,7 +16,6 @@ function HeaderCell(props) {
     generateRowId = () => {},
   } = props;
   const classes = useStyles();
-
   const rowHeaderComponent = rowHeader(rowData.slice(1), <ActionsMenu
     generateRowId={generateRowId}
     rowData={rowData}
@@ -25,7 +24,7 @@ function HeaderCell(props) {
   />);
   return (
     <div className={'header-row ' + classes.root} id={generateRowId(rowData)}>
-      <div className={classes.rowHeader}>{rowHeaderComponent}</div>;
+      <div className={classes.rowHeader}>{rowHeaderComponent}</div>
     </div>
   );
 };

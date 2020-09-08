@@ -72,10 +72,10 @@ function Cell(props) {
   const [original, translation] = value.split(delimiters.cell);
 
   function handleEdit(markdown){
-    // updateValue(markdown);
-    onEdit({
-      rowIndex, columnIndex, value: markdown,
-    });
+    updateValue(markdown);
+    // onEdit({
+    //   rowIndex, columnIndex, value: markdown,
+    // });
   };
 
   return (

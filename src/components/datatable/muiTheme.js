@@ -1,52 +1,39 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
 export const getMuiTheme = createMuiTheme({
-  typography: {
-    useNextVariants: true,
-  },
+  typography: { useNextVariants: true },
   overrides: {
-    MuiIconButton: {
-      root: {
-        padding: '8px',
-      },
-    },
+    MuiIconButton: { root: { padding: '8px' } },
     MuiTableCell: {
       root: {
-        padding: '0',
-        textAlign: 'unset',
-        display: 'block',
-        borderBottom: 'none',
-        '&:last-child': {
-          paddingRight: 0,
-        },
-        '&:nth-child(2)': {
+        'padding': '0',
+        'textAlign': 'unset',
+        'display': 'block',
+        'borderBottom': 'none',
+        '&:last-child': { paddingRight: 0 },
+        '&:nth-child(1)': {
           position: 'sticky',
-          top: '64px',
+          top: '63px',
           background: 'white',
-        }
+        },
       },
-      body: {
-        fontSize: '1em',
-      },
+      body: { fontSize: '1em' },
     },
     MuiTableRow: {
       root: {
         height: 'unset',
         padding: '0',
         display: 'block',
-      }
+      },
     },
     MUIDataTable: {
-      root: {
-      },
+      root: {},
       responsiveScroll: {
         maxHeight: 'unset',
         overflowX: 'unset',
         overflowY: 'unset',
       },
-      paper: {
-        boxShadow: '0px',
-      },
+      paper: { boxShadow: '0px' },
     },
     MuiToolbar: {
       root: {
@@ -56,11 +43,7 @@ export const getMuiTheme = createMuiTheme({
         zIndex: '100',
       },
     },
-    MUIDataTableHeadRow: {
-      root: {
-        display: 'none',
-      },
-    },
+    MUIDataTableHeadRow: { root: { display: 'none' } },
     MuiTable: {
       root: {
         position: 'sticky',
@@ -68,10 +51,6 @@ export const getMuiTheme = createMuiTheme({
         background: 'white',
       },
     },
-    MuiTableFooter: {
-      root: {
-        borderTop: '1px solid #ccc',
-      },
-    },
-  }
+    MuiTableFooter: { root: { borderTop: '1px solid #ccc' } },
+  },
 });

@@ -48,15 +48,17 @@ export function getColumns({
   });
 
   if (rowHeader) {
+    console.log('added header row');
     const headerColumn = {
       name: 'rowHeader',
-      options: { filter: false },
-      // eslint-disable-next-line react/display-name
-      customBodyRender:(_, tableMeta, updateValue) => {
-        const cellProps = {
-          generateRowId, tableMeta, updateValue, delimiters,
-        };
-        return <HeaderCell {...cellProps} />;
+      options: {
+        filter: false,
+        customBodyRender:(_, tableMeta, updateValue) => {
+          const cellProps = {
+            generateRowId, tableMeta, updateValue, delimiters, rowHeader,
+          };
+          return <HeaderCell {...cellProps} />;
+        },
       },
     };
     columns.unshift(headerColumn);

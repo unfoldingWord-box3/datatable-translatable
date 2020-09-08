@@ -103,6 +103,8 @@ function DataTableComponent({
     generateRowId, cellEdit, preview,
   });
 
+  console.log('data', _data);
+
   return (
     <MuiThemeProvider theme={getMuiTheme}>
       <MUIDataTable ref={dataTableElement} columns={columns} data={_data} options={_options} {...props} />
