@@ -66,7 +66,7 @@ function Component() {
   };
 
   return (
-    <DataTable
+    <DataTableWrapper
       sourceFile={sourceFile}
       targetFile={savedFile}
       onSave={onSave}

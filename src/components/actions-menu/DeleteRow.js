@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import PropTypes from 'prop-types';
+import isEqual from 'lodash.isequal';
 import {
   Button,
   Divider,
@@ -101,4 +101,9 @@ function DeleteRowMenu({
 
 DeleteRowMenu.propTypes = {};
 
-export default DeleteRowMenu;
+export default React.memo(DeleteRowMenu, (prevProps, nextProps) =>
+  prevProps.rowIndex === nextProps.rowIndex &&
+  isEqual(prevProps.rowData, nextProps.rowData) &&
+  isEqual(prevProps.columnNames, nextProps.columnNames),
+);
+

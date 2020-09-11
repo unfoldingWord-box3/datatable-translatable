@@ -1,28 +1,50 @@
 import React, {
   useState, useContext, useRef, useCallback,
 } from 'react';
+import isEqual from 'lodash.isequal';
 import useEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import MUIDataTable from 'mui-datatables';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { Cell, Toolbar } from '../..';
+import { Toolbar } from '../..';
 import { getMuiTheme } from './muiTheme';
 import { DataTableContext, DataTableContextProvider } from './DataTable.context';
 import { getColumns, getData } from './helpers';
 
-function DataTableComponent({
+export default function DataTableWrapper(props) {
+  return (
+    <DataTableContextProvider {...props}>
+      <DataTable {...props} />
+    </DataTableContextProvider>
+  );
+}
+
+// eslint-disable-next-line react/display-name
+const DatatableMemo = React.memo(function ({
+  columns, options, data, dataTableElement,
+}) {
+  return (<MUIDataTable ref={dataTableElement} columns={columns} options={options} data={data} />);
+}, (prevProps, nextProps) => {
+  const equal = isEqual(prevProps.data, nextProps.data) &&
+  isEqual(prevProps.columns, nextProps.columns) &&
+  isEqual(prevProps.options, nextProps.options);
+  return equal;
+});
+
+function DataTable({
   options = {},
   delimiters,
-  config: {
-    columnsFilter,
-    columnsShowDefault,
-    rowHeader:_rowHeader,
-  },
+  config,
   onSave,
   sourceFile,
   generateRowId: _generateRowId,
   ...props
 }) {
+  const {
+    columnsFilter,
+    columnsShowDefault,
+    rowHeader:_rowHeader,
+  } = config;
   const dataTableElement = useRef();
   const [rowsPerPage, setRowsPerPage] = useState(options.rowsPerPage || 25);
   const [preview, setPreview] = useState(true);
@@ -45,7 +67,7 @@ function DataTableComponent({
 
   useEffect(() => {
     changePage(0);
-  }, [changePage, sourceFile]);
+  }, [changePage]);
 
   const togglePreview = () => setPreview(!preview);
 
@@ -103,22 +125,10 @@ function DataTableComponent({
     generateRowId, cellEdit, preview,
   });
 
-  console.log('data', _data);
-
   return (
     <MuiThemeProvider theme={getMuiTheme}>
-      <MUIDataTable ref={dataTableElement} columns={columns} data={_data} options={_options} {...props} />
+      <DatatableMemo dataTableElement={dataTableElement} columns={columns} data={_data} options={_options} />
     </MuiThemeProvider>
-  );
-}
-
-function DataTable({
-  config, options, ...props
-}) {
-  return (
-    <DataTableContextProvider config={config} {...props}>
-      <DataTableComponent config={config} options={options} {...props} />
-    </DataTableContextProvider>
   );
 }
 
@@ -161,5 +171,3 @@ DataTable.defaultProps = {
     cell: '\t',
   },
 };
-
-export default DataTable;

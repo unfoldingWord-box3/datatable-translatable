@@ -11,6 +11,7 @@ export const getMuiTheme = createMuiTheme({
         'display': 'block',
         'borderBottom': 'none',
         '&:last-child': { paddingRight: 0 },
+        // '&:first-child': { top:'0 !important' },
         '&:nth-child(1)': {
           position: 'sticky',
           top: '63px',

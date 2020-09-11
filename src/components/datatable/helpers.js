@@ -34,11 +34,11 @@ export function getColumns({
         filter: columnsFilter.includes(name),
         filterType: columnsFilter.includes(name) ? 'custom' : undefined,
         filterOptions,
-        customBodyRender:(value, tableMeta, updateValue) => {
+        customBodyRender:(value, tableMeta) => {
           const { tableState = {} } = tableMeta;
           const { rowsPerPage, page } = tableState || {};
           const cellProps = {
-            generateRowId, value, tableMeta, onEdit: cellEdit, updateValue, delimiters, rowsPerPage, page, preview,
+            generateRowId, value, tableMeta, onEdit: cellEdit, delimiters, rowsPerPage, page, preview,
           };
           return <Cell {...cellProps} />;
         },
@@ -48,14 +48,13 @@ export function getColumns({
   });
 
   if (rowHeader) {
-    console.log('added header row');
     const headerColumn = {
       name: 'rowHeader',
       options: {
         filter: false,
-        customBodyRender:(_, tableMeta, updateValue) => {
+        customBodyRender:(_, tableMeta) => {
           const cellProps = {
-            generateRowId, tableMeta, updateValue, delimiters, rowHeader,
+            generateRowId, tableMeta, delimiters, rowHeader,
           };
           return <HeaderCell {...cellProps} />;
         },

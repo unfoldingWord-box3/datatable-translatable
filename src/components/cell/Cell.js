@@ -43,6 +43,7 @@ function BlockEditableWrapper({
       <div className={classes.translation}>
         {subheading}
         <BlockEditable
+          debounce={300}
           preview={preview}
           markdown={translationValue}
           editable={true}
@@ -66,16 +67,14 @@ function Cell(props) {
     preview,
     onEdit,
     delimiters,
-    updateValue,
   } = props;
   const classes = useStyles();
   const [original, translation] = value.split(delimiters.cell);
 
   function handleEdit(markdown){
-    updateValue(markdown);
-    // onEdit({
-    //   rowIndex, columnIndex, value: markdown,
-    // });
+    onEdit({
+      rowIndex, columnIndex: columnIndex - 1, value: markdown,
+    });
   };
 
   return (
@@ -109,6 +108,8 @@ Cell.propTypes = {
     /** Delimiters to convert a row into cells "\t" */
     cell: PropTypes.string.isRequired,
   }).isRequired,
+  /** Handle database updates */
+  onEdit: PropTypes.func.isRequired,
 };
 
 Cell.defaultProps = {

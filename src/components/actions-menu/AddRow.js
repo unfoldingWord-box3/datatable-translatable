@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import PropTypes from 'prop-types';
+import isEqual from 'lodash.isequal';
 import {
   Button,
   Divider,
@@ -14,7 +14,6 @@ import {
 import { getRowElement, getOffset } from '../../core/datatable';
 
 function AddRowMenu({
-  classes,
   rowData,
   rowIndex,
   columnNames,
@@ -27,17 +26,20 @@ function AddRowMenu({
   const [newRow, setNewRow] = useState();
 
   const handleOpen = () => setOpen(true);
+
   const handleClose = () => {
     setOpen(false);
     setNewRow();
   };
+
   const handleRowAdd = () => {
     rowAddBelow({ rowIndex, rowData: newRow });
     handleClose();
     setTimeout(() => {
       const rowBelow = getRowElement(generateRowId, rowData, 1);
+
       if (rowBelow) {
-        const top = getOffset(rowBelow).top - rowBelow.offsetHeight
+        const top = getOffset(rowBelow).top - rowBelow.offsetHeight;
         document.documentElement.scrollTop = top - 20;
         document.body.scrollTop = top - 20;
       }
@@ -45,9 +47,11 @@ function AddRowMenu({
   };
 
   let dialogComponent = <div />;
+
   if (open) {
     const newRowComponent = columnNames.map((name, i) => {
       let text = '';
+
       if (!newRow) {
         const _newRow = rowGenerate({ rowIndex });
         setNewRow(_newRow);
@@ -56,12 +60,13 @@ function AddRowMenu({
         text = (
           <DialogContentText key={name + i}>
             <strong>{name}:</strong>
-            {" " + newRow[i]}
+            {' ' + newRow[i]}
           </DialogContentText>
         );
       }
       return text;
     });
+
     dialogComponent = (
       <Dialog
         open={open}
@@ -102,8 +107,11 @@ function AddRowMenu({
   );
 }
 
-AddRowMenu.propTypes = {
+AddRowMenu.propTypes = {};
 
-};
 
-export default AddRowMenu;
+export default React.memo(AddRowMenu, (prevProps, nextProps) =>
+  prevProps.rowIndex === nextProps.rowIndex &&
+  isEqual(prevProps.rowData, nextProps.rowData) &&
+  isEqual(prevProps.columnNames, nextProps.columnNames),
+);

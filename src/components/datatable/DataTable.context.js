@@ -1,6 +1,7 @@
 import React, {
   useState, useReducer, useEffect,
 } from 'react';
+import useDeepEffect from 'use-deep-compare-effect';
 import deepFreeze from 'deep-freeze';
 
 import {
@@ -34,11 +35,11 @@ const rowsReducer = (rows, action) => {
   case 'ROW_DELETE':
     _rows = rowDelete({ rows, rowIndex });
     return deepFreeze(_rows);
-  // case 'CELL_EDIT':
-  //   _rows = cellEdit({
-  //     rows, rowIndex, columnIndex, value: value.value,
-  //   });
-  //   return deepFreeze(_rows);
+  case 'CELL_EDIT':
+    _rows = cellEdit({
+      rows, rowIndex, columnIndex, value: value.value,
+    });
+    return deepFreeze(_rows);
   default:
     throw new Error(`Unsupported action type: ${action.type}`);
   };
@@ -54,17 +55,17 @@ export function DataTableContextProvider({
     columnsFilter,
   },
 }) {
-  const [sourceRows, setSourceRows] = useState();
-  const [targetRows, targetRowsDispatch] = useReducer(rowsReducer, undefined);
+  const [sourceRows, setSourceRows] = useState({});
+  const [targetRows, targetRowsDispatch] = useReducer(rowsReducer, {});
   const setTargetRows = (rows) => targetRowsDispatch({ type: 'SET_ROWS', value: { rows } });
   const [changed, setChanged] = useState(false);
-  const [data, setData] = useState();
-  const [columnNames, setColumnNames] = useState();
+  const [data, setData] = useState({});
+  const [columnNames, setColumnNames] = useState({});
   const [columnsFilterOptions, setColumnsFilterOptions] = useState([]);
 
   // populate columnsFilterOptions when ready
   useEffect(() => {
-    if (columnsFilter && columnNames && data) {
+    if (columnsFilter && columnNames && Object.keys(data).length) {
       const columnIndices = columnsFilter.map(columnName => columnNames.indexOf(columnName));
       const _columnsFilterOptions = getColumnsFilterOptions({
         columnIndices, data, delimiters,
@@ -89,8 +90,8 @@ export function DataTableContextProvider({
     }
   }, [targetFile, delimiters]);
   // correlate data by compositeKeyIndices when sourceRows or targetRows updated
-  useEffect(() => {
-    if (sourceRows && targetRows) {
+  useDeepEffect(() => {
+    if (Object.keys(sourceRows).length && Object.keys(targetRows).length) {
       const _data = correlateData({
         sourceRows, targetRows, compositeKeyIndices, delimiters,
       });
@@ -118,12 +119,12 @@ export function DataTableContextProvider({
     cellEdit: ({
       rowIndex, columnIndex, value,
     }) => {
-      // targetRowsDispatch({
-      //   type: 'CELL_EDIT', value: {
-      //     rowIndex, columnIndex, value,
-      //   },
-      // });
-      // setChanged(true);
+      targetRowsDispatch({
+        type: 'CELL_EDIT', value: {
+          rowIndex, columnIndex, value,
+        },
+      });
+      setChanged(true);
     },
     rowGenerate: ({ rowIndex }) => rowGenerate({
       rows: targetRows, columnNames, rowIndex,
@@ -142,7 +143,7 @@ export function DataTableContextProvider({
 
   let component = <></>;
 
-  if (columnNames && data) {
+  if (columnNames && Object.keys(data).length) {
     component = (
       <DataTableContext.Provider value={{ state, actions }}>
         {children}
