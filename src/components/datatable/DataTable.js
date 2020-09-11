@@ -127,7 +127,7 @@ function DataTable({
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
-      <DatatableMemo dataTableElement={dataTableElement} columns={columns} data={_data} options={_options} />
+      <DatatableMemo dataTableElement={dataTableElement} columns={columns} data={_data} options={_options} {...props} />
     </MuiThemeProvider>
   );
 }
