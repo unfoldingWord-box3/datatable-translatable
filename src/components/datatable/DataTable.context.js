@@ -1,6 +1,8 @@
 import React, {
-  useState, useReducer, useEffect,
+  useState, useReducer, useEffect, useMemo,
+
 } from 'react';
+import isEqual from 'lodash.isequal';
 import useDeepEffect from 'use-deep-compare-effect';
 import deepFreeze from 'deep-freeze';
 
@@ -70,9 +72,12 @@ export function DataTableContextProvider({
       const _columnsFilterOptions = getColumnsFilterOptions({
         columnIndices, data, delimiters,
       });
-      setColumnsFilterOptions(_columnsFilterOptions);
+
+      if (!isEqual(_columnsFilterOptions, columnsFilterOptions)) {
+        setColumnsFilterOptions(_columnsFilterOptions);
+      }
     }
-  }, [columnsFilter, columnNames, data, delimiters]);
+  }, [columnsFilter, columnNames, data, delimiters, columnsFilterOptions]);
   // parse sourceFile when updated
   useEffect(() => {
     if (delimiters) {
@@ -99,7 +104,7 @@ export function DataTableContextProvider({
     }
   }, [sourceRows, targetRows, compositeKeyIndices, delimiters]);
 
-  const actions = {
+  const actions = useMemo(() => ({
     rowMoveAbove: ({ rowIndex }) => {
       targetRowsDispatch({ type: 'ROW_MOVE_ABOVE', value: { rowIndex } });
       setChanged(true);
@@ -132,20 +137,23 @@ export function DataTableContextProvider({
     targetFileSave: () => stringify({
       columnNames, rows: targetRows, delimiters,
     }),
-  };
+  }), [columnNames, delimiters, targetRows]);
 
-  const state = deepFreeze({
-    columnNames,
-    data,
-    changed,
-    columnsFilterOptions,
-  });
+  const value = useMemo(() => deepFreeze({
+    state:{
+      columnNames,
+      data,
+      changed,
+      columnsFilterOptions,
+    },
+    actions,
+  }), [actions, changed, columnNames, columnsFilterOptions, data]);
 
   let component = <></>;
 
   if (columnNames && Object.keys(data).length) {
     component = (
-      <DataTableContext.Provider value={{ state, actions }}>
+      <DataTableContext.Provider value={value}>
         {children}
       </DataTableContext.Provider>
     );

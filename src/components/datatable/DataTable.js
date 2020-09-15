@@ -1,5 +1,5 @@
 import React, {
-  useState, useContext, useRef, useCallback,
+  useState, useContext, useRef, useCallback, useMemo,
 } from 'react';
 import isEqual from 'lodash.isequal';
 import useEffect from 'use-deep-compare-effect';
@@ -10,6 +10,8 @@ import { Toolbar } from '../..';
 import { getMuiTheme } from './muiTheme';
 import { DataTableContext, DataTableContextProvider } from './DataTable.context';
 import { getColumns, getData } from './helpers';
+const fixedHeaderOptions = { xAxis: false, yAxis: false };
+const rowsPerPageOptions = [25, 50, 100];
 
 export default function DataTableWrapper(props) {
   return (
@@ -69,12 +71,12 @@ function DataTable({
     changePage(0);
   }, [changePage]);
 
-  const togglePreview = () => setPreview(!preview);
+  const togglePreview = useCallback(() => setPreview(!preview), [preview]);
 
-  const _onSave = () => {
+  const _onSave = useCallback(() => {
     const savedFile = actions.targetFileSave();
     onSave(savedFile);
-  };
+  }, [actions, onSave]);
 
   const onColumnViewChange = useCallback((changedColumn, action) => {
     let _columnsShow = [...columnsShow];
@@ -93,37 +95,38 @@ function DataTable({
     }
   }, [dataTableElement]);
 
-  const _options = {
+  const onChangeRowsPerPage = useCallback(() => (rows) => {
+    setRowsPerPage(rows);
+    scrollToTop();
+  }, [scrollToTop]);
+
+  const customToolbar = useCallback(() => <Toolbar preview={preview} onPreview={togglePreview} changed={changed} onSave={_onSave} />, [_onSave, changed, preview, togglePreview]);
+  const _options = useMemo(() => ({
     responsive: 'scrollFullHeight',
-    fixedHeaderOptions: { xAxis: false, yAxis: false },
+    fixedHeaderOptions,
     resizableColumns: false,
     selectableRows: 'none',
     rowHover: false,
     rowsPerPage,
-    rowsPerPageOptions: [25, 50, 100],
-    onChangeRowsPerPage: (rows) => {
-      setRowsPerPage(rows);
-      scrollToTop();
-    },
+    rowsPerPageOptions,
+    onChangeRowsPerPage,
     onColumnViewChange,
-    onChangePage: () => scrollToTop(),
+    onChangePage: scrollToTop,
     download: false,
     print: false,
-    customToolbar: () => (
-      <Toolbar preview={preview} onPreview={togglePreview} changed={changed} onSave={_onSave} />
-    ),
+    customToolbar,
     ...options,
-  };
+  }),[customToolbar, onChangeRowsPerPage, onColumnViewChange, options, rowsPerPage, scrollToTop] );
 
-  const _data = getData({
+  const _data = useMemo(() => getData({
     data, columnNames, rowHeader,
-  });
+  }), [columnNames, data, rowHeader]);
 
-  const columns = getColumns({
+  const columns = useMemo(() => getColumns({
     columnNames, columnsFilter, columnsFilterOptions,
     columnsShow, delimiters, rowHeader,
     generateRowId, cellEdit, preview,
-  });
+  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader]);
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>

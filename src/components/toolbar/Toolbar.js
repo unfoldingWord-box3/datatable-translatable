@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   IconButton,
   Tooltip,
@@ -22,7 +22,7 @@ function Toolbar({
   const saveDisabled = !changed;
 
   return (
-    <React.Fragment>
+    <>
       <Tooltip title="Preview">
         <IconButton className={classes.iconButton} onClick={onPreview}>
           { preview ? <PageviewOutlined /> : <Pageview /> }
@@ -35,15 +35,13 @@ function Toolbar({
           </IconButton>
         </div>
       </Tooltip>
-    </React.Fragment>
+    </>
   );
 }
 
 const useStyles = makeStyles(theme => ({
   iconButton: {},
-  inlineDiv: {
-    display: 'inline-block',
-  },
+  inlineDiv: { display: 'inline-block' },
 }));
 
 Toolbar.propTypes = {
@@ -55,6 +53,6 @@ Toolbar.propTypes = {
   changed: PropTypes.bool,
   /** Handle click of Save Button */
   onSave: PropTypes.func.isRequired,
-}
+};
 
 export default Toolbar;
