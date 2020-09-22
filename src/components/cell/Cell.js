@@ -43,7 +43,7 @@ function BlockEditableWrapper({
       <div className={classes.translation}>
         {subheading}
         <BlockEditable
-          debounce={300}
+          debounce={1000}
           preview={preview}
           markdown={translationValue}
           editable={true}

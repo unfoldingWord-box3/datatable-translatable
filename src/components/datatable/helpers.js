@@ -8,7 +8,6 @@ export function getColumns({
   columnsShow, delimiters, rowHeader,
   generateRowId, cellEdit, preview,
 }) {
-  console.log('getColumns');
   let columns = columnNames.map((_name) => {
     const name = _name?.trim();
 
