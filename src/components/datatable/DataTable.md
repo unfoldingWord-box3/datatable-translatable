@@ -2,7 +2,7 @@
 ```js
 import { Typography } from '@material-ui/core';
 import _sourceFile from './mocks/en_tn_57-TIT';
-import targetFile from './mocks/tn_57-TIT';
+import targetFile from "./mocks/ru_tn_57-TIT";
 
 function Component() {
   const [sourceFile, setSourceFile] = React.useState(_sourceFile);
