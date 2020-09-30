@@ -1,2 +1,2 @@
-import Cell from './Cell';
-export default Cell;
+export { default as Cell } from './Cell';
+export { default as HeaderCell } from './HeaderCell';

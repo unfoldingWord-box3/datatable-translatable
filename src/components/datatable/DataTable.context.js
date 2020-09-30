@@ -1,37 +1,49 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, {
+  useState, useReducer, useEffect, useMemo,
+
+} from 'react';
+import isEqual from 'lodash.isequal';
+import useDeepEffect from 'use-deep-compare-effect';
 import deepFreeze from 'deep-freeze';
 
 import {
   rowMoveAbove, rowMoveBelow, rowAddBelow, rowDelete, cellEdit,
   parseDataTable, correlateData, rowGenerate, stringify, getColumnsFilterOptions,
- } from '../../core/datatable';
+} from '../../core/datatable';
 
 export const DataTableContext = React.createContext();
 
 const rowsReducer = (rows, action) => {
   let _rows;
   const { type, value } = action;
-  const { rowIndex, rowData, columnIndex } = value;
+  const {
+    rowIndex, rowData, columnIndex,
+  } = value;
+
   switch (type) {
-    case 'SET_ROWS':
-      return deepFreeze(value.rows);
-    case 'ROW_MOVE_ABOVE':
-      _rows = rowMoveAbove({ rows, rowIndex });
-      return deepFreeze(_rows);
-    case 'ROW_MOVE_BELOW':
-      _rows = rowMoveBelow({ rows, rowIndex });
-      return deepFreeze(_rows);
-    case 'ROW_ADD_BELOW':
-      _rows = rowAddBelow({ rows, rowIndex, rowData });
-      return deepFreeze(_rows);
-    case 'ROW_DELETE':
-      _rows = rowDelete({ rows, rowIndex });
-      return deepFreeze(_rows);
-    case 'CELL_EDIT':
-      _rows = cellEdit({ rows, rowIndex, columnIndex, value: value.value });
-      return deepFreeze(_rows);
-    default:
-      throw new Error(`Unsupported action type: ${action.type}`);
+  case 'SET_ROWS':
+    return deepFreeze(value.rows);
+  case 'ROW_MOVE_ABOVE':
+    _rows = rowMoveAbove({ rows, rowIndex });
+    return deepFreeze(_rows);
+  case 'ROW_MOVE_BELOW':
+    _rows = rowMoveBelow({ rows, rowIndex });
+    return deepFreeze(_rows);
+  case 'ROW_ADD_BELOW':
+    _rows = rowAddBelow({
+      rows, rowIndex, rowData,
+    });
+    return deepFreeze(_rows);
+  case 'ROW_DELETE':
+    _rows = rowDelete({ rows, rowIndex });
+    return deepFreeze(_rows);
+  case 'CELL_EDIT':
+    _rows = cellEdit({
+      rows, rowIndex, columnIndex, value: value.value,
+    });
+    return deepFreeze(_rows);
+  default:
+    throw new Error(`Unsupported action type: ${action.type}`);
   };
 };
 
@@ -45,22 +57,27 @@ export function DataTableContextProvider({
     columnsFilter,
   },
 }) {
-  const [sourceRows, setSourceRows] = useState();
-  const [targetRows, targetRowsDispatch] = useReducer(rowsReducer, undefined);
+  const [sourceRows, setSourceRows] = useState({});
+  const [targetRows, targetRowsDispatch] = useReducer(rowsReducer, {});
   const setTargetRows = (rows) => targetRowsDispatch({ type: 'SET_ROWS', value: { rows } });
   const [changed, setChanged] = useState(false);
-  const [data, setData] = useState();
-  const [columnNames, setColumnNames] = useState();
+  const [data, setData] = useState({});
+  const [columnNames, setColumnNames] = useState({});
   const [columnsFilterOptions, setColumnsFilterOptions] = useState([]);
 
   // populate columnsFilterOptions when ready
   useEffect(() => {
-    if (columnsFilter && columnNames && data) {
+    if (columnsFilter && columnNames && Object.keys(data).length) {
       const columnIndices = columnsFilter.map(columnName => columnNames.indexOf(columnName));
-      const _columnsFilterOptions = getColumnsFilterOptions({columnIndices, data, delimiters});
-      setColumnsFilterOptions(_columnsFilterOptions);
+      const _columnsFilterOptions = getColumnsFilterOptions({
+        columnIndices, data, delimiters,
+      });
+
+      if (!isEqual(_columnsFilterOptions, columnsFilterOptions)) {
+        setColumnsFilterOptions(_columnsFilterOptions);
+      }
     }
-  }, [columnsFilter, columnNames, data, delimiters]);
+  }, [columnsFilter, columnNames, data, delimiters, columnsFilterOptions]);
   // parse sourceFile when updated
   useEffect(() => {
     if (delimiters) {
@@ -78,14 +95,16 @@ export function DataTableContextProvider({
     }
   }, [targetFile, delimiters]);
   // correlate data by compositeKeyIndices when sourceRows or targetRows updated
-  useEffect(() => {
-    if (sourceRows && targetRows) {
-      const _data = correlateData({ sourceRows, targetRows, compositeKeyIndices, delimiters });
+  useDeepEffect(() => {
+    if (Object.keys(sourceRows).length && Object.keys(targetRows).length) {
+      const _data = correlateData({
+        sourceRows, targetRows, compositeKeyIndices, delimiters,
+      });
       setData(_data);
     }
   }, [sourceRows, targetRows, compositeKeyIndices, delimiters]);
 
-  const actions = {
+  const actions = useMemo(() => ({
     rowMoveAbove: ({ rowIndex }) => {
       targetRowsDispatch({ type: 'ROW_MOVE_ABOVE', value: { rowIndex } });
       setChanged(true);
@@ -102,25 +121,39 @@ export function DataTableContextProvider({
       targetRowsDispatch({ type: 'ROW_DELETE', value: { rowIndex } });
       setChanged(true);
     },
-    cellEdit: ({ rowIndex, columnIndex, value }) => {
-      targetRowsDispatch({ type: 'CELL_EDIT', value: { rowIndex, columnIndex, value } });
+    cellEdit: ({
+      rowIndex, columnIndex, value,
+    }) => {
+      targetRowsDispatch({
+        type: 'CELL_EDIT', value: {
+          rowIndex, columnIndex, value,
+        },
+      });
       setChanged(true);
     },
-    rowGenerate: ({ rowIndex }) => rowGenerate({ rows: targetRows, columnNames, rowIndex }),
-    targetFileSave: () => stringify({ columnNames, rows: targetRows, delimiters }),
-  };
+    rowGenerate: ({ rowIndex }) => rowGenerate({
+      rows: targetRows, columnNames, rowIndex,
+    }),
+    targetFileSave: () => stringify({
+      columnNames, rows: targetRows, delimiters,
+    }),
+  }), [columnNames, delimiters, targetRows]);
 
-  const state = deepFreeze({
-    columnNames,
-    data,
-    changed,
-    columnsFilterOptions,
-  });
+  const value = useMemo(() => deepFreeze({
+    state:{
+      columnNames,
+      data,
+      changed,
+      columnsFilterOptions,
+    },
+    actions,
+  }), [actions, changed, columnNames, columnsFilterOptions, data]);
 
   let component = <></>;
-  if (columnNames && data) {
+
+  if (columnNames && Object.keys(data).length) {
     component = (
-      <DataTableContext.Provider value={{ state, actions }}>
+      <DataTableContext.Provider value={value}>
         {children}
       </DataTableContext.Provider>
     );

@@ -1,20 +1,19 @@
 import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  IconButton,
-} from '@material-ui/core';
+import { IconButton , Tooltip } from '@material-ui/core';
+import isEqual from 'lodash.isequal';
 import {
   ArrowDropDownCircleOutlined,
   AddCircleOutline,
   RemoveCircleOutline,
 } from '@material-ui/icons';
-import { Tooltip } from '@material-ui/core';
 
-import AddRow from './AddRow';
-import DeleteRow from './DeleteRow';
 
 import { DataTableContext } from '../datatable/DataTable.context';
 import { localString } from '../../core/localStrings';
+import AddRow from './AddRow';
+import DeleteRow from './DeleteRow';
+
 
 function RowMenu({
   rowIndex,
@@ -24,9 +23,7 @@ function RowMenu({
 }) {
   const classes = useStyles();
   const { state, actions } = useContext(DataTableContext);
-  const {
-    columnNames,
-  } = state;
+  const { columnNames } = state;
   const {
     rowGenerate,
     rowAddBelow,
@@ -41,25 +38,25 @@ function RowMenu({
 
   const addRowButton = (
     <Tooltip title={localString('AddRow')} arrow>
-    <IconButton className={classes.button}>
-      <AddCircleOutline />
-    </IconButton>
+      <IconButton className={classes.button}>
+        <AddCircleOutline />
+      </IconButton>
     </Tooltip>
   );
   const deleteRowButton = (
     <Tooltip title={localString('DeleteRow')} arrow>
-    <IconButton className={classes.button}>
-      <RemoveCircleOutline />
-    </IconButton>
+      <IconButton className={classes.button}>
+        <RemoveCircleOutline />
+      </IconButton>
     </Tooltip>
   );
 
   return (
     <div className={classes.root}>
       <Tooltip title={localString('MoveRowUp')} arrow>
-      <IconButton className={classes.flipY} disabled={disableMoveAbove} onClick={handleMoveAbove}>
-        <ArrowDropDownCircleOutlined />
-      </IconButton>
+        <IconButton className={classes.flipY} disabled={disableMoveAbove} onClick={handleMoveAbove}>
+          <ArrowDropDownCircleOutlined />
+        </IconButton>
       </Tooltip>
       <AddRow
         rowData={rowData}
@@ -80,9 +77,9 @@ function RowMenu({
         generateRowId={generateRowId}
       />
       <Tooltip title={localString('MoveRowDown')} arrow>
-      <IconButton className={classes.button} onClick={handleMoveBelow}>
-        <ArrowDropDownCircleOutlined />
-      </IconButton>
+        <IconButton className={classes.button} onClick={handleMoveBelow}>
+          <ArrowDropDownCircleOutlined />
+        </IconButton>
       </Tooltip>
     </div>
   );
@@ -91,15 +88,16 @@ function RowMenu({
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   flipY: {
     transform: 'scaleY(-1)',
     padding: '8px',
   },
-  button: {
-    padding: '8px',
-  },
+  button: { padding: '8px' },
 }));
 
-export default RowMenu;
+export default React.memo(RowMenu, (prevProps, nextProps) => prevProps.rowIndex === nextProps.rowIndex &&
+  isEqual(prevProps.rowData, nextProps.rowData) &&
+  isEqual(prevProps.delimiters, nextProps.delimiters),
+);

@@ -1,17 +1,19 @@
 const Path = require('path');
 const upperFirst = require('lodash/upperFirst');
 const camelCase = require('lodash/camelCase');
-const { name, version, description } = require('./package.json');
+const {
+  name, version, description,
+} = require('./package.json');
 const { styles, theme } = require('./styleguide.styles');
 
 module.exports = {
   title: `${upperFirst(camelCase(name))} v${version}`,
   ribbon: {
     url: 'https://github.com/unfoldingWord-box3/datatable-translatable',
-    text: 'View me on GitHub'
+    text: 'View me on GitHub',
   },
   webpackConfig: require('react-scripts/config/webpack.config')('development'),
-  // serverPort: 3000,
+  serverPort: 8003,
   styles,
   theme,
   getComponentPathLine: (componentPath) => {
@@ -29,9 +31,10 @@ module.exports = {
       content: './readme.md',
       components: () => ([
         Path.resolve(__dirname, `src/components/datatable`, `DataTable.js`),
+        Path.resolve(__dirname, `src/components/datatable`, `TestDatatable.js`),
         Path.resolve(__dirname, `src/components/cell`, `Cell.js`),
         Path.resolve(__dirname, `src/components/toolbar`, `Toolbar.js`),
       ]),
     },
-  ]
+  ],
 };

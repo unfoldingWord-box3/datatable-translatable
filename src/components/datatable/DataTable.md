@@ -1,7 +1,6 @@
-
 ```js
-import { Typography } from '@material-ui/core';
-import _sourceFile from './mocks/en_tn_57-TIT';
+import { Typography } from "@material-ui/core";
+import _sourceFile from "./mocks/en_tn_57-TIT";
 import targetFile from "./mocks/ru_tn_57-TIT";
 
 function Component() {
@@ -13,7 +12,7 @@ function Component() {
   //   setSourceFile(targetFile);
   // }, 5000)
 
-  const delimiters = { row: '\n', cell: '\t'};
+  const delimiters = { row: "\n", cell: "\t" };
 
   const options = {
     page: 0,
@@ -27,13 +26,13 @@ function Component() {
     const verse = rowData[2].split(delimiters.cell).find((value) => value);
     const styles = {
       typography: {
-        lineHeight: '1.0',
-        fontWeight: 'bold',
+        lineHeight: "1.0",
+        fontWeight: "bold",
       },
     };
     const component = (
       <>
-        <Typography variant='h6' style={styles.typography}>
+        <Typography variant="h6" style={styles.typography}>
           {`${book} ${chapter}:${verse}`}
         </Typography>
         {actionsMenu}
@@ -43,9 +42,14 @@ function Component() {
   };
 
   const config = {
-    compositeKeyIndices: [0,1,2,3],
-    columnsFilter: ['Chapter','SupportReference'],
-    columnsShowDefault: ['SupportReference','OrigQuote','Occurrence','OccurrenceNote'],
+    compositeKeyIndices: [0, 1, 2, 3],
+    columnsFilter: ["Chapter", "SupportReference"],
+    columnsShowDefault: [
+      "SupportReference",
+      "OrigQuote",
+      "Occurrence",
+      "OccurrenceNote",
+    ],
     rowHeader,
   };
 
@@ -59,10 +63,10 @@ function Component() {
     const [verse] = rowData[3].split(delimiters.cell);
     const [uid] = rowData[4].split(delimiters.cell);
     return `header-${chapter}-${verse}-${uid}`;
-  }
+  };
 
   return (
-    <DataTable
+    <DataTableWrapper
       sourceFile={sourceFile}
       targetFile={savedFile}
       onSave={onSave}
@@ -73,5 +77,5 @@ function Component() {
     />
   );
 }
-<Component />
+<Component />;
 ```

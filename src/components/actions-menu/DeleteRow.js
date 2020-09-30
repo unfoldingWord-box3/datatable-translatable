@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import PropTypes from 'prop-types';
+import isEqual from 'lodash.isequal';
 import {
   Button,
   Divider,
@@ -26,11 +26,14 @@ function DeleteRowMenu({
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   const handleRowDelete = () => {
     let position = -2;
+
     if (rowIndex === 0) {
       position = -1;
     }
+
     const rowAbove = getRowElement(generateRowId, rowData, position);
     rowDelete({ rowIndex });
     handleClose();
@@ -40,13 +43,14 @@ function DeleteRowMenu({
         document.documentElement.scrollTop = top - 20;
         document.body.scrollTop = top - 20;
       }
-    }, 1000)
+    }, 1000);
   };
 
-  const hasRowHeader = rowData[0] === "rowHeader";
+  const hasRowHeader = rowData[0] === 'rowHeader';
   const offset = hasRowHeader ? 1 : 0;
 
   let dialogComponent = <div />;
+
   if (open) {
     const deleteRowComponent = columnNames.map((name, i) => (
       <DialogContentText key={name + i}>
@@ -55,7 +59,8 @@ function DeleteRowMenu({
           {rowData[i + offset].split(delimiters.cell)[1]}
         </span>
       </DialogContentText>
-    ))
+    ));
+
     dialogComponent = (
       <Dialog
         open={open}
@@ -63,11 +68,11 @@ function DeleteRowMenu({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Delete this row?"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{'Delete this row?'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             There is no undo feature, this is permanent.
-        </DialogContentText>
+          </DialogContentText>
           <Divider />
           <br />
           {deleteRowComponent}
@@ -75,10 +80,10 @@ function DeleteRowMenu({
         <DialogActions>
           <Button onClick={handleClose} color="primary" autoFocus>
             Cancel
-        </Button>
+          </Button>
           <Button onClick={handleRowDelete} color="secondary">
             Delete
-        </Button>
+          </Button>
         </DialogActions>
       </Dialog>
     );
@@ -94,8 +99,11 @@ function DeleteRowMenu({
   );
 }
 
-DeleteRowMenu.propTypes = {
+DeleteRowMenu.propTypes = {};
 
-};
+export default React.memo(DeleteRowMenu, (prevProps, nextProps) =>
+  prevProps.rowIndex === nextProps.rowIndex &&
+  isEqual(prevProps.rowData, nextProps.rowData) &&
+  isEqual(prevProps.columnNames, nextProps.columnNames),
+);
 
-export default DeleteRowMenu;

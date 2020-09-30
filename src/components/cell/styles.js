@@ -1,8 +1,7 @@
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
-  root: {
-  },
+  root: {},
   original: {
     background: '#eee4',
     display: 'table-cell',
@@ -20,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   rowHeader: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: "center",
+    alignItems: 'center',
     borderBottom: '1px solid #ccc',
     borderTop: '1px solid #ccc',
     padding: '0 24px',
