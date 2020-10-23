@@ -10,6 +10,7 @@ import {
   PageviewOutlined,
   Save,
   SaveOutlined,
+  PlaylistAddCheck,
 } from '@material-ui/icons';
 
 function Toolbar({
@@ -17,12 +18,21 @@ function Toolbar({
   onPreview,
   changed,
   onSave,
+  onValidate,
 }) {
   const classes = useStyles();
   const saveDisabled = !changed;
 
   return (
     <>
+      {
+        onValidate &&
+        <Tooltip title="Validate">
+        <IconButton className={classes.iconButton} onClick={onValidate}>
+          <PlaylistAddCheck />
+        </IconButton>
+      </Tooltip>
+      }
       <Tooltip title="Preview">
         <IconButton className={classes.iconButton} onClick={onPreview}>
           { preview ? <PageviewOutlined /> : <Pageview /> }

@@ -38,6 +38,7 @@ function DataTable({
   delimiters,
   config,
   onSave,
+  onValidate,
   sourceFile,
   generateRowId: _generateRowId,
   ...props
@@ -100,7 +101,15 @@ function DataTable({
     scrollToTop();
   }, [scrollToTop]);
 
-  const customToolbar = useCallback(() => <Toolbar preview={preview} onPreview={togglePreview} changed={changed} onSave={_onSave} />, [_onSave, changed, preview, togglePreview]);
+  const _onValidate = useCallback(() => {
+    onValidate();
+  }, [onValidate]);
+
+  const customToolbar = useCallback(() => 
+    <Toolbar preview={preview} onPreview={togglePreview} changed={changed} onSave={_onSave} onValidate={_onValidate}/>, 
+    [_onSave, changed, preview, togglePreview, _onValidate]
+  );
+  
   const _options = useMemo(() => ({
     responsive: 'scrollFullHeight',
     fixedHeaderOptions,
@@ -142,6 +151,8 @@ DataTable.propTypes = {
   targetFile: PropTypes.string.isRequired,
   /** The callback to save the edited targetFile */
   onSave: PropTypes.func.isRequired,
+  /** The callback to validate the edited targetFile */
+  onValidate: PropTypes.func,
   /** The delimiters for converting the file into rows/columns */
   delimiters: PropTypes.shape({
     /** Delimiters to convert a files into rows "\n" */
