@@ -6,9 +6,6 @@ import isEqual from 'lodash.isequal';
 import { BlockEditable } from 'markdown-translatable';
 import useStyles from './styles';
 
-const inputFilters = [[/<br>/gi, '\n']];
-const outputFilters = [[/\n/gi, '<br>']];
-
 function BlockEditableWrapper({
   columnData,
   original,
@@ -36,8 +33,6 @@ function BlockEditableWrapper({
           preview={preview}
           markdown={originalValue}
           editable={false}
-          inputFilters={inputFilters}
-          outputFilters={outputFilters}
         />
       </div>
       <div className={classes.translation}>
@@ -47,8 +42,6 @@ function BlockEditableWrapper({
           preview={preview}
           markdown={translationValue}
           editable={true}
-          inputFilters={inputFilters}
-          outputFilters={outputFilters}
           onEdit={handleEdit}
         />
       </div>
