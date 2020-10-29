@@ -127,15 +127,17 @@ export const getColumnsFilterOptions = ({
 
   data.forEach(row => {
     columnIndices.forEach(columnIndex => {
-      if (!_columnsFilterOptions[columnIndex]) {
-        _columnsFilterOptions[columnIndex] = [];
-      }
-
       const values = row[columnIndex].split(delimiters.cell);
 
       values.forEach(value => {
-        if (!_columnsFilterOptions[columnIndex].includes(value)) {
-          _columnsFilterOptions[columnIndex].push(value);
+        if (value) {
+          if (!_columnsFilterOptions[columnIndex]) {
+            _columnsFilterOptions[columnIndex] = [];
+          }
+
+          if (!_columnsFilterOptions[columnIndex].includes(value)) {
+            _columnsFilterOptions[columnIndex].push(value);
+          }
         }
       });
     });
