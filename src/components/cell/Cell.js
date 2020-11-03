@@ -32,7 +32,7 @@ function BlockEditableWrapper({
       <div className={classes.original}>
         {subheading}
         <BlockEditable
-          key={`${rowIndex}-${columnIndex}`}
+          key={`${rowIndex}-${columnIndex}-original`}
           preview={preview}
           markdown={originalValue}
           editable={false}
@@ -43,6 +43,7 @@ function BlockEditableWrapper({
       <div className={classes.translation}>
         {subheading}
         <BlockEditable
+          key={`${rowIndex}-${columnIndex}-target`}
           debounce={1000}
           preview={preview}
           markdown={translationValue}
