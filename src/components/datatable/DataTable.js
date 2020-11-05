@@ -46,7 +46,7 @@ function DataTable({
   const {
     columnsFilter,
     columnsShowDefault,
-    rowHeader:_rowHeader,
+    rowHeader,
   } = config;
   const dataTableElement = useRef();
   const [rowsPerPage, setRowsPerPage] = useState(options.rowsPerPage || 25);
@@ -57,8 +57,6 @@ function DataTable({
     columnNames, data, changed, columnsFilterOptions,
   } = state;
   const { cellEdit:_cellEdit } = actions;
-
-  const rowHeader = useCallback(_rowHeader, []);
 
   const generateRowId = useCallback(_generateRowId, []);
 
