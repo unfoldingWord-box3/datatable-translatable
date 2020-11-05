@@ -100,7 +100,7 @@ function DataTable({
   }, [scrollToTop]);
 
   const _onValidate = useCallback(() => {
-    onValidate(state.data);
+    onValidate && onValidate(state.data);
   }, [onValidate, state]);
 
   const customToolbar = useCallback(() => 
