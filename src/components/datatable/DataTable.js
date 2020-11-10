@@ -100,7 +100,26 @@ function DataTable({
   }, [scrollToTop]);
 
   const _onValidate = useCallback(() => {
-    onValidate && onValidate(state.data);
+    // NOTE! the content on-screen, in-memory does NOT include
+    // the headers. So the initial value of tsvRows will be the headers.
+    let tsvRows = "Book\tChapter\tVerse\tID\tSupportReference\tOrigQuote\tOccurrence\tGLQuote\tOccurrenceNote\n";
+    if ( state.data ) {
+      let rows = state.data;
+      for ( let i=0; i < rows.length; i++ ) {
+        let _row = rows[i];
+        let _tsvRow = "";
+        // now each cell has both source and target values, delimited by tab
+        for ( let j=0; j < _row.length; j++ ) {
+          let values = _row[j].split("\t");
+          let targetValue = values[1];
+          targetValue = targetValue.replaceAll('\\[','[').replaceAll('\\]',']');
+          _tsvRow = _tsvRow + targetValue + "\t";
+        }
+        // add new row and a newline at end of row
+        tsvRows = tsvRows + _tsvRow.trim("\t") + "\n";
+      }
+    }
+    onValidate && onValidate(tsvRows);
   }, [onValidate, state]);
 
   const customToolbar = useCallback(() => 
