@@ -28,7 +28,7 @@ function Toolbar({
       {
         onValidate &&
         <Tooltip title="Validate">
-        <IconButton className={classes.iconButton} onClick={onValidate}>
+        <IconButton className={classes.iconButton} onClick={onValidate} aria-label="Validate">
           <PlaylistAddCheck />
         </IconButton>
       </Tooltip>
