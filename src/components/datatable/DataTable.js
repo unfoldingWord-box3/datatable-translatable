@@ -123,7 +123,7 @@ function DataTable({
   }, [onValidate, state]);
 
   const customToolbar = useCallback(() => 
-    <Toolbar preview={preview} onPreview={togglePreview} changed={changed} onSave={_onSave} onValidate={_onValidate}/>, 
+    <Toolbar preview={preview} onPreview={togglePreview} changed={changed} onSave={_onSave} onValidate={onValidate ? _onValidate : undefined}/>, 
     [_onSave, changed, preview, togglePreview, _onValidate]
   );
   
