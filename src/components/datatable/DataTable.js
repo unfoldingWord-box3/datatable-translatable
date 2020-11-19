@@ -103,7 +103,7 @@ function DataTable({
     // NOTE! the content on-screen, in-memory does NOT include
     // the headers. So the initial value of tsvRows will be the headers.
     let tsvRows = "Book\tChapter\tVerse\tID\tSupportReference\tOrigQuote\tOccurrence\tGLQuote\tOccurrenceNote\n";
-    if ( state.data ) {
+    if ( state && state.data ) {
       let rows = state.data;
       for ( let i=0; i < rows.length; i++ ) {
         let _row = rows[i];
