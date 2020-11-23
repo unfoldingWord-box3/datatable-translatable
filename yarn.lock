@@ -8210,10 +8210,10 @@ markdown-to-jsx@^6.9.3:
     prop-types "^15.6.2"
     unquote "^1.1.0"
 
-markdown-translatable@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/markdown-translatable/-/markdown-translatable-1.2.1.tgz#136ea96c4c6f51d9aeb1ff78c0330786a7fe68f6"
-  integrity sha512-tUwKEflZucYbWxnDjnPHuaSa47Gby2+YtZj7Ig81/G53hg5Nv6/4ewhIBeR6kyGJ3cbQyGFxj7QhxsEauE5TsA==
+markdown-translatable@1.2.7-rc.1:
+  version "1.2.7-rc.1"
+  resolved "https://registry.yarnpkg.com/markdown-translatable/-/markdown-translatable-1.2.7-rc.1.tgz#f1885f4347c65ef67c6ce151cb2e4aca4bb6ddf3"
+  integrity sha512-dbOZ8i9GHKHuCuP4ZH3sUF2W/YF5tRo71PVOANjYgtLYGkegUeSj8W7oCui0jYms5YDlo1CryP20STYPvZwNtA==
   dependencies:
     deep-freeze "^0.0.1"
     lodash.debounce "^4.0.8"
