@@ -31,7 +31,7 @@
   "dependencies": {
     "deep-freeze": "^0.0.1",
     "lodash.isequal": "^4.5.0",
-    "markdown-translatable": "file:.yalc/markdown-translatable",
+    "markdown-translatable": "1.2.6",
     "mui-datatables": "3.3.1",
     "use-deep-compare-effect": "^1.3.1"
   },
