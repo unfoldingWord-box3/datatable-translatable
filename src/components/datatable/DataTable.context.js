@@ -21,29 +21,29 @@ const rowsReducer = (rows, action) => {
   } = value;
 
   switch (type) {
-  case 'SET_ROWS':
-    return deepFreeze(value.rows);
-  case 'ROW_MOVE_ABOVE':
-    _rows = rowMoveAbove({ rows, rowIndex });
-    return deepFreeze(_rows);
-  case 'ROW_MOVE_BELOW':
-    _rows = rowMoveBelow({ rows, rowIndex });
-    return deepFreeze(_rows);
-  case 'ROW_ADD_BELOW':
-    _rows = rowAddBelow({
-      rows, rowIndex, rowData,
-    });
-    return deepFreeze(_rows);
-  case 'ROW_DELETE':
-    _rows = rowDelete({ rows, rowIndex });
-    return deepFreeze(_rows);
-  case 'CELL_EDIT':
-    _rows = cellEdit({
-      rows, rowIndex, columnIndex, value: value.value,
-    });
-    return deepFreeze(_rows);
-  default:
-    throw new Error(`Unsupported action type: ${action.type}`);
+    case 'SET_ROWS':
+      return deepFreeze(value.rows);
+    case 'ROW_MOVE_ABOVE':
+      _rows = rowMoveAbove({ rows, rowIndex });
+      return deepFreeze(_rows);
+    case 'ROW_MOVE_BELOW':
+      _rows = rowMoveBelow({ rows, rowIndex });
+      return deepFreeze(_rows);
+    case 'ROW_ADD_BELOW':
+      _rows = rowAddBelow({
+        rows, rowIndex, rowData,
+      });
+      return deepFreeze(_rows);
+    case 'ROW_DELETE':
+      _rows = rowDelete({ rows, rowIndex });
+      return deepFreeze(_rows);
+    case 'CELL_EDIT':
+      _rows = cellEdit({
+        rows, rowIndex, columnIndex, value: value.value,
+      });
+      return deepFreeze(_rows);
+    default:
+      throw new Error(`Unsupported action type: ${action.type}`);
   };
 };
 
@@ -137,10 +137,11 @@ export function DataTableContextProvider({
     targetFileSave: () => stringify({
       columnNames, rows: targetRows, delimiters,
     }),
+    setChanged,
   }), [columnNames, delimiters, targetRows]);
 
   const value = useMemo(() => deepFreeze({
-    state:{
+    state: {
       columnNames,
       data,
       changed,
