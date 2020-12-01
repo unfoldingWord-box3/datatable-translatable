@@ -13,7 +13,7 @@ module.exports = {
     text: 'View me on GitHub',
   },
   webpackConfig: require('react-scripts/config/webpack.config')('development'),
-  serverPort: 8003,
+  serverPort: 6060,
   styles,
   theme,
   getComponentPathLine: (componentPath) => {
