@@ -58,6 +58,9 @@ function Component() {
     alert(_savedFile);
   };
 
+  const onValidate = () => {
+    alert("Validate!")
+  }
   const generateRowId = (rowData) => {
     const [chapter] = rowData[2].split(delimiters.cell);
     const [verse] = rowData[3].split(delimiters.cell);
@@ -70,6 +73,7 @@ function Component() {
       sourceFile={sourceFile}
       targetFile={savedFile}
       onSave={onSave}
+      onValidate={onValidate}
       delimiters={delimiters}
       config={config}
       options={options}
