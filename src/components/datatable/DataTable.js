@@ -101,9 +101,10 @@ function DataTable({
   }, [columnsShow]);
 
   const scrollToTop = useCallback(() => {
-    if (dataTableElement && dataTableElement.current) {
-      window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
-    }
+    window.scrollTo(0, 0);
+    // if (dataTableElement && dataTableElement.current) {
+    //   window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
+    // }
   }, [dataTableElement]);
 
   const onChangeRowsPerPage = useCallback(() => (rows) => {
@@ -115,16 +116,16 @@ function DataTable({
     // NOTE! the content on-screen, in-memory does NOT include
     // the headers. So the initial value of tsvRows will be the headers.
     let tsvRows = "Book\tChapter\tVerse\tID\tSupportReference\tOrigQuote\tOccurrence\tGLQuote\tOccurrenceNote\n";
-    if ( state && state.data ) {
+    if (state && state.data) {
       let rows = state.data;
-      for ( let i=0; i < rows.length; i++ ) {
+      for (let i = 0; i < rows.length; i++) {
         let _row = rows[i];
         let _tsvRow = "";
         // now each cell has both source and target values, delimited by tab
-        for ( let j=0; j < _row.length; j++ ) {
+        for (let j = 0; j < _row.length; j++) {
           let values = _row[j].split("\t");
           let targetValue = values[1];
-          targetValue = targetValue.replaceAll('\\[','[').replaceAll('\\]',']');
+          targetValue = targetValue.replaceAll('\\[', '[').replaceAll('\\]', ']');
           _tsvRow = _tsvRow + targetValue + "\t";
         }
         // add new row and a newline at end of row
@@ -134,11 +135,11 @@ function DataTable({
     onValidate && onValidate(tsvRows);
   }, [onValidate, state]);
 
-  const customToolbar = useCallback(() => 
-    <Toolbar preview={preview} onPreview={togglePreview} changed={changed || markdownState.isChanged} onSave={_onSave} onValidate={onValidate ? _onValidate : undefined}/>, 
+  const customToolbar = useCallback(() =>
+    <Toolbar preview={preview} onPreview={togglePreview} changed={changed || markdownState.isChanged} onSave={_onSave} onValidate={onValidate ? _onValidate : undefined} />,
     [_onSave, changed, markdownState.isChanged, preview, togglePreview, _onValidate, onValidate]
   );
-  
+
   const _options = useMemo(() => ({
     responsive: 'scrollFullHeight',
     fixedHeaderOptions,
