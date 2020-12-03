@@ -105,7 +105,7 @@ function DataTable({
     // if (dataTableElement && dataTableElement.current) {
     //   window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
     // }
-  }, [dataTableElement]);
+  }, []);
 
   const onChangeRowsPerPage = useCallback(() => (rows) => {
     setRowsPerPage(rows);
