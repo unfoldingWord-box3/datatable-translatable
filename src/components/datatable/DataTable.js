@@ -125,7 +125,7 @@ function DataTable({
         for (let j = 0; j < _row.length; j++) {
           let values = _row[j].split("\t");
           let targetValue = values[1];
-          targetValue = targetValue.replaceAll('\\[', '[').replaceAll('\\]', ']');
+          targetValue = targetValue.replaceAll('\\[', '[').replaceAll('\\]', ']').replace(/\u200B/g, '');
           _tsvRow = _tsvRow + targetValue + "\t";
         }
         // add new row and a newline at end of row
