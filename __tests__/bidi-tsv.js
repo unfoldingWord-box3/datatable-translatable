@@ -1,9 +1,8 @@
-import { parseDataTable, stringify } from "../src/core/datatable";
 import fs from 'fs';
 import path from 'path';
+import { parseDataTable, stringify } from '../src/core/datatable';
 
 describe('Bidirectional TSV Tests', () => {
-
   it('should convert en_tn_57-TIT tsv string to JSON and back', () => {
     generateTest('en_tn_57-TIT');
   });
@@ -11,7 +10,7 @@ describe('Bidirectional TSV Tests', () => {
   it('should convert tn_57-TIT tsv string to JSON and back', () => {
     generateTest('tn_57-TIT');
   });
-})
+});
 
 function generateTest(fileName) {
   const delimiters = { row: '\n', cell: '\t' };
@@ -19,5 +18,8 @@ function generateTest(fileName) {
   const parsedTable = parseDataTable({ table: tsv, delimiters });
   expect(parsedTable).toMatchSnapshot();
   const { columnNames, rows } = parsedTable;
-  expect(stringify({ columnNames, rows, delimiters })).toBe(tsv);
+
+  expect(stringify({
+    columnNames, rows, delimiters,
+  })).toBe(tsv);
 }
