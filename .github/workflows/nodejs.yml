@@ -7,7 +7,7 @@ env:
   COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
 jobs:
   test:
-    runs-on: macos-latest
+    runs-on: windows-latest
     strategy:
       matrix:
         node-version: [10.15.1]
