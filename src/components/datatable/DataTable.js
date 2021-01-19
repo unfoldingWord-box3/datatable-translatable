@@ -129,7 +129,10 @@ function DataTable({
           _tsvRow = _tsvRow + targetValue + "\t";
         }
         // add new row and a newline at end of row
-        tsvRows = tsvRows + _tsvRow.trim("\t") + "\n";
+        _tsvRow = _tsvRow.trim('\t');
+        // check if row has content on target side
+        if ( _tsvRow === '' ) continue;
+        tsvRows = tsvRows + _tsvRow + "\n";
       }
     }
     onValidate && onValidate(tsvRows);
