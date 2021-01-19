@@ -1,3 +1,8 @@
+import { Toolbar } from '../..';
+import { getMuiTheme } from './muiTheme';
+import { DataTableContext, DataTableContextProvider } from './DataTable.context';
+import { getColumns, getData } from './helpers';
+
 import React, {
   useState, useContext, useRef, useCallback, useMemo,
 } from 'react';
@@ -6,18 +11,19 @@ import useEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import MUIDataTable from 'mui-datatables';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { Toolbar } from '../..';
-import { getMuiTheme } from './muiTheme';
-import { DataTableContext, DataTableContextProvider } from './DataTable.context';
-import { getColumns, getData } from './helpers';
+
+import { MarkdownContext, MarkdownContextProvider } from 'markdown-translatable';
+
 const fixedHeaderOptions = { xAxis: false, yAxis: false };
 const rowsPerPageOptions = [25, 50, 100];
 
 export default function DataTableWrapper(props) {
   return (
-    <DataTableContextProvider {...props}>
-      <DataTable {...props} />
-    </DataTableContextProvider>
+    <MarkdownContextProvider>
+      <DataTableContextProvider {...props}>
+        <DataTable {...props} />
+      </DataTableContextProvider>
+    </MarkdownContextProvider>
   );
 }
 
@@ -28,8 +34,8 @@ const DatatableMemo = React.memo(function ({
   return (<MUIDataTable ref={dataTableElement} columns={columns} options={options} data={data} />);
 }, (prevProps, nextProps) => {
   const equal = isEqual(prevProps.data, nextProps.data) &&
-  isEqual(prevProps.columns, nextProps.columns) &&
-  isEqual(prevProps.options, nextProps.options);
+    isEqual(prevProps.columns, nextProps.columns) &&
+    isEqual(prevProps.options, nextProps.options);
   return equal;
 });
 
@@ -38,6 +44,7 @@ function DataTable({
   delimiters,
   config,
   onSave,
+  onValidate,
   sourceFile,
   generateRowId: _generateRowId,
   ...props
@@ -55,7 +62,9 @@ function DataTable({
   const {
     columnNames, data, changed, columnsFilterOptions,
   } = state;
-  const { cellEdit:_cellEdit } = actions;
+  const { cellEdit: _cellEdit } = actions;
+
+  const { state: markdownState, actions: markdownActions } = useContext(MarkdownContext);
 
   const generateRowId = useCallback(_generateRowId, []);
 
@@ -74,7 +83,11 @@ function DataTable({
   const _onSave = useCallback(() => {
     const savedFile = actions.targetFileSave();
     onSave(savedFile);
-  }, [actions, onSave]);
+
+    if (markdownActions && markdownActions.setIsChanged) {
+      markdownActions.setIsChanged(false);
+    }
+  }, [actions, onSave, markdownActions]);
 
   const onColumnViewChange = useCallback((changedColumn, action) => {
     let _columnsShow = [...columnsShow];
@@ -88,17 +101,45 @@ function DataTable({
   }, [columnsShow]);
 
   const scrollToTop = useCallback(() => {
-    if (dataTableElement && dataTableElement.current) {
-      window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
-    }
-  }, [dataTableElement]);
+    window.scrollTo(0, 0);
+    // if (dataTableElement && dataTableElement.current) {
+    //   window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
+    // }
+  }, []);
 
   const onChangeRowsPerPage = useCallback(() => (rows) => {
     setRowsPerPage(rows);
     scrollToTop();
   }, [scrollToTop]);
 
-  const customToolbar = useCallback(() => <Toolbar preview={preview} onPreview={togglePreview} changed={changed} onSave={_onSave} />, [_onSave, changed, preview, togglePreview]);
+  const _onValidate = useCallback(() => {
+    // NOTE! the content on-screen, in-memory does NOT include
+    // the headers. So the initial value of tsvRows will be the headers.
+    let tsvRows = "Book\tChapter\tVerse\tID\tSupportReference\tOrigQuote\tOccurrence\tGLQuote\tOccurrenceNote\n";
+    if (state && state.data) {
+      let rows = state.data;
+      for (let i = 0; i < rows.length; i++) {
+        let _row = rows[i];
+        let _tsvRow = "";
+        // now each cell has both source and target values, delimited by tab
+        for (let j = 0; j < _row.length; j++) {
+          let values = _row[j].split("\t");
+          let targetValue = values[1];
+          targetValue = targetValue.replaceAll('\\[', '[').replaceAll('\\]', ']');
+          _tsvRow = _tsvRow + targetValue + "\t";
+        }
+        // add new row and a newline at end of row
+        tsvRows = tsvRows + _tsvRow.trim("\t") + "\n";
+      }
+    }
+    onValidate && onValidate(tsvRows);
+  }, [onValidate, state]);
+
+  const customToolbar = useCallback(() =>
+    <Toolbar preview={preview} onPreview={togglePreview} changed={changed || markdownState.isChanged} onSave={_onSave} onValidate={onValidate ? _onValidate : undefined} />,
+    [_onSave, changed, markdownState.isChanged, preview, togglePreview, _onValidate, onValidate]
+  );
+
   const _options = useMemo(() => ({
     responsive: 'scrollFullHeight',
     fixedHeaderOptions,
@@ -114,7 +155,7 @@ function DataTable({
     print: false,
     customToolbar,
     ...options,
-  }),[customToolbar, onChangeRowsPerPage, onColumnViewChange, options, rowsPerPage, scrollToTop] );
+  }), [customToolbar, onChangeRowsPerPage, onColumnViewChange, options, rowsPerPage, scrollToTop]);
 
   const _data = useMemo(() => getData({
     data, columnNames, rowHeader,
@@ -140,6 +181,8 @@ DataTable.propTypes = {
   targetFile: PropTypes.string.isRequired,
   /** The callback to save the edited targetFile */
   onSave: PropTypes.func.isRequired,
+  /** The callback to validate the edited targetFile */
+  onValidate: PropTypes.func,
   /** The delimiters for converting the file into rows/columns */
   delimiters: PropTypes.shape({
     /** Delimiters to convert a files into rows "\n" */
