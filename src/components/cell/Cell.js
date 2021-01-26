@@ -6,8 +6,18 @@ import isEqual from 'lodash.isequal';
 import { BlockEditable } from 'markdown-translatable';
 import useStyles from './styles';
 
-const inputFilters = [[/<br>/gi, '\n'], [/^\u200B/,''], [/\u200B$/,''] ];
-const outputFilters = [[/\n/gi, '<br>'],[/^\u200B/,''], [/\u200B$/,''] ];
+// on read from file/memory (md to html)
+const inputFilters = [
+  [/<br>/gi, '\n'], 
+  [/^\u200B/,''], [/\u200B$/,''], 
+  ['\\n\\n', '<br>&mdash;&mdash;&mdash;\n']
+];
+// on write to file/memory (html to md)
+const outputFilters = [
+  [/\n/gi, '<br>'],
+  [/^\u200B/,''], [/\u200B$/,''], 
+  ['<br>&mdash;&mdash;&mdash;\n', '\\n\\n'],
+];
 
 function BlockEditableWrapper({
   columnData,
