@@ -10,13 +10,14 @@ import useStyles from './styles';
 const inputFilters = [
   [/<br>/gi, '\n'], 
   [/^\u200B/,''], [/\u200B$/,''], 
+  ['\\n\\n> ', '\n\n> '],
 ];
 
 // screen to memory and thus to file
 const outputFilters = [
   [/^\u200B/,''], [/\u200B$/,''], 
-  //[/<br>/gi, '\n'], 
-  [/\n/gi, '\\n\\n'],
+  [/<br>/gi, '\n'], 
+  ['\n\n> ', '\\n\\n> '],
 ];
 
 
