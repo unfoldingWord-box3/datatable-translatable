@@ -107,11 +107,15 @@ export const correlateData = ({
 
       if (row.source) {
         _row = row.source.map((sourceCell, index) =>
-          `${sourceCell}${delimiters.cell}${row.target ? row.target[index] : ''}`,
+          `${sourceCell}${delimiters.cell}${row.target ? 
+            row.target[index]
+            .replace(/^\u200B+/, '')
+            .replace(/\u200B+$/,'') 
+            : ''}`,
         );
       } else {
         _row = row.target.map((targetCell, index) =>
-          `${delimiters.cell}${targetCell}`,
+          `${delimiters.cell}${targetCell.replace(/^\u200B+/, '').replace(/\u200B+$/,'')}`,
         );
       }
       return _row;
