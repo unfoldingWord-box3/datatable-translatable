@@ -2,7 +2,6 @@ import React from 'react';
 import { filterLogic, filterDisplay } from '../column-filter/helpers';
 import { Cell , HeaderCell } from '../cell';
 
-
 export function getColumns({
   columnNames, columnsFilter, columnsFilterOptions,
   columnsShow, delimiters, rowHeader,

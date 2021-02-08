@@ -1,3 +1,9 @@
+//import { filter } from 'markdown-translatable'
+
+// inputFilters used in markdown --> HTML conversion.
+export const tsvInputFilters = [[/<br>/gi, '\n'], [/\u200B/g,''] ];
+// outputFilters used in HTML --> markdown conversion.
+export const tsvOutputFilters = [[/\n/gi, '<br>'], [/\u200B/g,''] ];
 
 export const rowMoveAbove = ({ rows, rowIndex }) => arrayMove(rows, rowIndex, rowIndex - 1);
 export const rowMoveBelow = ({ rows, rowIndex }) => arrayMove(rows, rowIndex, rowIndex + 1);
@@ -107,7 +113,7 @@ export const correlateData = ({
 
       if (row.source) {
         _row = row.source.map((sourceCell, index) =>
-          `${sourceCell}${delimiters.cell}${row.target ? row.target[index] : ''}`,
+          `${sourceCell}${delimiters.cell}${row.target ? row.target[index].replace(/\u200B/g,'') : ''}`,
         );
       } else {
         _row = row.target.map((targetCell, index) =>
@@ -150,6 +156,7 @@ export const parseDataTable = ({ table, delimiters }) => {
     .map(row =>
       parseCells({ row, delimiter: delimiters.cell }),
     );
+
   const dataTable = {
     columnNames: getColumnNames(rows),
     rows: getRows(rows),
@@ -175,7 +182,9 @@ export const getColumnNames = (rows) => rows[0];
 export const getRows = (rows) => rows.slice(1);
 
 export const parseRows = ({ table, delimiter }) => table.split(delimiter).filter(row => row !== '');
-export const parseCells = ({ row, delimiter }) => row.split(delimiter);
+export const parseCells = ({ row, delimiter }) => row.split(delimiter).map(
+  cellValue => cellValue //filter({string: cellValue, filters: tsvInputFilters})
+);
 
 // Private
 

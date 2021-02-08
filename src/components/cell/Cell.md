@@ -19,7 +19,7 @@ const tableMeta = {
   ],
 };
 
-const onEdit = (object) => alert(JSON.stringify(object));
+const onEdit = (object) => alert("onEdit: " + JSON.stringify(object));
 
 <Cell
   value={value}
@@ -73,7 +73,7 @@ function Component() {
     </>
   );
 
-  const onEdit = (object) => alert(JSON.stringify(object));
+  const onEdit = (object) => alert("onEdit: " + JSON.stringify(object));
 
   return (
     <Cell

@@ -55,7 +55,7 @@ function Component() {
 
   const onSave = (_savedFile) => {
     setSavedFile(_savedFile);
-    alert(_savedFile);
+    alert("onSave:" + _savedFile);
   };
 
   const onValidate = () => {

@@ -4,10 +4,12 @@ import { Typography } from '@material-ui/core';
 import isEqual from 'lodash.isequal';
 
 import { BlockEditable } from 'markdown-translatable';
+import { tsvInputFilters, tsvOutputFilters } from '../../core/datatable';
+
 import useStyles from './styles';
 
-const inputFilters = [[/<br>/gi, '\n'], [/^\u200B/,''], [/\u200B$/,''] ];
-const outputFilters = [[/\n/gi, '<br>'],[/^\u200B/,''], [/\u200B$/,''] ];
+const inputFilters = tsvInputFilters;
+const outputFilters = tsvOutputFilters;
 
 function BlockEditableWrapper({
   columnData,
