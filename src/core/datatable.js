@@ -21,9 +21,34 @@ export const rowDelete = ({ rows, rowIndex }) => {
   return _rows;
 };
 export const cellEdit = ({
-  rows, rowIndex, columnIndex, value,
+  rows, rowIndex, columnIndex, value, data, keys,
 }) => {
   let _rows = rows.map(cells => [...cells]);
+  // if row index points beyond end of array, 
+  // then add as many empty rows as needed to 
+  // make it a valid, even if empty row
+  if ( rowIndex >= rows.length ) {
+    console.log("Undo delete process begins")
+    console.log("[datatable.js] cellEdit() number of row=", rows.length, " rowIndex=", rowIndex);
+    for (let i=-1; i < (rowIndex - rows.length); i++) {
+      let _row = new Array(rows[0].length);
+      // don't really want to do the below
+      for (let j=0; j < _row.length; j++) {
+        _row[j] = "---";
+      }
+      _rows.push( _row );
+    }
+    // now do an "undo" by filling in values from source
+    console.log("cellEdit() data=",data);
+    console.log("cellEdit() keys=",keys);
+    
+    for (let i=0; i < _rows[rowIndex].length; i++) {
+      //console.log("copying: from, to", rowIndex, i, " values:", data[rowIndex][i], _rows[rowIndex][i])
+      //_rows[rowIndex][i] = sourceRows[rowIndex][i];
+    }
+    console.log("Undo delete process ends")
+  }
+  
   _rows[rowIndex][columnIndex] = value;
   return _rows;
 };
@@ -154,6 +179,7 @@ export const parseDataTable = ({ table, delimiters }) => {
     .map(row =>
       parseCells({ row, delimiter: delimiters.cell }),
     );
+  console.log("parseDataTable() rows:", rows);
   const dataTable = {
     columnNames: getColumnNames(rows),
     rows: getRows(rows),

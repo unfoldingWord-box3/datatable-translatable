@@ -17,7 +17,7 @@ const rowsReducer = (rows, action) => {
   let _rows;
   const { type, value } = action;
   const {
-    rowIndex, rowData, columnIndex,
+    rowIndex, rowData, columnIndex, data
   } = value;
 
   switch (type) {
@@ -39,7 +39,7 @@ const rowsReducer = (rows, action) => {
       return deepFreeze(_rows);
     case 'CELL_EDIT':
       _rows = cellEdit({
-        rows, rowIndex, columnIndex, value: value.value,
+        rows, rowIndex, columnIndex, value: value.value, data: value.data, keys: config.compositeKeyIndices,
       });
       return deepFreeze(_rows);
     default:
@@ -122,11 +122,11 @@ export function DataTableContextProvider({
       setChanged(true);
     },
     cellEdit: ({
-      rowIndex, columnIndex, value,
+      rowIndex, columnIndex, value, 
     }) => {
       targetRowsDispatch({
         type: 'CELL_EDIT', value: {
-          rowIndex, columnIndex, value,
+          rowIndex, columnIndex, value, data,
         },
       });
       setChanged(true);
@@ -138,7 +138,7 @@ export function DataTableContextProvider({
       columnNames, rows: targetRows, delimiters,
     }),
     setChanged,
-  }), [columnNames, delimiters, targetRows]);
+  }), [columnNames, delimiters, targetRows, data]);
 
   const value = useMemo(() => deepFreeze({
     state: {
