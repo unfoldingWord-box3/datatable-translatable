@@ -39,7 +39,7 @@ const rowsReducer = (rows, action) => {
       return deepFreeze(_rows);
     case 'CELL_EDIT':
       _rows = cellEdit({
-        rows, rowIndex, columnIndex, value: value.value, data: value.data, keys: config.compositeKeyIndices,
+        rows, rowIndex, columnIndex, value: value.value, data: value.data, keys: value.keys,
       });
       return deepFreeze(_rows);
     default:
@@ -126,7 +126,7 @@ export function DataTableContextProvider({
     }) => {
       targetRowsDispatch({
         type: 'CELL_EDIT', value: {
-          rowIndex, columnIndex, value, data,
+          rowIndex, columnIndex, value, data, keys: compositeKeyIndices,
         },
       });
       setChanged(true);
