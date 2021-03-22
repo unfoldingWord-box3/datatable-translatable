@@ -129,11 +129,7 @@ export function DataTableContextProvider({
     }) => {
       targetRowsDispatch({
         type: 'CELL_EDIT', value: {
-<<<<<<< HEAD
           rowIndex, columnIndex, value, 
-=======
-          rowIndex, columnIndex, value, data,
->>>>>>> 06d7c42eddc14b1f6a9b6325b1c7169cf3417064
         },
       });
       setChanged(true);
