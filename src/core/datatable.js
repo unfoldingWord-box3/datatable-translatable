@@ -21,7 +21,7 @@ export const rowDelete = ({ rows, rowIndex }) => {
   return _rows;
 };
 export const cellEdit = ({
-  rows, rowIndex, columnIndex, value, data, keys,
+  rows, rowIndex, columnIndex, value, data,
 }) => {
   let _rows = rows.map(cells => [...cells]);
   // if row index points beyond end of array, 
@@ -40,11 +40,10 @@ export const cellEdit = ({
     }
     // now do an "undo" by filling in values from source
     console.log("cellEdit() data=",data);
-    console.log("cellEdit() keys=",keys);
     
     for (let i=0; i < _rows[rowIndex].length; i++) {
-      //console.log("copying: from, to", rowIndex, i, " values:", data[rowIndex][i], _rows[rowIndex][i])
-      //_rows[rowIndex][i] = sourceRows[rowIndex][i];
+      console.log("copying: from, to", rowIndex, i, " values (from/to):", data[rowIndex][i], _rows[rowIndex][i])
+      _rows[rowIndex][i] = data[rowIndex][i].trim();
     }
     console.log("Undo delete process ends")
   }
