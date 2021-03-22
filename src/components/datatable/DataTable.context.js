@@ -1,6 +1,5 @@
 import React, {
-  useState, useReducer, useEffect, useMemo,
-
+  useState, useReducer, useEffect, useMemo, useCallback,
 } from 'react';
 import isEqual from 'lodash.isequal';
 import useDeepEffect from 'use-deep-compare-effect';
@@ -102,6 +101,7 @@ export function DataTableContextProvider({
       const _data = correlateData({
         sourceRows, targetRows, compositeKeyIndices, delimiters,
       });
+      console.log("data re-correlated", _data);
       setData(_data);
     }
   }, [sourceRows, targetRows, compositeKeyIndices, delimiters]);
@@ -121,6 +121,7 @@ export function DataTableContextProvider({
     },
     rowDelete: ({ rowIndex }) => {
       targetRowsDispatch({ type: 'ROW_DELETE', value: { rowIndex } });
+      console.log("row deleted");
       setChanged(true);
     },
     cellEdit: ({
@@ -128,7 +129,11 @@ export function DataTableContextProvider({
     }) => {
       targetRowsDispatch({
         type: 'CELL_EDIT', value: {
+<<<<<<< HEAD
           rowIndex, columnIndex, value, 
+=======
+          rowIndex, columnIndex, value, data,
+>>>>>>> 06d7c42eddc14b1f6a9b6325b1c7169cf3417064
         },
       });
       setChanged(true);
