@@ -101,7 +101,6 @@ export function DataTableContextProvider({
       const _data = correlateData({
         sourceRows, targetRows, compositeKeyIndices, delimiters,
       });
-      console.log("data re-correlated", _data);
       setData(_data);
     }
   }, [sourceRows, targetRows, compositeKeyIndices, delimiters]);

@@ -27,28 +27,30 @@ export const cellEdit = ({
   // if row index points beyond end of array, 
   // then add as many empty rows as needed to 
   // make it a valid, even if empty row
-  if ( rowIndex >= rows.length ) {
+  if ( rowIndex >= rows.length || rows[rowIndex] === undefined ) {
     console.log("Undo delete process begins")
-    console.log("[datatable.js] cellEdit() number of row=", rows.length, " rowIndex=", rowIndex);
+    console.log("[datatable.js] cellEdit() number of row=", rows.length, " rowIndex=", rowIndex, " rows[rowIndex]", rows[rowIndex]);
     for (let i=-1; i < (rowIndex - rows.length); i++) {
       let _row = new Array(rows[0].length);
-      // don't really want to do the below
+      // set each cell in new row to be empty string
       for (let j=0; j < _row.length; j++) {
-        _row[j] = "---";
+        //_row[j] = "";
       }
       _rows.push( _row );
     }
     // now do an "undo" by filling in values from source
-    console.log("cellEdit() data=",data);
-    
     for (let i=0; i < _rows[rowIndex].length; i++) {
-      console.log("copying: from, to", rowIndex, i, " values (from/to):", data[rowIndex][i], _rows[rowIndex][i])
       _rows[rowIndex][i] = data[rowIndex][i].trim();
     }
     console.log("Undo delete process ends")
   }
   
   _rows[rowIndex][columnIndex] = value;
+  console.log("_rows before filter:", _rows);
+  // next remove any empty rows created by the undo delete process
+  _rows = _rows.filter( arow => arow[0] !== undefined );
+  console.log("_rows after filter:", _rows);
+
   return _rows;
 };
 
