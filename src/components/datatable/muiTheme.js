@@ -42,6 +42,7 @@ export const getMuiTheme = createMuiTheme({
         position: 'sticky',
         background: 'white',
         zIndex: '100',
+        minHeight: '48px !important',
       },
     },
     MUIDataTableHeadRow: { root: { display: 'none' } },

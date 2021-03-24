@@ -11,6 +11,7 @@ import useEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import MUIDataTable from 'mui-datatables';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import Headroom from 'react-headroom';
 
 import { MarkdownContext, MarkdownContextProvider } from 'markdown-translatable';
 
@@ -170,10 +171,53 @@ function DataTable({
     generateRowId, cellEdit, preview,
   }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader]);
 
+  const onHeadroomPin = () =>
+  {
+    alert("onHeadroomPin");
+    const el = document.getElementById("datatableTranslatableHeaderHeadroom");
+    if (el)
+    {
+      el.style.top = '64px';
+    }
+  }
+
+  const onHeadroomUnfix = () =>
+  {
+    alert("onHeadroomUnfix!");
+    const el = document.getElementById("datatableTranslatableHeaderHeadroom");
+    if (el)
+    {
+      el.style.top = '0px';
+    }
+  }
+
+  const onHeadroomUnpin = () =>
+  {
+    alert("onHeadroomUnpin");
+    const el = document.getElementById("datatableTranslatableHeaderHeadroom");
+    if (el)
+    {
+      el.style.top = '0px';
+      el.style.transform = 'translate(-100%)';
+    }
+  }
+
+  const calculateTheme = useCallback((outerTheme) => {
+    let currentTheme = getMuiTheme;
+    //currentTheme.overrides.MuiToolbar.root.display = 'none';
+    //currentTheme.overrides.MuiToolbar.root.top = outerTheme.overrides.MuiToolbar.root.top;
+    //currentTheme.overrides.MuiToolbar.root.top = 64;
+    //alert(outerTheme?.overrides?.MuiToolbar?.root?.top);
+    //alert(JSON.stringify(outerTheme));
+    return currentTheme;
+  }, []);
+
   return (
-    <MuiThemeProvider theme={getMuiTheme}>
-      <DatatableMemo dataTableElement={dataTableElement} columns={columns} data={_data} options={_options} {...props} />
-    </MuiThemeProvider>
+    <>
+      <MuiThemeProvider theme={getMuiTheme}>
+        <DatatableMemo dataTableElement={dataTableElement} columns={columns} data={_data} options={_options} {...props} />
+      </MuiThemeProvider>
+    </>
   );
 }
 

@@ -23,15 +23,43 @@ function Toolbar({
   const classes = useStyles();
   const saveDisabled = !changed;
 
+  const onHeadroomPin = () =>
+  {
+    const el = document.getElementById("datatableTranslatableHeaderHeadroom");
+    if (el)
+    {
+      el.style.top = '64px';
+    }
+  }
+
+  const onHeadroomUnfix = () =>
+  {
+    const el = document.getElementById("datatableTranslatableHeaderHeadroom");
+    if (el)
+    {
+      el.style.top = '0px';
+    }
+  }
+
+  const onHeadroomUnpin = () =>
+  {
+    const el = document.getElementById("datatableTranslatableHeaderHeadroom");
+    if (el)
+    {
+      el.style.top = '0px';
+      el.style.transform = 'translate(-100%)';
+    }
+  }
+
   return (
     <>
       {
         onValidate &&
         <Tooltip title="Validate">
-        <IconButton className={classes.iconButton} onClick={onValidate} aria-label="Validate">
-          <PlaylistAddCheck />
-        </IconButton>
-      </Tooltip>
+          <IconButton className={classes.iconButton} onClick={onValidate} aria-label="Validate">
+            <PlaylistAddCheck />
+          </IconButton>
+        </Tooltip>
       }
       <Tooltip title="Preview">
         <IconButton className={classes.iconButton} onClick={onPreview} aria-label="Preview" >
