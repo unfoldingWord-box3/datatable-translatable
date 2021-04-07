@@ -1,6 +1,5 @@
 import React, {
-  useState, useReducer, useEffect, useMemo,
-
+  useState, useReducer, useEffect, useMemo, useCallback,
 } from 'react';
 import isEqual from 'lodash.isequal';
 import useDeepEffect from 'use-deep-compare-effect';
@@ -13,39 +12,6 @@ import {
 
 export const DataTableContext = React.createContext();
 
-const rowsReducer = (rows, action) => {
-  let _rows;
-  const { type, value } = action;
-  const {
-    rowIndex, rowData, columnIndex,
-  } = value;
-
-  switch (type) {
-    case 'SET_ROWS':
-      return deepFreeze(value.rows);
-    case 'ROW_MOVE_ABOVE':
-      _rows = rowMoveAbove({ rows, rowIndex });
-      return deepFreeze(_rows);
-    case 'ROW_MOVE_BELOW':
-      _rows = rowMoveBelow({ rows, rowIndex });
-      return deepFreeze(_rows);
-    case 'ROW_ADD_BELOW':
-      _rows = rowAddBelow({
-        rows, rowIndex, rowData,
-      });
-      return deepFreeze(_rows);
-    case 'ROW_DELETE':
-      _rows = rowDelete({ rows, rowIndex });
-      return deepFreeze(_rows);
-    case 'CELL_EDIT':
-      _rows = cellEdit({
-        rows, rowIndex, columnIndex, value: value.value,
-      });
-      return deepFreeze(_rows);
-    default:
-      throw new Error(`Unsupported action type: ${action.type}`);
-  };
-};
 
 export function DataTableContextProvider({
   children,
@@ -57,14 +23,49 @@ export function DataTableContextProvider({
     columnsFilter,
   },
 }) {
+  const [data, setData] = useState({});
+  const rowsReducer = (rows, action) => {
+    let _rows;
+    const { type, value } = action;
+    const {
+      rowIndex, rowData, columnIndex,
+    } = value;
+  
+    switch (type) {
+      case 'SET_ROWS':
+        return deepFreeze(value.rows);
+      case 'ROW_MOVE_ABOVE':
+        _rows = rowMoveAbove({ rows, rowIndex });
+        return deepFreeze(_rows);
+      case 'ROW_MOVE_BELOW':
+        _rows = rowMoveBelow({ rows, rowIndex });
+        return deepFreeze(_rows);
+      case 'ROW_ADD_BELOW':
+        _rows = rowAddBelow({
+          rows, rowIndex, rowData,
+        });
+        return deepFreeze(_rows);
+      case 'ROW_DELETE':
+        _rows = rowDelete({ rows, rowIndex });
+        return deepFreeze(_rows);
+      case 'CELL_EDIT':
+        _rows = cellEdit({
+          rows, rowIndex, columnIndex, value: value.value, data,
+        });
+        return deepFreeze(_rows);
+      default:
+        throw new Error(`Unsupported action type: ${action.type}`);
+    };
+  };
+
   const [sourceRows, setSourceRows] = useState({});
   const [targetRows, targetRowsDispatch] = useReducer(rowsReducer, {});
   const setTargetRows = (rows) => targetRowsDispatch({ type: 'SET_ROWS', value: { rows } });
   const [changed, setChanged] = useState(false);
-  const [data, setData] = useState({});
   const [columnNames, setColumnNames] = useState({});
   const [columnsFilterOptions, setColumnsFilterOptions] = useState([]);
 
+  
   // populate columnsFilterOptions when ready
   useEffect(() => {
     if (columnsFilter && columnNames && Object.keys(data).length) {
@@ -119,14 +120,15 @@ export function DataTableContextProvider({
     },
     rowDelete: ({ rowIndex }) => {
       targetRowsDispatch({ type: 'ROW_DELETE', value: { rowIndex } });
+      console.log("row deleted");
       setChanged(true);
     },
     cellEdit: ({
-      rowIndex, columnIndex, value,
+      rowIndex, columnIndex, value, 
     }) => {
       targetRowsDispatch({
         type: 'CELL_EDIT', value: {
-          rowIndex, columnIndex, value,
+          rowIndex, columnIndex, value, 
         },
       });
       setChanged(true);
@@ -138,7 +140,7 @@ export function DataTableContextProvider({
       columnNames, rows: targetRows, delimiters,
     }),
     setChanged,
-  }), [columnNames, delimiters, targetRows]);
+  }), [columnNames, delimiters, targetRows, data]);
 
   const value = useMemo(() => deepFreeze({
     state: {
