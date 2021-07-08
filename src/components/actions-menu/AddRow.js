@@ -79,7 +79,6 @@ function AddRowMenu({
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="dialog-description">
-            Columns with 50%+ unique values will not be duplicated.
           </DialogContentText>
           <Divider />
           <br />
