@@ -60,9 +60,12 @@ function RowMenu({
   // Let's test by splitting index 1; in the sample above there should
   // be two elements, both being the string "JUD" if the row is not
   // deleted.
+  // If a row is deleted (as opposed to being a new add/insert), then
+  // source side will *not* be empty, but the target side will be empty.
   let cellvals = []
   cellvals = rowData[1].split('\t')
-  if ( cellvals[0] !== cellvals[1] ) {
+  // is this a deleted row?
+  if ( cellvals[0] !== "" && cellvals[1] === "" ) {
     return (
       <>
       </>
