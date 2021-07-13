@@ -78,8 +78,6 @@ function AddRowMenu({
           Add Row
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="dialog-description">
-          </DialogContentText>
           <Divider />
           <br />
           {newRowComponent}
