@@ -4,10 +4,9 @@ import { DataTableContext, DataTableContextProvider } from './DataTable.context'
 import { getColumns, getData } from './helpers';
 
 import React, {
-  useState, useContext, useRef, useCallback, useMemo,
+  useState, useContext, useRef, useCallback, useMemo, useEffect,
 } from 'react';
 import isEqual from 'lodash.isequal';
-import useEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import MUIDataTable from 'mui-datatables';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -45,6 +44,7 @@ function DataTable({
   config,
   onSave,
   onValidate,
+  onContentIsDirty,
   sourceFile,
   generateRowId: _generateRowId,
   ...props
@@ -64,7 +64,7 @@ function DataTable({
   } = state;
   const { cellEdit: _cellEdit } = actions;
 
-  const { state: markdownState, actions: markdownActions } = useContext(MarkdownContext);
+  const { state: markdownState, actions: markdownActions } = useContext(MarkdownContext) || {};
 
   const generateRowId = useCallback(_generateRowId, []);
 
@@ -77,6 +77,14 @@ function DataTable({
   useEffect(() => {
     changePage(0);
   }, [changePage]);
+  
+  // Push "isChanged," so app knows when SAVE button is enabled.
+  // See also Translatable in markdown-translatable.
+  useEffect(() => {
+    if (onContentIsDirty) {
+      onContentIsDirty(markdownState.isChanged);
+    }
+  }, [markdownState.isChanged, onContentIsDirty]);
 
   const togglePreview = useCallback(() => setPreview(!preview), [preview]);
 
