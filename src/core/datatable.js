@@ -96,14 +96,21 @@ export const rowGenerate = ({
     const valuesLengths = Object.keys(lengthIndex[column]);
     const valuesLengthsLength = valuesLengths.length;
     const needRandomId = (valuesRatio > 0.99 && valuesLengthsLength <= 2);
-
     let newValue = '';
 
     if (duplicateValue) {
       newValue = value;
     } else if (needRandomId) {
       const { length } = value;
-      newValue = randomId({ length });
+      let notUnique = true;
+      let counter = 0;
+      const allIds = Object.keys(rowsIndex[column]);
+      while ( notUnique && counter < 1000 ) {
+        newValue = randomId({ length });
+        notUnique = allIds.includes(newValue);
+        counter++;
+      }
+      if ( counter >= 1000) {console.log("Duplicate IDs found after 1000 tries")}
     }
     return newValue;
   });
@@ -209,7 +216,14 @@ export const parseCells = ({ row, delimiter }) => row.split(delimiter);
 
 // Private
 
+// ids must begin with a letter
 const randomId = ({ length }) => {
+  // get the initial letter first
+  const letters = ["a", "b", "c", "d", "e", "f", "g",
+    "h", "i", "j", "k", "l", "m", "n", "o", "p", "q",
+    "r", "s", "t", "u", "v", "w", "x", "y", "z"
+  ];
+  const random = Math.floor(Math.random() * letters.length);
   const number = Math.random(); // 0.9394456857981651
 
   // number.toString(36); // '0.xtis06h6'
@@ -217,7 +231,7 @@ const randomId = ({ length }) => {
     length = 9;
   }
 
-  const id = number.toString(36).substr(2, length); // 'xtis06h6'
+  const id = letters[random] + number.toString(36).substr(2, length-1); // 'xtis06h6'
   return id;
 };
 
