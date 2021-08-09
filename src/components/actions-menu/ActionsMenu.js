@@ -36,6 +36,42 @@ function RowMenu({
 
   const disableMoveAbove = rowIndex === 0;
 
+  // rowData is the combined array of source and target
+  // if target rows have been deleted, then source will contain more
+  // rows that the target. For deleted rows, the combined array will 
+  // have for each cell just the source data ending in a tab character.
+  // Normally the target value for each cell follows the tab character.
+  // If that target value is missing, then we are on a deleted row 
+  // and we cannot add a row at this location.
+
+  // From the console log, here is a sample:
+  // 0: "rowHeader"
+  // 1: "JUD\t"
+  // 2: "1\t"
+  // 3: "2\t"
+  // 4: "q2qo\t"
+  // 5: "figs-metaphor\t"
+  // 6: "ὑμῖν…πληθυνθείη\t"
+  // 7: "1\t"
+  // 8: "May…be multiplied to you\t"
+  // 9: "These ideas are spoken of as if ...
+
+  // Note that there is the constant value "rowHeader" in slot zero.
+  // Let's test by splitting index 1; in the sample above there should
+  // be two elements, both being the string "JUD" if the row is not
+  // deleted.
+  // If a row is deleted (as opposed to being a new add/insert), then
+  // source side will *not* be empty, but the target side will be empty.
+  let cellvals = []
+  cellvals = rowData[1].split('\t')
+  // is this a deleted row?
+  if ( cellvals[0] !== "" && cellvals[1] === "" ) {
+    return (
+      <>
+      </>
+    )
+  }
+
   const addRowButton = (
     <Tooltip title={localString('AddRow')} arrow>
       <IconButton className={classes.button}>

@@ -4,7 +4,7 @@ import { DataTableContext, DataTableContextProvider } from './DataTable.context'
 import { getColumns, getData } from './helpers';
 
 import React, {
-  useState, useContext, useRef, useCallback, useMemo
+  useState, useContext, useRef, useCallback, useMemo, useEffect,
 } from 'react';
 import isEqual from 'lodash.isequal';
 import useDeepEffect from 'use-deep-compare-effect';
@@ -46,6 +46,7 @@ function DataTable({
   onSave,
   onEdit,
   onValidate,
+  onContentIsDirty,
   sourceFile,
   generateRowId: _generateRowId,
   ...props
@@ -69,6 +70,8 @@ function DataTable({
   } = state;
   const { cellEdit: _cellEdit } = actions;
 
+  const { state: markdownState, actions: markdownActions } = useContext(MarkdownContext) || {};
+
   const generateRowId = useCallback(_generateRowId, []);
 
   const cellEdit = useCallback(parms => {
@@ -83,6 +86,14 @@ function DataTable({
   useDeepEffect(() => {
     changePage(0);
   }, [changePage]);
+  
+  // Push "isChanged," so app knows when SAVE button is enabled.
+  // See also Translatable in markdown-translatable.
+  useEffect(() => {
+    if (onContentIsDirty) {
+      onContentIsDirty(markdownState.isChanged);
+    }
+  }, [markdownState.isChanged, onContentIsDirty]);
 
   const togglePreview = useCallback(() => setPreview(!preview), [preview]);
 
