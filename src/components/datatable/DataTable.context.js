@@ -83,6 +83,7 @@ export function DataTableContextProvider({
   // parse sourceFile when updated
   useEffect(() => {
     if (parser && parser.tsvStringToTable) {
+      console.log("DataTable.context() using tsv parser for source")
       const { data: rows } = parser.tsvStringToTable(sourceFile);
       setSourceRows(rows);
     } else {
@@ -95,6 +96,7 @@ export function DataTableContextProvider({
   // parse targetFile when updated
   useEffect(() => {
     if (parser && parser.tsvStringToTable) {
+      console.log("DataTable.context() using tsv parser for target")
       const { header: columnNames, data: rows } = parser.tsvStringToTable(targetFile);
       setColumnNames(columnNames);
       setTargetRows(rows);
@@ -147,9 +149,24 @@ export function DataTableContextProvider({
     rowGenerate: ({ rowIndex }) => rowGenerate({
       rows: targetRows, columnNames, rowIndex,
     }),
-    targetFileSave: () => stringify({
-      columnNames, rows: targetRows, delimiters,
-    }),
+    targetFileSave: () => {
+      if (parser && parser.tableToTsvString) {
+        console.log("DataTable.context() using tsv converter to stringify target")
+        // combine header rows and data rows
+        let table = [];
+        table.push(columnNames);
+        for (let i=0; i<targetRows.length; i++) {
+          table.push(targetRows[i]);
+        }
+        const {data: data, errors: errors} = parser.tableToTsvString(table);
+        if ( errors.length !== 0 ) {
+          throw(JSON.stringify(errors,null,4));
+        }
+        return data;
+      } else {
+        stringify({
+        columnNames, rows: targetRows, delimiters,
+    })}},
     setChanged,
   }), [columnNames, delimiters, targetRows]);
 
