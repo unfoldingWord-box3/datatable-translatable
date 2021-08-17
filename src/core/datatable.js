@@ -105,12 +105,13 @@ export const rowGenerate = ({
       let notUnique = true;
       let counter = 0;
       const allIds = Object.keys(rowsIndex[column]);
-      while ( notUnique && counter < 1000 ) {
+      const UNIQUE_COUNTER_THRESHOLD = 1000;
+      while ( notUnique && counter < UNIQUE_COUNTER_THRESHOLD ) {
         newValue = randomId({ length });
         notUnique = allIds.includes(newValue);
         counter++;
       }
-      if ( counter >= 1000) {console.log("Duplicate IDs found after 1000 tries")}
+      if ( counter >= UNIQUE_COUNTER_THRESHOLD) {console.log("Duplicate IDs found after " + UNIQUE_COUNTER_THRESHOLD + " tries")}
     }
     return newValue;
   });
