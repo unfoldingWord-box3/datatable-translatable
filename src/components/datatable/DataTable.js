@@ -62,8 +62,6 @@ function DataTable({
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
   const [isAutoSaveChanged, setIsAutoSaveChanged] = useState(false);
 
-  const { state: {isChanged}, actions: markdownActions } = useContext(MarkdownContext);
-
   const { state, actions } = useContext(DataTableContext);
   const {
     columnNames, data, columnsFilterOptions,
