@@ -158,7 +158,7 @@ export function DataTableContextProvider({
         for (let i=0; i<targetRows.length; i++) {
           table.push(targetRows[i]);
         }
-        const {data: data, errors: errors} = parser.tableToTsvString(table);
+        const {data, errors} = parser.tableToTsvString(table);
         if ( errors.length !== 0 ) {
           throw(JSON.stringify(errors,null,4));
         }
@@ -168,7 +168,7 @@ export function DataTableContextProvider({
         columnNames, rows: targetRows, delimiters,
     })}},
     setChanged,
-  }), [columnNames, delimiters, targetRows, ]);
+  }), [columnNames, delimiters, targetRows, parser]);
 
   const value = useMemo(() => deepFreeze({
     state: {
