@@ -202,9 +202,21 @@ export const stringify = ({
 
   if (columnNames && rows) {
     let dataTable = [columnNames, ...rows];
-
-    string = dataTable.map(cells => cells.join(delimiters.cell))
-      .join(delimiters.row);
+    for (let i=0; i<dataTable.length; i++) {
+      let rowstring = '';
+      for (let j=0; j<dataTable[i].length; j++) {
+        rowstring += dataTable[i][j].replaceAll(/\n/gi,'<br>');
+        if ( j < (dataTable[i].length - 1) ) {rowstring += delimiters.cell};
+      }
+      string += rowstring;
+      string += delimiters.row;
+    }
+    // The below is commented out and replaced with the 2d for loop above.
+    // This is needed in order to only apply the outputFilter to make newlines 
+    // into <br> elements when no parser is provided to the component. 
+    // This makes up for the unconditional removal 
+    // from the datatable outputfilter specified in Cell.js
+    //string = dataTable.map(cells => cells.join(delimiters.cell)).join(delimiters.row);
   }
   return string;
 };

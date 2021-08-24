@@ -150,6 +150,7 @@ export function DataTableContextProvider({
       rows: targetRows, columnNames, rowIndex,
     }),
     targetFileSave: () => {
+      console.log("targetFileSave: ()")
       if (parser && parser.tableToTsvString) {
         console.log("DataTable.context() using tsv converter to stringify target")
         // combine header rows and data rows
@@ -164,7 +165,8 @@ export function DataTableContextProvider({
         }
         return data;
       } else {
-        stringify({
+        console.log("targetFileSave: () -> stringify()")
+        return stringify({
         columnNames, rows: targetRows, delimiters,
     })}},
     setChanged,
