@@ -66,7 +66,7 @@ export function DataTableContextProvider({
   const [columnNames, setColumnNames] = useState({});
   const [columnsFilterOptions, setColumnsFilterOptions] = useState([]);
 
-  
+
   // populate columnsFilterOptions when ready
   useEffect(() => {
     if (columnsFilter && columnNames && Object.keys(data).length) {

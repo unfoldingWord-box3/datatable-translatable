@@ -7,6 +7,7 @@ import React, {
   useState, useContext, useRef, useCallback, useMemo, useEffect,
 } from 'react';
 import isEqual from 'lodash.isequal';
+import useDeepEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import MUIDataTable from 'mui-datatables';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -43,6 +44,7 @@ function DataTable({
   delimiters,
   config,
   onSave,
+  onEdit,
   onValidate,
   onContentIsDirty,
   sourceFile,
@@ -58,9 +60,11 @@ function DataTable({
   const [rowsPerPage, setRowsPerPage] = useState(options.rowsPerPage || 25);
   const [preview, setPreview] = useState(true);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
+  const [isAutoSaveChanged, setIsAutoSaveChanged] = useState(false);
+
   const { state, actions } = useContext(DataTableContext);
   const {
-    columnNames, data, changed, columnsFilterOptions,
+    columnNames, data, columnsFilterOptions,
   } = state;
   const { cellEdit: _cellEdit } = actions;
 
@@ -68,13 +72,16 @@ function DataTable({
 
   const generateRowId = useCallback(_generateRowId, []);
 
-  const cellEdit = useCallback(_cellEdit, []);
+  const cellEdit = useCallback(parms => {
+    _cellEdit(parms);
+    setIsAutoSaveChanged(true);
+  }, [_cellEdit, setIsAutoSaveChanged]);
 
   const changePage = useCallback(function (page) {
     dataTableElement.current.changePage(page);
   }, [dataTableElement]);
 
-  useEffect(() => {
+  useDeepEffect(() => {
     changePage(0);
   }, [changePage]);
   
@@ -88,6 +95,8 @@ function DataTable({
 
   const togglePreview = useCallback(() => setPreview(!preview), [preview]);
 
+  // _onSave is called by Toolbar; cellEdit is called by DataTable.
+  // State (contents) are different at these two times. (cellEdit lags)
   const _onSave = useCallback(() => {
     const savedFile = actions.targetFileSave();
     onSave(savedFile);
@@ -97,6 +106,20 @@ function DataTable({
     }
   }, [actions, onSave, markdownActions]);
 
+  useDeepEffect(() => {
+    console.log("useDeepEffect for isAutoSaveChanged");
+    if (onEdit && isAutoSaveChanged)
+    {
+      const savedFile = actions.targetFileSave();
+      onEdit(savedFile);
+      
+      setIsAutoSaveChanged(false);
+      // if (markdownActions && markdownActions.setIsAutoSaveChanged) {
+      //   markdownActions.setIsAutoSaveChanged(false);
+      // }
+    }
+  }, [isAutoSaveChanged, onEdit, markdownActions, actions]);
+  
   const onColumnViewChange = useCallback((changedColumn, action) => {
     let _columnsShow = [...columnsShow];
 
@@ -151,8 +174,8 @@ function DataTable({
   }, [onValidate, state]);
 
   const customToolbar = useCallback(() =>
-    <Toolbar preview={preview} onPreview={togglePreview} changed={changed || markdownState.isChanged} onSave={_onSave} onValidate={onValidate ? _onValidate : undefined} />,
-    [_onSave, changed, markdownState.isChanged, preview, togglePreview, _onValidate, onValidate]
+    <Toolbar preview={preview} onPreview={togglePreview} changed={markdownState.isChanged} onSave={_onSave} onValidate={onValidate ? _onValidate : undefined} />,
+    [_onSave, markdownState.isChanged, preview, togglePreview, _onValidate, onValidate]
   );
 
   const _options = useMemo(() => ({
