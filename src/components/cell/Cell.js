@@ -7,7 +7,8 @@ import { BlockEditable } from 'markdown-translatable';
 import useStyles from './styles';
 
 const inputFilters = [[/<br>/gi, '\n'], [/^\u200B/,''], [/\u200B$/,''] ];
-const outputFilters = [[/\n/gi, '<br>'],[/^\u200B/,''], [/\u200B$/,''] ];
+const outputFilters = [ [/^\u200B/,''], [/\u200B$/,''] ];
+//const outputFilters = [[/\n/gi, '<br>'],[/^\u200B/,''], [/\u200B$/,''] ];
 
 function BlockEditableWrapper({
   columnData,
