@@ -174,8 +174,8 @@ function DataTable({
   }, [onValidate, state]);
 
   const customToolbar = useCallback(() =>
-    <Toolbar preview={preview} onPreview={togglePreview} changed={isChanged} onSave={_onSave} onValidate={onValidate ? _onValidate : undefined} />,
-    [_onSave, isChanged, preview, togglePreview, _onValidate, onValidate]
+    <Toolbar preview={preview} onPreview={togglePreview} changed={markdownState.isChanged} onSave={_onSave} onValidate={onValidate ? _onValidate : undefined} />,
+    [_onSave, markdownState.isChanged, preview, togglePreview, _onValidate, onValidate]
   );
 
   const _options = useMemo(() => ({

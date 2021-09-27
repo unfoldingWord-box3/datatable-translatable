@@ -167,7 +167,7 @@ export function DataTableContextProvider({
         columnNames, rows: targetRows, delimiters,
     })}},
     setChanged,
-  }), [columnNames, delimiters, targetRows]);
+  }), [columnNames, delimiters, targetRows, parser]);
 
   const value = useMemo(() => deepFreeze({
     state: {
