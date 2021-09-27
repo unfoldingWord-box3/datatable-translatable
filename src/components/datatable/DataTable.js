@@ -144,29 +144,33 @@ function DataTable({
   }, [scrollToTop]);
 
   const _onValidate = useCallback(() => {
-    // NOTE! the content on-screen, in-memory does NOT include
-    // the headers. So the initial value of tsvRows will be the headers.
-    let tsvRows = "Book\tChapter\tVerse\tID\tSupportReference\tOrigQuote\tOccurrence\tGLQuote\tOccurrenceNote\n";
+    // Note 1: the content on-screen, in-memory does NOT include
+    // the headers. Since this component has no awareness of 
+    // specific resource requirements, the header must be added
+    // as first row by the app itself.
+
+    // Note 2: the content on-screen, in-memory contains both
+    // source and target data. The target data must be teased
+    // out. A new array of rows (target rows) will be created 
+    // and this is the data that will be passed to the validation
+    // closure passed to this component.
+    let targetRows = [];
     if (state && state.data) {
       let rows = state.data;
       for (let i = 0; i < rows.length; i++) {
-        let _row = rows[i];
-        let _tsvRow = "";
+        let row = rows[i];
+        let targetRow = [];
         // now each cell has both source and target values, delimited by tab
-        for (let j = 0; j < _row.length; j++) {
-          let values = _row[j].split("\t");
+        for (let j = 0; j < row.length; j++) {
+          let values = row[j].split("\t");
           let targetValue = values[1];
           targetValue = targetValue.replaceAll('\\[', '[').replaceAll('\\]', ']');
-          _tsvRow = _tsvRow + targetValue + "\t";
+          targetRow.push(targetValue);
         }
-        // add new row and a newline at end of row
-        _tsvRow = _tsvRow.trim('\t');
-        // check if row has content on target side
-        if ( _tsvRow === '' ) continue;
-        tsvRows = tsvRows + _tsvRow + "\n";
+        targetRows.push(targetRow);
       }
     }
-    onValidate && onValidate(tsvRows);
+    onValidate && onValidate(targetRows);
   }, [onValidate, state]);
 
   const customToolbar = useCallback(() =>
@@ -249,3 +253,34 @@ DataTable.defaultProps = {
     cell: '\t',
   },
 };
+
+
+/* code graveyard
+
+  const _onValidate = useCallback(() => {
+    // NOTE! the content on-screen, in-memory does NOT include
+    // the headers. So the initial value of tsvRows will be the headers.
+    let tsvRows = "Book\tChapter\tVerse\tID\tSupportReference\tOrigQuote\tOccurrence\tGLQuote\tOccurrenceNote\n";
+    if (state && state.data) {
+      let rows = state.data;
+      for (let i = 0; i < rows.length; i++) {
+        let _row = rows[i];
+        let _tsvRow = "";
+        // now each cell has both source and target values, delimited by tab
+        for (let j = 0; j < _row.length; j++) {
+          let values = _row[j].split("\t");
+          let targetValue = values[1];
+          targetValue = targetValue.replaceAll('\\[', '[').replaceAll('\\]', ']');
+          _tsvRow = _tsvRow + targetValue + "\t";
+        }
+        // add new row and a newline at end of row
+        _tsvRow = _tsvRow.trim('\t');
+        // check if row has content on target side
+        if ( _tsvRow === '' ) continue;
+        tsvRows = tsvRows + _tsvRow + "\n";
+      }
+    }
+    onValidate && onValidate(tsvRows);
+  }, [onValidate, state]);
+
+*/

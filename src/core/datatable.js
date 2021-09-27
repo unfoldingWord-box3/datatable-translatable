@@ -96,14 +96,22 @@ export const rowGenerate = ({
     const valuesLengths = Object.keys(lengthIndex[column]);
     const valuesLengthsLength = valuesLengths.length;
     const needRandomId = (valuesRatio > 0.99 && valuesLengthsLength <= 2);
-
     let newValue = '';
 
     if (duplicateValue) {
       newValue = value;
     } else if (needRandomId) {
       const { length } = value;
-      newValue = randomId({ length });
+      let notUnique = true;
+      let counter = 0;
+      const allIds = Object.keys(rowsIndex[column]);
+      const UNIQUE_COUNTER_THRESHOLD = 1000;
+      while ( notUnique && counter < UNIQUE_COUNTER_THRESHOLD ) {
+        newValue = randomId({ length });
+        notUnique = allIds.includes(newValue);
+        counter++;
+      }
+      if ( counter >= UNIQUE_COUNTER_THRESHOLD) {console.log("Duplicate IDs found after " + UNIQUE_COUNTER_THRESHOLD + " tries")}
     }
     return newValue;
   });
@@ -194,9 +202,21 @@ export const stringify = ({
 
   if (columnNames && rows) {
     let dataTable = [columnNames, ...rows];
-
-    string = dataTable.map(cells => cells.join(delimiters.cell))
-      .join(delimiters.row);
+    for (let i=0; i<dataTable.length; i++) {
+      let rowstring = '';
+      for (let j=0; j<dataTable[i].length; j++) {
+        rowstring += dataTable[i][j].replaceAll(/\n/gi,'<br>');
+        if ( j < (dataTable[i].length - 1) ) {rowstring += delimiters.cell};
+      }
+      string += rowstring;
+      string += delimiters.row;
+    }
+    // The below is commented out and replaced with the 2d for loop above.
+    // This is needed in order to only apply the outputFilter to make newlines 
+    // into <br> elements when no parser is provided to the component. 
+    // This makes up for the unconditional removal 
+    // from the datatable outputfilter specified in Cell.js
+    //string = dataTable.map(cells => cells.join(delimiters.cell)).join(delimiters.row);
   }
   return string;
 };
@@ -209,7 +229,14 @@ export const parseCells = ({ row, delimiter }) => row.split(delimiter);
 
 // Private
 
+// ids must begin with a letter
 const randomId = ({ length }) => {
+  // get the initial letter first
+  const letters = ["a", "b", "c", "d", "e", "f", "g",
+    "h", "i", "j", "k", "l", "m", "n", "o", "p", "q",
+    "r", "s", "t", "u", "v", "w", "x", "y", "z"
+  ];
+  const random = Math.floor(Math.random() * letters.length);
   const number = Math.random(); // 0.9394456857981651
 
   // number.toString(36); // '0.xtis06h6'
@@ -217,7 +244,7 @@ const randomId = ({ length }) => {
     length = 9;
   }
 
-  const id = number.toString(36).substr(2, length); // 'xtis06h6'
+  const id = letters[random] + number.toString(36).substr(2, length-1); // 'xtis06h6'
   return id;
 };
 

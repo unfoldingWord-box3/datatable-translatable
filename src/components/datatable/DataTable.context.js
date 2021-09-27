@@ -18,6 +18,7 @@ export function DataTableContextProvider({
   sourceFile,
   targetFile,
   delimiters,
+  parser,
   config: {
     compositeKeyIndices,
     columnsFilter,
@@ -81,20 +82,32 @@ export function DataTableContextProvider({
   }, [columnsFilter, columnNames, data, delimiters, columnsFilterOptions]);
   // parse sourceFile when updated
   useEffect(() => {
-    if (delimiters) {
-      const { rows } = parseDataTable({ table: sourceFile, delimiters });
+    if (parser && parser.tsvStringToTable) {
+      console.log("DataTable.context() using tsv parser for source")
+      const { data: rows } = parser.tsvStringToTable(sourceFile);
       setSourceRows(rows);
+    } else {
+      if (delimiters) {
+        const { rows } = parseDataTable({ table: sourceFile, delimiters });
+        setSourceRows(rows);
+      }
     }
-  }, [sourceFile, delimiters]);
+  }, [sourceFile, delimiters, parser]);
   // parse targetFile when updated
   useEffect(() => {
-    if (delimiters) {
-      const { columnNames, rows } = parseDataTable({ table: targetFile, delimiters });
+    if (parser && parser.tsvStringToTable) {
+      console.log("DataTable.context() using tsv parser for target")
+      const { header: columnNames, data: rows } = parser.tsvStringToTable(targetFile);
       setColumnNames(columnNames);
       setTargetRows(rows);
       setChanged(false);
+    } else if (delimiters) {
+        const { columnNames, rows } = parseDataTable({ table: targetFile, delimiters });
+        setColumnNames(columnNames);
+        setTargetRows(rows);
+        setChanged(false);
     }
-  }, [targetFile, delimiters]);
+  }, [targetFile, delimiters, parser]);
   // correlate data by compositeKeyIndices when sourceRows or targetRows updated
   useDeepEffect(() => {
     if (Object.keys(sourceRows).length && Object.keys(targetRows).length) {
@@ -136,9 +149,23 @@ export function DataTableContextProvider({
     rowGenerate: ({ rowIndex }) => rowGenerate({
       rows: targetRows, columnNames, rowIndex,
     }),
-    targetFileSave: () => stringify({
-      columnNames, rows: targetRows, delimiters,
-    }),
+    targetFileSave: () => {
+      if (parser && parser.tableToTsvString) {
+        // combine header rows and data rows
+        let table = [];
+        table.push(columnNames);
+        for (let i=0; i<targetRows.length; i++) {
+          table.push(targetRows[i]);
+        }
+        const {data, errors} = parser.tableToTsvString(table);
+        if ( errors.length !== 0 ) {
+          throw(JSON.stringify(errors,null,4));
+        }
+        return data;
+      } else {
+        return stringify({
+        columnNames, rows: targetRows, delimiters,
+    })}},
     setChanged,
   }), [columnNames, delimiters, targetRows]);
 
