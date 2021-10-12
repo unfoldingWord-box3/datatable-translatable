@@ -3,11 +3,13 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   root: {},
   original: {
+    padding: '0 15px',
     background: '#eee4',
     display: 'table-cell',
     width: '50%',
   },
   translation: {
+    padding: '0 15px',
     width: '50%',
     display: 'table-cell',
   },

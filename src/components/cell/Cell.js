@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
+import { Typography, Grid } from '@material-ui/core';
 import isEqual from 'lodash.isequal';
 
 import { BlockEditable } from 'markdown-translatable';
@@ -31,28 +31,86 @@ function BlockEditableWrapper({
   return (
     <div className={classes.row}>
       <div className={classes.original}>
-        {subheading}
-        <BlockEditable
-          key={`${rowIndex}-${columnIndex}-original`}
-          preview={preview}
-          markdown={originalValue}
-          editable={false}
-          inputFilters={inputFilters}
-          outputFilters={outputFilters}
-        />
+      <Grid container spacing={2}>
+          {subheading.props.children !== "OccurrenceNote"?
+            <>
+              <Grid item xs={4} style={{padding: '16px'}} >
+                {subheading}
+              </Grid>
+              <Grid item xs={6} style={{padding: '6px', margin:'0px 25px'}}>
+                <BlockEditable
+                  key={`${rowIndex}-${columnIndex}-original`}
+                  preview={preview}
+                  markdown={originalValue}
+                  editable={false}
+                  inputFilters={inputFilters}
+                  outputFilters={outputFilters}
+                />
+              </Grid>
+            </>:''
+          }
+        </Grid>
+        <Grid container spacing={2}>
+          {subheading.props.children == "OccurrenceNote"?
+            <>
+              <Grid item xs={4} style={{padding: '16px', marginTop: '6px'}} >
+              {subheading}
+              </Grid>
+              <BlockEditable
+                style={{padding: '0 25px', paddingRight:'10px', margin:'5px'}}
+                key={`${rowIndex}-${columnIndex}-original`}
+                preview={preview}
+                markdown={originalValue}
+                editable={false}
+                inputFilters={inputFilters}
+                outputFilters={outputFilters}
+              />
+            </>:''
+          }
+        </Grid>
       </div>
       <div className={classes.translation}>
-        {subheading}
-        <BlockEditable
-          key={`${rowIndex}-${columnIndex}-target`}
-          debounce={1000}
-          preview={preview}
-          markdown={translationValue}
-          editable={true}
-          inputFilters={inputFilters}
-          outputFilters={outputFilters}
-          onEdit={handleEdit}
-        />
+        <Grid container spacing={2}>
+          {subheading.props.children !== "OccurrenceNote"?
+            <>
+              <Grid item xs={4} style={{padding: '16px'}}>
+                {subheading}
+              </Grid>
+              <Grid item xs={6} style={{padding: '4px',  margin:'0px 25px'}}>
+                <BlockEditable
+                  key={`${rowIndex}-${columnIndex}-target`}
+                  debounce={1000}
+                  preview={preview}
+                  markdown={translationValue}
+                  editable={true}
+                  inputFilters={inputFilters}
+                  outputFilters={outputFilters}
+                  onEdit={handleEdit}
+                />
+              </Grid>
+            </>:''
+          }
+        </Grid>
+        <Grid container spacing={2}>
+          {subheading.props.children == "OccurrenceNote"?
+            <>
+              <Grid item xs={4} style={{padding: '16px', marginTop: '6px'}} >
+                {subheading}
+              </Grid>
+              <BlockEditable
+                style={{ marginLeft: '2px', paddingLeft:'5px', paddingRight:'10px'}}
+                key={`${rowIndex}-${columnIndex}-target`}
+                debounce={1000}
+                preview={preview}
+                markdown={translationValue}
+                editable={true}
+                inputFilters={inputFilters}
+                outputFilters={outputFilters}
+                onEdit={handleEdit}
+              />
+            </>:''
+          }
+        </Grid>
       </div>
     </div>
   );
