@@ -21,10 +21,36 @@ export const rowDelete = ({ rows, rowIndex }) => {
   return _rows;
 };
 export const cellEdit = ({
-  rows, rowIndex, columnIndex, value,
+  rows, rowIndex, columnIndex, value, data,
 }) => {
   let _rows = rows.map(cells => [...cells]);
+  // if row index points beyond end of array, 
+  // then add as many empty rows as needed to 
+  // make it a valid, even if empty row
+  if ( rowIndex >= rows.length || rows[rowIndex] === undefined ) {
+    //console.log("Undo delete process begins")
+    //console.log("[datatable.js] cellEdit() number of row=", rows.length, " rowIndex=", rowIndex, " rows[rowIndex]", rows[rowIndex]);
+    for (let i=-1; i < (rowIndex - rows.length); i++) {
+      let _row = new Array(rows[0].length);
+      // set each cell in new row to be empty string
+      for (let j=0; j < _row.length; j++) {
+        //_row[j] = "";
+      }
+      _rows.push( _row );
+    }
+    // now do an "undo" by filling in values from source
+    for (let i=0; i < _rows[rowIndex].length; i++) {
+      _rows[rowIndex][i] = data[rowIndex][i].trim();
+    }
+    //console.log("Undo delete process ends")
+  }
+  
   _rows[rowIndex][columnIndex] = value;
+  //console.log("_rows before filter:", _rows);
+  // next remove any empty rows created by the undo delete process
+  _rows = _rows.filter( arow => arow[0] !== undefined );
+  //console.log("_rows after filter:", _rows);
+
   return _rows;
 };
 
@@ -70,14 +96,22 @@ export const rowGenerate = ({
     const valuesLengths = Object.keys(lengthIndex[column]);
     const valuesLengthsLength = valuesLengths.length;
     const needRandomId = (valuesRatio > 0.99 && valuesLengthsLength <= 2);
-
     let newValue = '';
 
     if (duplicateValue) {
       newValue = value;
     } else if (needRandomId) {
       const { length } = value;
-      newValue = randomId({ length });
+      let notUnique = true;
+      let counter = 0;
+      const allIds = Object.keys(rowsIndex[column]);
+      const UNIQUE_COUNTER_THRESHOLD = 1000;
+      while ( notUnique && counter < UNIQUE_COUNTER_THRESHOLD ) {
+        newValue = randomId({ length });
+        notUnique = allIds.includes(newValue);
+        counter++;
+      }
+      if ( counter >= UNIQUE_COUNTER_THRESHOLD) {console.log("Duplicate IDs found after " + UNIQUE_COUNTER_THRESHOLD + " tries")}
     }
     return newValue;
   });
@@ -107,11 +141,15 @@ export const correlateData = ({
 
       if (row.source) {
         _row = row.source.map((sourceCell, index) =>
-          `${sourceCell}${delimiters.cell}${row.target ? row.target[index] : ''}`,
+          `${sourceCell}${delimiters.cell}${row.target ? 
+            row.target[index]
+            .replace(/^\u200B+/, '')
+            .replace(/\u200B+$/,'') 
+            : ''}`,
         );
       } else {
         _row = row.target.map((targetCell, index) =>
-          `${delimiters.cell}${targetCell}`,
+          `${delimiters.cell}${targetCell.replace(/^\u200B+/, '').replace(/\u200B+$/,'')}`,
         );
       }
       return _row;
@@ -164,9 +202,21 @@ export const stringify = ({
 
   if (columnNames && rows) {
     let dataTable = [columnNames, ...rows];
-
-    string = dataTable.map(cells => cells.join(delimiters.cell))
-      .join(delimiters.row);
+    for (let i=0; i<dataTable.length; i++) {
+      let rowstring = '';
+      for (let j=0; j<dataTable[i].length; j++) {
+        rowstring += dataTable[i][j].replaceAll(/\n/gi,'<br>');
+        if ( j < (dataTable[i].length - 1) ) {rowstring += delimiters.cell};
+      }
+      string += rowstring;
+      string += delimiters.row;
+    }
+    // The below is commented out and replaced with the 2d for loop above.
+    // This is needed in order to only apply the outputFilter to make newlines 
+    // into <br> elements when no parser is provided to the component. 
+    // This makes up for the unconditional removal 
+    // from the datatable outputfilter specified in Cell.js
+    //string = dataTable.map(cells => cells.join(delimiters.cell)).join(delimiters.row);
   }
   return string;
 };
@@ -179,7 +229,14 @@ export const parseCells = ({ row, delimiter }) => row.split(delimiter);
 
 // Private
 
+// ids must begin with a letter
 const randomId = ({ length }) => {
+  // get the initial letter first
+  const letters = ["a", "b", "c", "d", "e", "f", "g",
+    "h", "i", "j", "k", "l", "m", "n", "o", "p", "q",
+    "r", "s", "t", "u", "v", "w", "x", "y", "z"
+  ];
+  const random = Math.floor(Math.random() * letters.length);
   const number = Math.random(); // 0.9394456857981651
 
   // number.toString(36); // '0.xtis06h6'
@@ -187,7 +244,7 @@ const randomId = ({ length }) => {
     length = 9;
   }
 
-  const id = number.toString(36).substr(2, length); // 'xtis06h6'
+  const id = letters[random] + number.toString(36).substr(2, length-1); // 'xtis06h6'
   return id;
 };
 

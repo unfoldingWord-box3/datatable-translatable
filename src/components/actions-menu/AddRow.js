@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import isEqual from 'lodash.isequal';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Button,
   Divider,
@@ -24,6 +25,8 @@ function AddRowMenu({
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
+
+  const classes = useStyles();
 
   const handleOpen = () => setOpen(true);
 
@@ -73,14 +76,12 @@ function AddRowMenu({
         onClose={handleClose}
         aria-labelledby="dialog-title"
         aria-describedby="dialog-description"
+        classes={{paper: classes.paper}}
       >
         <DialogTitle id="dialog-title">
           Add Row
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="dialog-description">
-            Columns with 50%+ unique values will not be duplicated.
-          </DialogContentText>
           <Divider />
           <br />
           {newRowComponent}
@@ -107,8 +108,13 @@ function AddRowMenu({
   );
 }
 
-AddRowMenu.propTypes = {};
+const useStyles = makeStyles(theme => ({
+  paper: {
+    minWidth: '500px'
+  },
+}));
 
+AddRowMenu.propTypes = {};
 
 export default React.memo(AddRowMenu, (prevProps, nextProps) =>
   prevProps.rowIndex === nextProps.rowIndex &&

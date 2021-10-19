@@ -20,7 +20,6 @@ const outputFilters = [
   ['\n\n> ', '\\n\\n> '],
 ];
 
-
 function BlockEditableWrapper({
   columnData,
   original,

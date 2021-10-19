@@ -14,7 +14,7 @@ export const getMuiTheme = createMuiTheme({
         // '&:first-child': { top:'0 !important' },
         '&:nth-child(1)': {
           position: 'sticky',
-          top: '63px',
+          top: '48px',
           background: 'white',
         },
       },
@@ -42,6 +42,8 @@ export const getMuiTheme = createMuiTheme({
         position: 'sticky',
         background: 'white',
         zIndex: '100',
+        minHeight: '48px !important',
+        height: '48px !important',
       },
     },
     MUIDataTableHeadRow: { root: { display: 'none' } },
