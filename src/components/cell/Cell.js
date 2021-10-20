@@ -34,10 +34,10 @@ function BlockEditableWrapper({
       <Grid container spacing={2}>
           {subheading.props.children !== "OccurrenceNote"?
             <>
-              <Grid item xs={4} style={{padding: '16px'}} >
+              <Grid item xs={4} style={{padding: '15px 0px 0px 0px'}} >
                 {subheading}
               </Grid>
-              <Grid item xs={6} style={{padding: '6px', margin:'0px 25px'}}>
+              <Grid item xs={6} style={{ marginTop:'-15px', marginLeft:'2px', padding: '15px 10px 0px 28px'}}>
                 <BlockEditable
                   key={`${rowIndex}-${columnIndex}-original`}
                   preview={preview}
@@ -53,11 +53,10 @@ function BlockEditableWrapper({
         <Grid container spacing={2}>
           {subheading.props.children == "OccurrenceNote"?
             <>
-              <Grid item xs={4} style={{padding: '16px', marginTop: '6px'}} >
+              <Grid item xs={4} style={{padding: '15px 0px 0px 0px', marginTop: '6px'}} >
               {subheading}
               </Grid>
               <BlockEditable
-                style={{padding: '0 25px', paddingRight:'10px', margin:'5px'}}
                 key={`${rowIndex}-${columnIndex}-original`}
                 preview={preview}
                 markdown={originalValue}
@@ -73,10 +72,10 @@ function BlockEditableWrapper({
         <Grid container spacing={2}>
           {subheading.props.children !== "OccurrenceNote"?
             <>
-              <Grid item xs={4} style={{padding: '16px'}}>
+              <Grid item xs={4} style={{padding: '15px 0px 0px 0px'}}>
                 {subheading}
               </Grid>
-              <Grid item xs={6} style={{padding: '4px',  margin:'0px 25px'}}>
+              <Grid item xs={6} style={{ marginTop:'-15px', marginLeft:'2px', padding: '15px 10px 0px 28px'}}>
                 <BlockEditable
                   key={`${rowIndex}-${columnIndex}-target`}
                   debounce={1000}
@@ -94,11 +93,10 @@ function BlockEditableWrapper({
         <Grid container spacing={2}>
           {subheading.props.children == "OccurrenceNote"?
             <>
-              <Grid item xs={4} style={{padding: '16px', marginTop: '6px'}} >
+              <Grid item xs={4} style={{padding:'15px 0px 0px 0px', marginTop: '6px'}} >
                 {subheading}
               </Grid>
               <BlockEditable
-                style={{ marginLeft: '2px', paddingLeft:'5px', paddingRight:'10px'}}
                 key={`${rowIndex}-${columnIndex}-target`}
                 debounce={1000}
                 preview={preview}
