@@ -47,7 +47,7 @@ function BlockEditableWrapper({
               <Grid item xs={4} style={{padding: '15px 0px 0px 0px'}} >
                 {subheading}
               </Grid>
-              <Grid item xs={6} style={{ marginTop:'-15px', marginLeft:'2px', padding: '15px 10px 0px 28px'}}>
+              <Grid item xs={6} style={{ marginTop:'-15px', marginLeft:'2px', padding: '20px 10px 0px 28px'}}>
                 <BlockEditable
                   key={`${rowIndex}-${columnIndex}-original`}
                   preview={preview}
@@ -85,7 +85,7 @@ function BlockEditableWrapper({
               <Grid item xs={4} style={{padding: '15px 0px 0px 0px'}}>
                 {subheading}
               </Grid>
-              <Grid item xs={6} style={{ marginTop:'-15px', marginLeft:'2px', padding: '15px 10px 0px 28px'}}>
+              <Grid item xs={6} style={{ marginTop:'-15px', marginLeft:'2px', padding: '20px 10px 0px 28px'}}>
                 <BlockEditable
                   key={`${rowIndex}-${columnIndex}-target`}
                   debounce={1000}
