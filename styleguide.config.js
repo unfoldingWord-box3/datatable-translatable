@@ -34,7 +34,12 @@ module.exports = {
         Path.resolve(__dirname, `src/components/datatable`, `TestDatatable.js`),
         Path.resolve(__dirname, `src/components/cell`, `Cell.js`),
         Path.resolve(__dirname, `src/components/toolbar`, `Toolbar.js`),
+        //Path.resolve()
       ]),
+    },
+    {
+      name: 'Scroll to Verse Example',
+      content: 'src/components/datatable/ScrollToVerseDemo.md',
     },
   ],
 };
