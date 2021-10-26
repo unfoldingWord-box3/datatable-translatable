@@ -204,7 +204,7 @@ function DataTable({
     columnsShow, delimiters, rowHeader,
     generateRowId, cellEdit, preview,
   }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader]);
-
+  console.log("options:",_options);
   return (
     <MuiThemeProvider theme={getMuiTheme}>
       <DatatableMemo dataTableElement={dataTableElement} columns={columns} data={_data} options={_options} {...props} />

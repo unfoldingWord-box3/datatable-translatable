@@ -51,10 +51,11 @@ function Component() {
   const options = { 
     pagination: pagination,
     rowsPerPage: 5, 
+    page: 10, //this does not set the page of the display
   }
   const rowHeader = (rowData, actionsMenu) => {
     const reference = rowData[0].split(delimiters.cell)[0];
-    const refid = reference //.replace(':','-');
+    const refid = reference;
     const bookId = "ABC";
     const styles = {
       typography: {
