@@ -3,16 +3,20 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   root: {},
   original: {
+    paddingTop:'9px',
+    padding: '0 8px',
     background: '#eee4',
     display: 'table-cell',
     width: '50%',
   },
   translation: {
-    width: '50%',
+    padding: '0 15px',
+    background: '#eee4',
     display: 'table-cell',
+    width: '50%',
   },
   subheading: {
-    margin: '8px 24px 0 24px',
+    margin: '4% 5% 0% 5%',
     fontSize: '0.8em',
     fontStyle: 'italic',
   },
@@ -30,6 +34,11 @@ const useStyles = makeStyles(theme => ({
     display: 'table',
     width: '100%',
   },
+  gridOriginal: {
+    marginTop:'-15px',
+    marginLeft:'2px',
+    padding: '15px 10px 0px 28px'
+  }
 }));
 
 export default useStyles;
