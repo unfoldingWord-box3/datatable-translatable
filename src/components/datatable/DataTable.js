@@ -185,17 +185,8 @@ function DataTable({
     selectableRows: 'none',
     rowHover: false,
     display: 'excluded',
-    // rowsPerPage,
-    // rowsPerPageOptions,
-    textLabels:{
-      pagination: {
-        next: "Next >",
-        previous: "< Previous",
-        rowsPerPage: "Total items Per Page",
-        // datatest:
-        // displayRows: "OF"
-      }
-    },
+    rowsPerPage,
+    rowsPerPageOptions,
     onChangeRowsPerPage,
     onColumnViewChange,
     onChangePage: scrollToTop,
