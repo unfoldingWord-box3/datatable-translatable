@@ -184,6 +184,7 @@ function DataTable({
     resizableColumns: false,
     selectableRows: 'none',
     rowHover: false,
+    display: 'excluded',
     rowsPerPage,
     rowsPerPageOptions,
     onChangeRowsPerPage,
