@@ -28,6 +28,7 @@ function BlockEditableWrapper({
   columnIndex,
   preview,
   handleEdit,
+  dataTestId,
 }) {
   const classes = useStyles();
   const subheading = (
@@ -85,7 +86,7 @@ function BlockEditableWrapper({
               <Grid item xs={4} style={{padding: '15px 0px 0px 0px'}}>
                 {subheading}
               </Grid>
-              <Grid item xs={6} style={{ marginTop:'-15px', marginLeft:'2px', padding: '20px 10px 0px 28px'}}>
+              <Grid item xs={6} data-test={"id_"+dataTestId+"_"+subheading.props.children} style={{ marginTop:'-15px', marginLeft:'2px', padding: '20px 10px 0px 28px'}}>
                 <BlockEditable
                   key={`${rowIndex}-${columnIndex}-target`}
                   debounce={1000}
@@ -103,7 +104,7 @@ function BlockEditableWrapper({
         <Grid container spacing={2}>
           {subheading.props.children == "OccurrenceNote"?
             <>
-              <Grid item xs={4} style={{padding:'15px 0px 0px 0px', marginTop: '6px'}} >
+              <Grid item xs={4} data-test={"id_"+dataTestId+"_"+subheading.props.children} style={{padding:'15px 0px 0px 0px', marginTop: '6px'}} >
                 {subheading}
               </Grid>
               <BlockEditable
@@ -131,10 +132,12 @@ function Cell(props) {
       columnData,
       columnIndex,
       rowIndex,
+      rowData,
     },
     preview,
     onEdit,
     delimiters,
+    generateRowId = () => {},
   } = props;
   const classes = useStyles();
   const [original, translation] = value.split(delimiters.cell);
@@ -155,6 +158,7 @@ function Cell(props) {
         columnIndex={columnIndex}
         preview={preview}
         handleEdit={handleEdit}
+        dataTestId = {generateRowId(rowData)}
       />
     </div>
   );
