@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { IconButton , Tooltip } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
+import { IconButton , Tooltip } from '@mui/material';
 import isEqual from 'lodash.isequal';
 import {
   ArrowDropDownCircleOutlined,
   AddCircleOutline,
   RemoveCircleOutline,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 
 import { DataTableContext } from '../datatable/DataTable.context';

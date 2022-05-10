@@ -34,7 +34,7 @@ const onEdit = (object) => alert(JSON.stringify(object));
 Note: Due to the internal's correlation of source and target datatables, all cells will have both values joined by the cell delimiter.
 
 ```js
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { DataTableContextProvider } from '../datatable/DataTable.context';
 
 function Component() {

@@ -1,5 +1,5 @@
 ```js
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import _sourceFile from "./mocks/en_tn_57-TIT";
 import targetFile from "./mocks/ru_tn_57-TIT";
 
@@ -102,7 +102,7 @@ Thus to obtain Book, Chapter, Verse (BCV):
 - Chapter and Verse: come from the "Reference" (first) column and is in "1:1" format.
 
 ```js
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import _sourceFile from "./mocks/TIT_tq_source";
 import targetFile from "./mocks/TIT_tq_target";
 

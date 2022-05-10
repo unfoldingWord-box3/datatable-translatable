@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Grid } from '@material-ui/core';
+import { Typography, Grid } from '@mui/material';
 import isEqual from 'lodash.isequal';
 
 import { BlockEditable } from 'markdown-translatable';

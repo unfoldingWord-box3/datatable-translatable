@@ -10,7 +10,7 @@ import isEqual from 'lodash.isequal';
 import useDeepEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import MUIDataTable from 'mui-datatables';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from '@mui/styles';
 
 import { MarkdownContext, MarkdownContextProvider } from 'markdown-translatable';
 
@@ -206,9 +206,9 @@ function DataTable({
   }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader]);
 
   return (
-    <MuiThemeProvider theme={getMuiTheme}>
+    <ThemeProvider theme={getMuiTheme}>
       <DatatableMemo dataTableElement={dataTableElement} columns={columns} data={_data} options={_options} {...props} />
-    </MuiThemeProvider>
+    </ThemeProvider>
   );
 }
 

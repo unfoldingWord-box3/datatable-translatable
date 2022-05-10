@@ -1,6 +1,6 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 
-export const getMuiTheme = createMuiTheme({
+export const getMuiTheme = createTheme({
   typography: { useNextVariants: true },
   overrides: {
     MuiIconButton: { root: { padding: '8px' } },

@@ -5,7 +5,7 @@ import {
   Select,
   MenuItem,
   Input,
-} from '@material-ui/core';
+} from '@mui/material';
 
 function ColumnFilter({
   filterList,

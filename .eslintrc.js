@@ -1,3 +1,4 @@
+/*
 module.exports = {
   'extends': [
     'eslint:recommended',
@@ -16,3 +17,4 @@ module.exports = {
     'node': true,
   },
 };
+*/

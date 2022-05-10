@@ -4,7 +4,7 @@
 //
 // To use:
 // 1. Import:
-//    import { Tooltip } from '@material-ui/core';
+//    import { Tooltip } from '@mui/material';
 //    import { localString } from '../../core/localStrings';
 //
 // 2. Update string ids as needed

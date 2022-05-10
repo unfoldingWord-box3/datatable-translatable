@@ -8,9 +8,9 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { getRowElement, getOffset } from '../../core/datatable';
 
 function DeleteRowMenu({

@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   IconButton,
   Tooltip,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Pageview,
   PageviewOutlined,
   Save,
   SaveOutlined,
   PlaylistAddCheck,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 function Toolbar({
   preview,
