@@ -62,7 +62,7 @@ function BlockEditableWrapper({
           }
         </Grid>
         <Grid container spacing={2}>
-          {subheading.props.children == "OccurrenceNote"?
+          {subheading.props.children === "OccurrenceNote"?
             <>
               <Grid item xs={4} style={{padding: '15px 0px 0px 0px', marginTop: '6px'}} >
               {subheading}
@@ -102,7 +102,7 @@ function BlockEditableWrapper({
           }
         </Grid>
         <Grid container spacing={2}>
-          {subheading.props.children == "OccurrenceNote"?
+          {subheading.props.children === "OccurrenceNote"?
             <>
               <Grid item xs={4} data-test={"id_"+dataTestId+"_"+subheading.props.children} style={{padding:'15px 0px 0px 0px', marginTop: '6px'}} >
                 {subheading}
