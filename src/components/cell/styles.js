@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   root: {},
   original: {
-    paddingTop:'9px',
     padding: '0 8px',
     background: '#eee4',
     display: 'table-cell',
@@ -16,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     width: '50%',
   },
   subheading: {
-    margin: '4% 5% 0% 5%',
+    // margin: '4% 5% 0% 5%',
     fontSize: '0.8em',
     fontStyle: 'italic',
   },
