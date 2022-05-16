@@ -42,13 +42,13 @@ function BlockEditableWrapper({
   return (
     <div className={classes.row}>
       <div className={classes.original}>
-      <div style={{display: 'table-row', width: '100%'}}>
+        <div className={classes.divRow}>
           {subheading.props.children !== "OccurrenceNote"?
             <>
-              <div style={{ display: 'table-cell', minWidth: '7em'}}>
+              <div className={classes.divSubheading}>
                 {subheading}
               </div>
-              <div style={{ marginTop:'-1em', marginLeft:'2px', display: 'table-cell', width:'100%'}}>
+              <div className={classes.divEditable}>
                 <BlockEditable
                   key={`${rowIndex}-${columnIndex}-original`}
                   preview={preview}
@@ -62,11 +62,11 @@ function BlockEditableWrapper({
           }
         </div>
         {subheading.props.children === "OccurrenceNote"?
-          <div style={{marginTop: '1em'}}>
-            <div style={{ display: 'table-cell'}} >
+          <div className={classes.divOccurrence}>
+            <div className={classes.divOccurrenceSub} >
             {subheading}
             </div>
-            <div style={{marginTop: '1em'}}>
+            <div className={classes.divOccurrenceOriginal}>
               <BlockEditable
                 key={`${rowIndex}-${columnIndex}-original`}
                 preview={preview}
@@ -80,13 +80,13 @@ function BlockEditableWrapper({
         }
       </div>
       <div className={classes.translation}>
-        <div style={{display: 'table-row', width: '100%'}}>
+      <div className={classes.divRow}>
           {subheading.props.children !== "OccurrenceNote"?
             <>
-              <div style={{ display: 'table-cell', minWidth: '7em'}}>
+              <div className={classes.divSubheading}>
                 {subheading}
               </div>
-              <div data-test={"id_"+dataTestId+"_"+subheading.props.children} style={{ marginTop:'-1em', marginLeft:'2px', display: 'table-cell', width:'100%'}}>
+              <div data-test={"id_"+dataTestId+"_"+subheading.props.children} className={classes.divEditable}>
                 <BlockEditable
                   key={`${rowIndex}-${columnIndex}-target`}
                   debounce={1000}
@@ -96,18 +96,17 @@ function BlockEditableWrapper({
                   inputFilters={inputFilters}
                   outputFilters={outputFilters}
                   onEdit={handleEdit}
-                  style={{}}
                 />
               </div>
             </>:''
           }
         </div>
         {subheading.props.children === "OccurrenceNote" && "Response"?
-          <div style={{marginTop: '1em'}}>
-            <div data-test={"id_"+dataTestId+"_"+subheading.props.children} style={{ display: 'table-cell' }} >
+          <div className={classes.divTranslation}>
+            <div data-test={"id_"+dataTestId+"_"+subheading.props.children} className={classes.divOccurrenceSub} >
               {subheading}
             </div>
-            <div style={{marginTop: '1em'}}>
+            <div className={classes.divTranslation}>
               <BlockEditable
                 key={`${rowIndex}-${columnIndex}-target`}
                 debounce={1000}
