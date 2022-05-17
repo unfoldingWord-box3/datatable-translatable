@@ -15,7 +15,6 @@ const useStyles = makeStyles(theme => ({
     width: '50%',
   },
   subheading: {
-    // margin: '4% 5% 0% 5%',
     fontSize: '0.8em',
     fontStyle: 'italic',
   },
