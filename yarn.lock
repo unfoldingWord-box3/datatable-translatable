@@ -9369,10 +9369,10 @@ markdown-to-jsx@^6.9.3:
     prop-types "^15.6.2"
     unquote "^1.1.0"
 
-markdown-translatable@2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/markdown-translatable/-/markdown-translatable-2.0.3.tgz#b0c0d7303c5ba9c15626f23176e5714e618e702f"
-  integrity sha512-69X13JknDY3t+afHEpvmXebAQ1bf3LiumoF9L/9gzrwX21skVYCS7e1z2yNrQdWTT0+zEBLecyxxRU1wNR766Q==
+markdown-translatable@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/markdown-translatable/-/markdown-translatable-2.1.0.tgz#ef5e8314a2d7258567e38f9f6b6c891956023979"
+  integrity sha512-r+JIW4pHqd5wC60/BwZwzomVGFm/C2rnd6bcQBAxGzvRMGoyal5O5ra1/JhsouPMs61t0DPeuTkyYMb9NbctKA==
   dependencies:
     deep-freeze "^0.0.1"
     md5 "^2.2.1"
