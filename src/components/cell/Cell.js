@@ -37,7 +37,7 @@ function BlockEditableWrapper({
     </Typography>
   );
   const originalValue = original || '*empty*';
-  const translationValue = translation || '';
+  const translationValue = translation || '\u00A0';
 
   return (
     <div className={classes.row}>
@@ -143,8 +143,9 @@ function Cell(props) {
   const [original, translation] = value.split(delimiters.cell);
 
   function handleEdit(markdown){
+    const _markdown = markdown.replace(/^\u00A0/,'');
     onEdit({
-      rowIndex, columnIndex: columnIndex - 1, value: markdown,
+      rowIndex, columnIndex: columnIndex - 1, value: _markdown,
     });
   };
 
