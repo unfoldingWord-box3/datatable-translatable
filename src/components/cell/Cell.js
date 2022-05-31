@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Grid } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import isEqual from 'lodash.isequal';
 
 import { BlockEditable } from 'markdown-translatable';
@@ -37,18 +37,18 @@ function BlockEditableWrapper({
     </Typography>
   );
   const originalValue = original || '*empty*';
-  const translationValue = translation || '';
+  const translationValue = translation || '\u00A0';
 
   return (
     <div className={classes.row}>
       <div className={classes.original}>
-      <Grid container spacing={2}>
+        <div className={classes.divRow}>
           {subheading.props.children !== "OccurrenceNote"?
             <>
-              <Grid item xs={4} style={{padding: '15px 0px 0px 0px'}} >
+              <div className={classes.divSubheading}>
                 {subheading}
-              </Grid>
-              <Grid item xs={6} style={{ marginTop:'-15px', marginLeft:'2px', padding: '20px 10px 0px 28px'}}>
+              </div>
+              <div className={classes.divEditable}>
                 <BlockEditable
                   key={`${rowIndex}-${columnIndex}-original`}
                   preview={preview}
@@ -57,16 +57,16 @@ function BlockEditableWrapper({
                   inputFilters={inputFilters}
                   outputFilters={outputFilters}
                 />
-              </Grid>
+              </div>
             </>:''
           }
-        </Grid>
-        <Grid container spacing={2}>
-          {subheading.props.children === "OccurrenceNote"?
-            <>
-              <Grid item xs={4} style={{padding: '15px 0px 0px 0px', marginTop: '6px'}} >
-              {subheading}
-              </Grid>
+        </div>
+        {subheading.props.children === "OccurrenceNote"?
+          <div className={classes.divOccurrence}>
+            <div className={classes.divOccurrenceSub} >
+            {subheading}
+            </div>
+            <div className={classes.divOccurrenceOriginal}>
               <BlockEditable
                 key={`${rowIndex}-${columnIndex}-original`}
                 preview={preview}
@@ -75,18 +75,18 @@ function BlockEditableWrapper({
                 inputFilters={inputFilters}
                 outputFilters={outputFilters}
               />
-            </>:''
-          }
-        </Grid>
+            </div>
+          </div>:''
+        }
       </div>
       <div className={classes.translation}>
-        <Grid container spacing={2}>
+      <div className={classes.divRow}>
           {subheading.props.children !== "OccurrenceNote"?
             <>
-              <Grid item xs={4} style={{padding: '15px 0px 0px 0px'}}>
+              <div className={classes.divSubheading}>
                 {subheading}
-              </Grid>
-              <Grid item xs={6} data-test={"id_"+dataTestId+"_"+subheading.props.children} style={{ marginTop:'-15px', marginLeft:'2px', padding: '20px 10px 0px 28px'}}>
+              </div>
+              <div data-test={"id_"+dataTestId+"_"+subheading.props.children} className={classes.divEditable}>
                 <BlockEditable
                   key={`${rowIndex}-${columnIndex}-target`}
                   debounce={1000}
@@ -97,16 +97,16 @@ function BlockEditableWrapper({
                   outputFilters={outputFilters}
                   onEdit={handleEdit}
                 />
-              </Grid>
+              </div>
             </>:''
           }
-        </Grid>
-        <Grid container spacing={2}>
-          {subheading.props.children === "OccurrenceNote"?
-            <>
-              <Grid item xs={4} data-test={"id_"+dataTestId+"_"+subheading.props.children} style={{padding:'15px 0px 0px 0px', marginTop: '6px'}} >
-                {subheading}
-              </Grid>
+        </div>
+        {subheading.props.children === "OccurrenceNote" && "Response"?
+          <div className={classes.divTranslation}>
+            <div data-test={"id_"+dataTestId+"_"+subheading.props.children} className={classes.divOccurrenceSub} >
+              {subheading}
+            </div>
+            <div className={classes.divTranslation}>
               <BlockEditable
                 key={`${rowIndex}-${columnIndex}-target`}
                 debounce={1000}
@@ -117,9 +117,9 @@ function BlockEditableWrapper({
                 outputFilters={outputFilters}
                 onEdit={handleEdit}
               />
-            </>:''
-          }
-        </Grid>
+            </div>
+          </div>:''
+        }
       </div>
     </div>
   );
@@ -143,8 +143,9 @@ function Cell(props) {
   const [original, translation] = value.split(delimiters.cell);
 
   function handleEdit(markdown){
+    const _markdown = markdown.replace(/^\u00A0/,'');
     onEdit({
-      rowIndex, columnIndex: columnIndex - 1, value: markdown,
+      rowIndex, columnIndex: columnIndex - 1, value: _markdown,
     });
   };
 

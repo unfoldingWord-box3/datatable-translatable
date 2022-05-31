@@ -35,7 +35,7 @@ function Toolbar({
       }
       <Tooltip title="Preview">
         <IconButton className={classes.iconButton} onClick={onPreview} aria-label="Preview" data-test="preview-icon">
-          {preview ? <PageviewOutlined /> : <Pageview />}
+          {preview ? <Pageview /> : <PageviewOutlined /> }
         </IconButton>
       </Tooltip>
       <Tooltip title="Save">

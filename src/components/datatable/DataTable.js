@@ -58,7 +58,7 @@ function DataTable({
   } = config;
   const dataTableElement = useRef();
   const [rowsPerPage, setRowsPerPage] = useState(options.rowsPerPage || 25);
-  const [preview, setPreview] = useState(true);
+  const [preview, setPreview] = useState(false);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
   const [isAutoSaveChanged, setIsAutoSaveChanged] = useState(false);
 
