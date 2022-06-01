@@ -29,8 +29,9 @@ function BlockEditableWrapper({
   preview,
   handleEdit,
   dataTestId,
+  columnsFilter
 }) {
-  const classes = useStyles();
+  const classes = useStyles(columnData);
   const subheading = (
     <Typography className={classes.subheading} variant='subtitle2' align='left' color='textSecondary'>
       {columnData.name}
@@ -38,17 +39,16 @@ function BlockEditableWrapper({
   );
   const originalValue = original || '*empty*';
   const translationValue = translation || '\u00A0';
-
+  
   return (
     <div className={classes.row}>
       <div className={classes.original}>
-        <div className={classes.divRow}>
-          {subheading.props.children !== "OccurrenceNote"?
+        <div className={columnData.name === "OccurrenceNote" ? classes.divOccurrence : classes.divRow}>
             <>
               <div className={classes.divSubheading}>
                 {subheading}
               </div>
-              <div className={classes.divEditable}>
+              <div className="editableWrapper">
                 <BlockEditable
                   key={`${rowIndex}-${columnIndex}-original`}
                   preview={preview}
@@ -58,68 +58,33 @@ function BlockEditableWrapper({
                   outputFilters={outputFilters}
                 />
               </div>
-            </>:''
-          }
+            </>
         </div>
-        {subheading.props.children === "OccurrenceNote"?
-          <div className={classes.divOccurrence}>
-            <div className={classes.divOccurrenceSub} >
-            {subheading}
-            </div>
-            <div className={classes.divOccurrenceOriginal}>
-              <BlockEditable
-                key={`${rowIndex}-${columnIndex}-original`}
-                preview={preview}
-                markdown={originalValue}
-                editable={false}
-                inputFilters={inputFilters}
-                outputFilters={outputFilters}
-              />
-            </div>
-          </div>:''
-        }
       </div>
       <div className={classes.translation}>
-      <div className={classes.divRow}>
-          {subheading.props.children !== "OccurrenceNote"?
+        <div className={columnData.name === "OccurrenceNote" ? classes.divOccurrence : classes.divRow}>
             <>
-              <div className={classes.divSubheading}>
+              <div data-test={"id_"+dataTestId+"_"+columnData.name+"_label"} className={classes.divSubheading}>
                 {subheading}
               </div>
-              <div data-test={"id_"+dataTestId+"_"+subheading.props.children} className={classes.divEditable}>
-                <BlockEditable
-                  key={`${rowIndex}-${columnIndex}-target`}
-                  debounce={1000}
-                  preview={preview}
-                  markdown={translationValue}
-                  editable={true}
-                  inputFilters={inputFilters}
-                  outputFilters={outputFilters}
-                  onEdit={handleEdit}
-                />
+              <div data-test={"id_"+dataTestId+"_"+columnData.name+"_content"} className="editableWrapper">
+                { columnsFilter && columnsFilter.includes(columnData.name) ?
+                    <div>autocompletehere</div>
+                   :
+                    <BlockEditable
+                        key={`${rowIndex}-${columnIndex}-target`}
+                        debounce={1000}
+                        preview={preview}
+                        markdown={translationValue}
+                        editable={true}
+                        inputFilters={inputFilters}
+                        outputFilters={outputFilters}
+                        onEdit={handleEdit}
+                    />
+                }
               </div>
-            </>:''
-          }
+            </>
         </div>
-        {subheading.props.children === "OccurrenceNote" && "Response"?
-          <div className={classes.divTranslation}>
-            <div data-test={"id_"+dataTestId+"_"+subheading.props.children} className={classes.divOccurrenceSub} >
-              {subheading}
-            </div>
-            <div className={classes.divTranslation}>
-              <BlockEditable
-                key={`${rowIndex}-${columnIndex}-target`}
-                debounce={1000}
-                preview={preview}
-                markdown={translationValue}
-                editable={true}
-                inputFilters={inputFilters}
-                outputFilters={outputFilters}
-                onEdit={handleEdit}
-              />
-            </div>
-          </div>:''
-        }
       </div>
     </div>
   );
@@ -137,6 +102,7 @@ function Cell(props) {
     preview,
     onEdit,
     delimiters,
+    columnsFilter,
     generateRowId = () => {},
   } = props;
   const classes = useStyles();
@@ -160,6 +126,7 @@ function Cell(props) {
         preview={preview}
         handleEdit={handleEdit}
         dataTestId = {generateRowId(rowData)}
+        columnsFilter={columnsFilter}
       />
     </div>
   );
