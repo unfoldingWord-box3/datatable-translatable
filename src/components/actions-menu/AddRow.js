@@ -79,8 +79,8 @@ function AddRowMenu({
             {' ' + newRow[i]}
           </DialogContentText>
         );
-        if ( i === dropdownColumn && state.columnsFilterOptions[i] ) {
-          if ( state.columnsFilterOptions[i].length > 0 ) {
+        if ( i === dropdownColumn && state.columnNames[i] === 'SupportReference' ) {
+          if ( state.columnsFilterOptions[i] && state.columnsFilterOptions[i].length > 0 ) {
             const defaultProps = {
               options: state.columnsFilterOptions[i].map(
                 (value, index) => {
