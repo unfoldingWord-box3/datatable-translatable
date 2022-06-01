@@ -2,6 +2,10 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import isEqual from 'lodash.isequal';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
+import InputBase from '@material-ui/core/InputBase';
+import { Input } from '@material-ui/core';
 
 import { BlockEditable } from 'markdown-translatable';
 import useStyles from './styles';
@@ -39,7 +43,7 @@ function BlockEditableWrapper({
   );
   const originalValue = original || '*empty*';
   const translationValue = translation || '\u00A0';
-  
+console.log(columnsFilter);
   return (
     <div className={classes.row}>
       <div className={classes.original}>
@@ -69,7 +73,12 @@ function BlockEditableWrapper({
               </div>
               <div data-test={"id_"+dataTestId+"_"+columnData.name+"_content"} className="editableWrapper">
                 { columnsFilter && columnsFilter.includes(columnData.name) ?
-                    <div>autocompletehere</div>
+                    <Autocomplete
+                      id="combo-box-demo"
+                      options={columnsFilter}
+                      freeSolo
+                      renderInput={(params) => <TextField {...params} />}
+                    />
                    :
                     <BlockEditable
                         key={`${rowIndex}-${columnIndex}-target`}
