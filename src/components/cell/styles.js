@@ -39,23 +39,23 @@ const useStyles = makeStyles(theme => ({
   },
   divRow: {
     display: 'table-row',
-    width: '100%'
+    width: '100%',
+    '& .editableWrapper': {
+      marginTop:'-1em',
+      marginLeft:'2px',
+      display: 'table-cell',
+      width:'100%'
+    }
   },
   divSubheading: {
     display: 'table-cell', 
     minWidth: '7em'
   },
-  divEditable: {
-    marginTop:'-1em', 
-    marginLeft:'2px', 
-    display: 'table-cell', 
-    width:'100%'
-  },
   divOccurrence: {
-    marginTop: '1em'
-  },
-  divOccurrenceSub: {
-    display: 'table-cell'
+    marginTop: '1em',
+    '& .editableWrapper': {
+      // marginTop: '1em'
+    }
   },
   divTranslation: {
     marginTop: '1em'

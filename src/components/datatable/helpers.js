@@ -38,7 +38,7 @@ export function getColumns({
           const { tableState = {} } = tableMeta;
           const { rowsPerPage, page } = tableState || {};
           const cellProps = {
-            generateRowId, value, tableMeta, onEdit: cellEdit, delimiters, rowsPerPage, page, preview,
+            generateRowId, value, tableMeta, onEdit: cellEdit, delimiters, rowsPerPage, page, preview, columnsFilter
           };
           return <Cell {...cellProps} />;
         },
