@@ -31,7 +31,6 @@ function BlockEditableWrapper({
   preview,
   handleEdit,
   dataTestId,
-  columnsFilter,
   columnsFilterOptions,
 }) {
   const classes = useStyles();
@@ -71,7 +70,7 @@ function BlockEditableWrapper({
               {subheading}
             </div>
             <div data-test={'id_'+dataTestId+'_'+columnData.name+'_content'} className="editableWrapper">
-              { columnsFilter && columnsFilter.includes(columnData.name) && columnsFilterOptions[columnIndex-1] ?
+              { columnsFilterOptions && columnsFilterOptions[columnIndex-1] && columnsFilterOptions[columnIndex-1].length > 0 ?
                 <Autocomplete
                   value={translationValue}
                   options={columnsFilterOptions[columnIndex-1]}
@@ -122,7 +121,6 @@ function Cell(props) {
     preview,
     onEdit,
     delimiters,
-    columnsFilter,
     columnsFilterOptions,
     generateRowId = () => {},
   } = props;
@@ -148,7 +146,6 @@ function Cell(props) {
         preview={preview}
         handleEdit={handleEdit}
         dataTestId = {generateRowId(rowData)}
-        columnsFilter={columnsFilter}
         columnsFilterOptions={columnsFilterOptions}
       />
     </div>

@@ -27,7 +27,6 @@ function AddRowMenu({
   rowAddBelow,
   button,
   generateRowId,
-  columnsFilter,
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
@@ -77,20 +76,21 @@ function AddRowMenu({
             {' ' + newRow[i]}
           </DialogContentText>
         );
-        if ( columnsFilter && columnsFilter.includes(name)) {
-          if ( state.columnsFilterOptions[i] && state.columnsFilterOptions[i].length > 0 ) {
-            text = (
-              <Autocomplete
-                options={state.columnsFilterOptions[i]}
-                value={newRow[i]}
-                onChange={(event, newValue) => {
-                  newRow[i] = newValue;
-                }}
-                renderInput={(params) => <TextField {...params} label={state.columnNames[i]} margin="normal" />}
-                freeSolo={true}
-              />
-            );
-          }
+        if ( state.columnsFilterOptions[i] && state.columnsFilterOptions[i].length > 0 ) {
+          text = (
+            <Autocomplete
+              options={state.columnsFilterOptions[i]}
+              value={newRow[i]}
+              onChange={(event, newValue) => {
+                newRow[i] = newValue;
+              }}
+              onInputChange={(event, newValue) => {
+                newRow[i] = newValue;
+              }}
+              renderInput={(params) => <TextField {...params} label={state.columnNames[i]} margin="normal" />}
+              freeSolo={true}
+            />
+          );
         }
       }
       return text;

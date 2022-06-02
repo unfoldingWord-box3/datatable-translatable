@@ -20,7 +20,6 @@ function RowMenu({
   rowData,
   delimiters,
   generateRowId,
-  columnsFilter,
 }) {
   const classes = useStyles();
   const { state, actions } = useContext(DataTableContext);
@@ -101,7 +100,6 @@ function RowMenu({
         rowData={rowData}
         rowIndex={rowIndex}
         columnNames={columnNames}
-        columnsFilter={columnsFilter}
         rowGenerate={rowGenerate}
         rowAddBelow={rowAddBelow}
         button={addRowButton}

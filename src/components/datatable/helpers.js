@@ -38,7 +38,7 @@ export function getColumns({
           const { tableState = {} } = tableMeta;
           const { rowsPerPage, page } = tableState || {};
           const cellProps = {
-            generateRowId, value, tableMeta, onEdit: cellEdit, delimiters, rowsPerPage, page, preview, columnsFilter, columnsFilterOptions,
+            generateRowId, value, tableMeta, onEdit: cellEdit, delimiters, rowsPerPage, page, preview, columnsFilterOptions,
           };
           return <Cell {...cellProps} />;
         },
@@ -54,7 +54,7 @@ export function getColumns({
         filter: false,
         customBodyRender:(_, tableMeta) => {
           const cellProps = {
-            generateRowId, tableMeta, delimiters, rowHeader, columnsFilter,
+            generateRowId, tableMeta, delimiters, rowHeader,
           };
           return <HeaderCell {...cellProps} />;
         },
