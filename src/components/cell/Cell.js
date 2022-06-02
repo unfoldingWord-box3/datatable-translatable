@@ -2,21 +2,23 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import isEqual from 'lodash.isequal';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 
 import { BlockEditable } from 'markdown-translatable';
 import useStyles from './styles';
 
 // file to memory
 const inputFilters = [
-  [/<br>/gi, '\n'], 
-  [/^\u200B/,''], [/\u200B$/,''], 
+  [/<br>/gi, '\n'],
+  [/^\u200B/,''], [/\u200B$/,''],
   ['\\n\\n> ', '\n\n> '],
 ];
 
 // screen to memory and thus to file
 const outputFilters = [
-  [/^\u200B/,''], [/\u200B$/,''], 
-  [/<br>/gi, '\n'], 
+  [/^\u200B/,''], [/\u200B$/,''],
+  [/<br>/gi, '\n'],
   ['\n\n> ', '\\n\\n> '],
 ];
 
@@ -29,6 +31,7 @@ function BlockEditableWrapper({
   preview,
   handleEdit,
   dataTestId,
+  columnsFilterOptions,
 }) {
   const classes = useStyles();
   const subheading = (
@@ -42,31 +45,12 @@ function BlockEditableWrapper({
   return (
     <div className={classes.row}>
       <div className={classes.original}>
-        <div className={classes.divRow}>
-          {subheading.props.children !== "OccurrenceNote"?
-            <>
-              <div className={classes.divSubheading}>
-                {subheading}
-              </div>
-              <div className={classes.divEditable}>
-                <BlockEditable
-                  key={`${rowIndex}-${columnIndex}-original`}
-                  preview={preview}
-                  markdown={originalValue}
-                  editable={false}
-                  inputFilters={inputFilters}
-                  outputFilters={outputFilters}
-                />
-              </div>
-            </>:''
-          }
-        </div>
-        {subheading.props.children === "OccurrenceNote"?
-          <div className={classes.divOccurrence}>
-            <div className={classes.divOccurrenceSub} >
-            {subheading}
+        <div className={columnData.name === 'OccurrenceNote' ? classes.divOccurrence : classes.divRow}>
+          <>
+            <div className={classes.divSubheading}>
+              {subheading}
             </div>
-            <div className={classes.divOccurrenceOriginal}>
+            <div className="editableWrapper">
               <BlockEditable
                 key={`${rowIndex}-${columnIndex}-original`}
                 preview={preview}
@@ -76,17 +60,36 @@ function BlockEditableWrapper({
                 outputFilters={outputFilters}
               />
             </div>
-          </div>:''
-        }
+          </>
+        </div>
       </div>
       <div className={classes.translation}>
-      <div className={classes.divRow}>
-          {subheading.props.children !== "OccurrenceNote"?
-            <>
-              <div className={classes.divSubheading}>
-                {subheading}
-              </div>
-              <div data-test={"id_"+dataTestId+"_"+subheading.props.children} className={classes.divEditable}>
+        <div className={columnData.name === 'OccurrenceNote' ? classes.divOccurrence : classes.divRow}>
+          <>
+            <div data-test={'id_'+dataTestId+'_'+columnData.name+'_label'} className={classes.divSubheading}>
+              {subheading}
+            </div>
+            <div data-test={'id_'+dataTestId+'_'+columnData.name+'_content'} className="editableWrapper">
+              { columnsFilterOptions && columnsFilterOptions[columnIndex-1] && columnsFilterOptions[columnIndex-1].length > 0 ?
+                <Autocomplete
+                  value={translationValue}
+                  options={columnsFilterOptions[columnIndex-1]}
+                  freeSolo
+                  onChange={(event, newValue) => {
+                    if (typeof newValue === 'string' ) {
+                      handleEdit(newValue);
+                    }
+                  }}
+                  handleHomeEndKeys
+                  renderInput={(params) => <TextField {...params} onBlur={(event) => {
+                    if ( event ) {
+                      handleEdit(event.target.value);
+                    }
+                  } }
+                  />
+                  }
+                />
+                :
                 <BlockEditable
                   key={`${rowIndex}-${columnIndex}-target`}
                   debounce={1000}
@@ -97,29 +100,10 @@ function BlockEditableWrapper({
                   outputFilters={outputFilters}
                   onEdit={handleEdit}
                 />
-              </div>
-            </>:''
-          }
+              }
+            </div>
+          </>
         </div>
-        {subheading.props.children === "OccurrenceNote" && "Response"?
-          <div className={classes.divTranslation}>
-            <div data-test={"id_"+dataTestId+"_"+subheading.props.children} className={classes.divOccurrenceSub} >
-              {subheading}
-            </div>
-            <div className={classes.divTranslation}>
-              <BlockEditable
-                key={`${rowIndex}-${columnIndex}-target`}
-                debounce={1000}
-                preview={preview}
-                markdown={translationValue}
-                editable={true}
-                inputFilters={inputFilters}
-                outputFilters={outputFilters}
-                onEdit={handleEdit}
-              />
-            </div>
-          </div>:''
-        }
       </div>
     </div>
   );
@@ -137,6 +121,7 @@ function Cell(props) {
     preview,
     onEdit,
     delimiters,
+    columnsFilterOptions,
     generateRowId = () => {},
   } = props;
   const classes = useStyles();
@@ -144,10 +129,11 @@ function Cell(props) {
 
   function handleEdit(markdown){
     const _markdown = markdown.replace(/^\u00A0/,'');
+
     onEdit({
       rowIndex, columnIndex: columnIndex - 1, value: _markdown,
     });
-  };
+  }
 
   return (
     <div className={`cell-${rowIndex}-${columnIndex} ` + classes.root}>
@@ -160,10 +146,11 @@ function Cell(props) {
         preview={preview}
         handleEdit={handleEdit}
         dataTestId = {generateRowId(rowData)}
+        columnsFilterOptions={columnsFilterOptions}
       />
     </div>
   );
-};
+}
 
 Cell.propTypes = {
   /** Value of the cell */
@@ -195,8 +182,8 @@ Cell.defaultProps = {
 
 const shouldReRender = (prevProps, nextProps) =>
   isEqual(prevProps.tableMeta, nextProps.tableMeta) &&
-isEqual(prevProps.preview, nextProps.preview) &&
-isEqual(prevProps.value, nextProps.value) &&
-isEqual(prevProps.page, nextProps.page);
+  isEqual(prevProps.preview, nextProps.preview) &&
+  isEqual(prevProps.value, nextProps.value) &&
+  isEqual(prevProps.page, nextProps.page);
 
 export default memo(Cell, shouldReRender);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import isEqual from 'lodash.isequal';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -9,10 +9,15 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
+  TextField,
 } from '@material-ui/core';
 import {
 } from '@material-ui/icons';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
+import { DataTableContext } from '../datatable/DataTable.context';
 import { getRowElement, getOffset } from '../../core/datatable';
+
 
 function AddRowMenu({
   rowData,
@@ -25,6 +30,9 @@ function AddRowMenu({
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
+
+  const { state } = useContext(DataTableContext);
+  // console.log("Datatable Context state:", state);
 
   const classes = useStyles();
 
@@ -55,17 +63,35 @@ function AddRowMenu({
     const newRowComponent = columnNames.map((name, i) => {
       let text = '';
 
+
       if (!newRow) {
         const _newRow = rowGenerate({ rowIndex });
         setNewRow(_newRow);
         return text;
       } else {
+        // by default...
         text = (
           <DialogContentText key={name + i}>
             <strong>{name}:</strong>
             {' ' + newRow[i]}
           </DialogContentText>
         );
+        if ( state.columnsFilterOptions[i] && state.columnsFilterOptions[i].length > 0 ) {
+          text = (
+            <Autocomplete
+              options={state.columnsFilterOptions[i]}
+              value={newRow[i]}
+              onChange={(event, newValue) => {
+                newRow[i] = newValue;
+              }}
+              onInputChange={(event, newValue) => {
+                newRow[i] = newValue;
+              }}
+              renderInput={(params) => <TextField {...params} label={state.columnNames[i]} margin="normal" />}
+              freeSolo={true}
+            />
+          );
+        }
       }
       return text;
     });
