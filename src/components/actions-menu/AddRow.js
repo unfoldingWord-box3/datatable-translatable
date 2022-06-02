@@ -13,25 +13,24 @@ import {
 } from '@material-ui/core';
 import {
 } from '@material-ui/icons';
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
-import { getRowElement, getOffset } from '../../core/datatable';
-import { DataTableContext } from '../datatable/DataTable.context';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
-const filter = createFilterOptions();
+import { DataTableContext } from '../datatable/DataTable.context';
+import { getRowElement, getOffset } from '../../core/datatable';
+
 
 function AddRowMenu({
   rowData,
   rowIndex,
   columnNames,
-  dropdownColumn = 4,
   rowGenerate,
   rowAddBelow,
   button,
   generateRowId,
+  columnsFilter,
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
-  const [value, setValue] = useState('');
 
   const { state } = useContext(DataTableContext);
   // console.log("Datatable Context state:", state);
@@ -46,7 +45,6 @@ function AddRowMenu({
   };
 
   const handleRowAdd = () => {
-    newRow[dropdownColumn] = value.name ? value.name : value;
     rowAddBelow({ rowIndex, rowData: newRow });
     handleClose();
     setTimeout(() => {
@@ -79,45 +77,19 @@ function AddRowMenu({
             {' ' + newRow[i]}
           </DialogContentText>
         );
-        if ( i === dropdownColumn && state.columnNames[i] === 'SupportReference' ) {
+        if ( columnsFilter && columnsFilter.includes(name)) {
           if ( state.columnsFilterOptions[i] && state.columnsFilterOptions[i].length > 0 ) {
-            const defaultProps = {
-              options: state.columnsFilterOptions[i].map(
-                (value, index) => {
-                  return { id: index, name: value}
-                }
-              ),
-              getOptionLabel: (option) => option.name ? option.name : value,
-              getOptionSelected: (option, val) => {
-                return option.name === val.name;
-              }
-            };
             text = (
               <Autocomplete
-                {...defaultProps}
-                id="spt-ref"
-                value={value}
+                options={state.columnsFilterOptions[i]}
+                value={newRow[i]}
                 onChange={(event, newValue) => {
-                  // console.log("Autocomplete() onchange() setValue:", newValue)
-                  setValue(newValue);
+                  newRow[i] = newValue;
                 }}
                 renderInput={(params) => <TextField {...params} label={state.columnNames[i]} margin="normal" />}
                 freeSolo={true}
-                onBlur
-                filterOptions={(options, params) => {
-                  const filtered = filter(options, params);
-                  // Suggest the creation of a new value
-                  if (params.inputValue !== '') {
-                    filtered.push({
-                      id: params.id,
-                      name: `${params.inputValue}`,
-                    });
-                  }
-          
-                  return filtered;
-                }}
               />
-            );        
+            );
           }
         }
       }

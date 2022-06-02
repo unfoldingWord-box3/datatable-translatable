@@ -4,23 +4,21 @@ import { Typography } from '@material-ui/core';
 import isEqual from 'lodash.isequal';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
-import InputBase from '@material-ui/core/InputBase';
-import { Input } from '@material-ui/core';
 
 import { BlockEditable } from 'markdown-translatable';
 import useStyles from './styles';
 
 // file to memory
 const inputFilters = [
-  [/<br>/gi, '\n'], 
-  [/^\u200B/,''], [/\u200B$/,''], 
+  [/<br>/gi, '\n'],
+  [/^\u200B/,''], [/\u200B$/,''],
   ['\\n\\n> ', '\n\n> '],
 ];
 
 // screen to memory and thus to file
 const outputFilters = [
-  [/^\u200B/,''], [/\u200B$/,''], 
-  [/<br>/gi, '\n'], 
+  [/^\u200B/,''], [/\u200B$/,''],
+  [/<br>/gi, '\n'],
   ['\n\n> ', '\\n\\n> '],
 ];
 
@@ -33,9 +31,10 @@ function BlockEditableWrapper({
   preview,
   handleEdit,
   dataTestId,
-  columnsFilter
+  columnsFilter,
+  columnsFilterOptions,
 }) {
-  const classes = useStyles(columnData);
+  const classes = useStyles();
   const subheading = (
     <Typography className={classes.subheading} variant='subtitle2' align='left' color='textSecondary'>
       {columnData.name}
@@ -43,56 +42,68 @@ function BlockEditableWrapper({
   );
   const originalValue = original || '*empty*';
   const translationValue = translation || '\u00A0';
-console.log(columnsFilter);
+
   return (
     <div className={classes.row}>
       <div className={classes.original}>
-        <div className={columnData.name === "OccurrenceNote" ? classes.divOccurrence : classes.divRow}>
-            <>
-              <div className={classes.divSubheading}>
-                {subheading}
-              </div>
-              <div className="editableWrapper">
-                <BlockEditable
-                  key={`${rowIndex}-${columnIndex}-original`}
-                  preview={preview}
-                  markdown={originalValue}
-                  editable={false}
-                  inputFilters={inputFilters}
-                  outputFilters={outputFilters}
-                />
-              </div>
-            </>
+        <div className={columnData.name === 'OccurrenceNote' ? classes.divOccurrence : classes.divRow}>
+          <>
+            <div className={classes.divSubheading}>
+              {subheading}
+            </div>
+            <div className="editableWrapper">
+              <BlockEditable
+                key={`${rowIndex}-${columnIndex}-original`}
+                preview={preview}
+                markdown={originalValue}
+                editable={false}
+                inputFilters={inputFilters}
+                outputFilters={outputFilters}
+              />
+            </div>
+          </>
         </div>
       </div>
       <div className={classes.translation}>
-        <div className={columnData.name === "OccurrenceNote" ? classes.divOccurrence : classes.divRow}>
-            <>
-              <div data-test={"id_"+dataTestId+"_"+columnData.name+"_label"} className={classes.divSubheading}>
-                {subheading}
-              </div>
-              <div data-test={"id_"+dataTestId+"_"+columnData.name+"_content"} className="editableWrapper">
-                { columnsFilter && columnsFilter.includes(columnData.name) ?
-                    <Autocomplete
-                      id="combo-box-demo"
-                      options={columnsFilter}
-                      freeSolo
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                   :
-                    <BlockEditable
-                        key={`${rowIndex}-${columnIndex}-target`}
-                        debounce={1000}
-                        preview={preview}
-                        markdown={translationValue}
-                        editable={true}
-                        inputFilters={inputFilters}
-                        outputFilters={outputFilters}
-                        onEdit={handleEdit}
-                    />
-                }
-              </div>
-            </>
+        <div className={columnData.name === 'OccurrenceNote' ? classes.divOccurrence : classes.divRow}>
+          <>
+            <div data-test={'id_'+dataTestId+'_'+columnData.name+'_label'} className={classes.divSubheading}>
+              {subheading}
+            </div>
+            <div data-test={'id_'+dataTestId+'_'+columnData.name+'_content'} className="editableWrapper">
+              { columnsFilter && columnsFilter.includes(columnData.name) && columnsFilterOptions[columnIndex-1] ?
+                <Autocomplete
+                  value={translationValue}
+                  options={columnsFilterOptions[columnIndex-1]}
+                  freeSolo
+                  onChange={(event, newValue) => {
+                    if (typeof newValue === 'string' ) {
+                      handleEdit(newValue);
+                    }
+                  }}
+                  handleHomeEndKeys
+                  renderInput={(params) => <TextField {...params} onBlur={(event) => {
+                    if ( event ) {
+                      handleEdit(event.target.value);
+                    }
+                  } }
+                  />
+                  }
+                />
+                :
+                <BlockEditable
+                  key={`${rowIndex}-${columnIndex}-target`}
+                  debounce={1000}
+                  preview={preview}
+                  markdown={translationValue}
+                  editable={true}
+                  inputFilters={inputFilters}
+                  outputFilters={outputFilters}
+                  onEdit={handleEdit}
+                />
+              }
+            </div>
+          </>
         </div>
       </div>
     </div>
@@ -112,6 +123,7 @@ function Cell(props) {
     onEdit,
     delimiters,
     columnsFilter,
+    columnsFilterOptions,
     generateRowId = () => {},
   } = props;
   const classes = useStyles();
@@ -119,10 +131,11 @@ function Cell(props) {
 
   function handleEdit(markdown){
     const _markdown = markdown.replace(/^\u00A0/,'');
+
     onEdit({
       rowIndex, columnIndex: columnIndex - 1, value: _markdown,
     });
-  };
+  }
 
   return (
     <div className={`cell-${rowIndex}-${columnIndex} ` + classes.root}>
@@ -136,10 +149,11 @@ function Cell(props) {
         handleEdit={handleEdit}
         dataTestId = {generateRowId(rowData)}
         columnsFilter={columnsFilter}
+        columnsFilterOptions={columnsFilterOptions}
       />
     </div>
   );
-};
+}
 
 Cell.propTypes = {
   /** Value of the cell */
@@ -171,8 +185,8 @@ Cell.defaultProps = {
 
 const shouldReRender = (prevProps, nextProps) =>
   isEqual(prevProps.tableMeta, nextProps.tableMeta) &&
-isEqual(prevProps.preview, nextProps.preview) &&
-isEqual(prevProps.value, nextProps.value) &&
-isEqual(prevProps.page, nextProps.page);
+  isEqual(prevProps.preview, nextProps.preview) &&
+  isEqual(prevProps.value, nextProps.value) &&
+  isEqual(prevProps.page, nextProps.page);
 
 export default memo(Cell, shouldReRender);
