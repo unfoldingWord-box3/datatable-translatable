@@ -1,11 +1,11 @@
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import isEqual from 'lodash.isequal';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 
-import { BlockEditable } from 'markdown-translatable';
+import { BlockEditable, MarkdownContext } from 'markdown-translatable';
 import useStyles from './styles';
 
 // file to memory
@@ -41,6 +41,7 @@ function BlockEditableWrapper({
   );
   const originalValue = original || '*empty*';
   const translationValue = translation || '\u00A0';
+  const { actions } = useContext(MarkdownContext);
 
   return (
     <div className={classes.row}>
@@ -78,12 +79,18 @@ function BlockEditableWrapper({
                   onChange={(event, newValue) => {
                     if (typeof newValue === 'string' ) {
                       handleEdit(newValue);
+                      if (actions && actions.setIsChanged) {
+                        actions.setIsChanged(true);
+                      }                  
                     }
                   }}
                   handleHomeEndKeys
                   renderInput={(params) => <TextField {...params} onBlur={(event) => {
                     if ( event ) {
                       handleEdit(event.target.value);
+                      if (actions && actions.setIsChanged) {
+                        actions.setIsChanged(true);
+                      }                  
                     }
                   } }
                   />
