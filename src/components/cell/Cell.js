@@ -5,8 +5,7 @@ import isEqual from 'lodash.isequal';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 
-import { MarkdownContext } from 'markdown-translatable';
-import { BlockEditable } from 'markdown-translatable';
+import { BlockEditable, MarkdownContext } from 'markdown-translatable';
 import useStyles from './styles';
 
 // file to memory
