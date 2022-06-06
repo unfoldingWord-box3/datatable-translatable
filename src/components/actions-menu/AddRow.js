@@ -15,6 +15,7 @@ import {
 } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
+import { MarkdownContext } from 'markdown-translatable';
 import { DataTableContext } from '../datatable/DataTable.context';
 import { getRowElement, getOffset } from '../../core/datatable';
 
@@ -33,6 +34,8 @@ function AddRowMenu({
 
   const { state } = useContext(DataTableContext);
   // console.log("Datatable Context state:", state);
+  const { actions } = useContext(MarkdownContext);
+
 
   const classes = useStyles();
 
@@ -46,6 +49,10 @@ function AddRowMenu({
   const handleRowAdd = () => {
     rowAddBelow({ rowIndex, rowData: newRow });
     handleClose();
+    if (actions && actions.setIsChanged) {
+      actions.setIsChanged(true);
+    }                  
+
     setTimeout(() => {
       const rowBelow = getRowElement(generateRowId, rowData, 1);
 
