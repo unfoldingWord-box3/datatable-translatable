@@ -8,7 +8,6 @@ import {
   DialogTitle,
   DialogActions,
   DialogContent,
-  DialogContentText,
   TextField,
 } from '@material-ui/core';
 import {
@@ -78,14 +77,22 @@ function AddRowMenu({
       } else {
         // by default...
         text = (
-          <DialogContentText key={name + i}>
-            <strong>{name}:</strong>
-            {' ' + newRow[i]}
-          </DialogContentText>
+          <TextField
+            key={i}
+            defaultValue={newRow[i]}
+            label={name}
+            margin="normal"
+            onChange={(event) => {
+              newRow[i] = event.target.value;
+            }}
+            fullWidth
+          />
         );
+
         if ( state.columnsFilterOptions[i] && state.columnsFilterOptions[i].length > 0 ) {
           text = (
             <Autocomplete
+              key={i}
               options={state.columnsFilterOptions[i]}
               value={newRow[i]}
               onChange={(event, newValue) => {
@@ -94,7 +101,7 @@ function AddRowMenu({
               onInputChange={(event, newValue) => {
                 newRow[i] = newValue;
               }}
-              renderInput={(params) => <TextField {...params} label={state.columnNames[i]} margin="normal" />}
+              renderInput={(params) => <TextField {...params} label={name} margin="normal" />}
               freeSolo={true}
             />
           );
