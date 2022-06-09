@@ -6,6 +6,10 @@ import targetFile from "./mocks/ru_tn_57-TIT";
 function Component() {
   const [sourceFile, setSourceFile] = React.useState(_sourceFile);
   const [savedFile, setSavedFile] = React.useState(targetFile);
+  
+  const [pagination, setPagination] = React.useState(true);
+  const [saveRowId, setSaveRowId] = React.useState('');
+
 
   //Uncomment this to test a page change from a new source file
   // setTimeout(() => {
@@ -15,10 +19,49 @@ function Component() {
   const delimiters = { row: "\n", cell: "\t" };
 
   const options = {
+    pagination: pagination,
     page: 0,
     rowsPerPage: 10,
     rowsPerPageOptions: [10, 25, 50, 100],
+    onRowClick: (rowData) => {
+      const getRowData = rowData[1].props.tableMeta.rowData
+      const [chapter] = getRowData[2].split(delimiters.cell);
+      const [verse] = getRowData[3].split(delimiters.cell);
+      const [uid] = getRowData[4].split(delimiters.cell);
+      const rowId = `header-${chapter}-${verse}-${uid}`;
+      setSaveRowId(rowId)
+    },
+
+    onSearchClose: () =>{
+      const testRefId = saveRowId;
+      const element = document.getElementById(testRefId);
+      if ( element ) {
+        element.scrollIntoView();
+      } else {
+        alert(`Element id not found: ${testRefId}`);
+      }
+    },
+
+    onFilterChipClose: () =>{
+      console.log('dsddddd')
+      const testRefId = saveRowId;
+      const element = document.getElementById(testRefId);
+      if ( element ) {
+        element.scrollIntoView();
+      } else {
+        alert(`Element id not found: ${testRefId}`);
+      }
+    },
+
+    onFilterDialogOpen:() =>{
+      setPagination(false)
+      
+    },
+    onSearchOpen:() =>{
+      setPagination(false)
+    },
   };
+  
 
   const rowHeader = (rowData, actionsMenu) => {
     const book = rowData[0].split(delimiters.cell).find((value) => value);
@@ -68,10 +111,12 @@ function Component() {
   };
 
   const generateRowId = (rowData) => {
+
     const [chapter] = rowData[2].split(delimiters.cell);
     const [verse] = rowData[3].split(delimiters.cell);
     const [uid] = rowData[4].split(delimiters.cell);
-    return `header-${chapter}-${verse}-${uid}`;
+    const rowId = `header-${chapter}-${verse}-${uid}`;
+    return rowId;
   };
 
   return (
@@ -110,6 +155,9 @@ function Component() {
   const [sourceFile, setSourceFile] = React.useState(_sourceFile);
   const [savedFile, setSavedFile] = React.useState(targetFile);
 
+  const [pagination, setPagination] = React.useState(true);
+  const [saveRowId, setSaveRowId] = React.useState('');
+
   //Uncomment this to test a page change from a new source file
   // setTimeout(() => {
   //   setSourceFile(targetFile);
@@ -118,9 +166,49 @@ function Component() {
   const delimiters = { row: "\n", cell: "\t" };
 
   const options = {
+    pagination: pagination,
     page: 0,
     rowsPerPage: 10,
     rowsPerPageOptions: [10, 25, 50, 100],
+    onRowClick: (rowData) => {
+      const getRowData = rowData[1].props.tableMeta.rowData
+      const reference = getRowData[1].split(delimiters.cell)[0];
+      const [chapter, verse] = reference.split(":");
+      const getUid = rowData[2].props.tableMeta.rowData
+      const [uid] = getUid[2].split(delimiters.cell)[1];
+      let rowId = `header-${chapter}-${verse}-${uid}`;
+      setSaveRowId(rowId)
+    },
+
+    onSearchClose: () =>{
+      const testRefId = saveRowId;
+      const element = document.getElementById(testRefId);
+      if ( element ) {
+        element.scrollIntoView();
+      } else {
+        alert(`Element id not found: ${testRefId}`);
+        // setPagination(false);
+      }
+    },
+
+    onFilterChipClose: () =>{
+      console.log('dsddddd')
+      const testRefId = saveRowId;
+      const element = document.getElementById(testRefId);
+      if ( element ) {
+        element.scrollIntoView();
+      } else {
+        alert(`Element id not found: ${testRefId}`);
+      }
+    },
+    onFilterDialogOpen:() =>{
+      console.log('dsddddd')
+      setPagination(false)
+    },
+    onSearchOpen:() =>{
+      console.log('dsddddd')
+      setPagination(false)
+    }
   };
 
   const rowHeader = (rowData, actionsMenu) => {
