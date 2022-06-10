@@ -209,7 +209,11 @@ export const stringify = ({
         if ( j < (dataTable[i].length - 1) ) {rowstring += delimiters.cell};
       }
       string += rowstring;
-      string += delimiters.row;
+
+      // Don't add newline if we are at the end of the file.
+      if ( i < dataTable.length - 1 ) {
+        string += delimiters.row;
+      }
     }
     // The below is commented out and replaced with the 2d for loop above.
     // This is needed in order to only apply the outputFilter to make newlines 
