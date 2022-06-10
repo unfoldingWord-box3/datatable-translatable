@@ -8,18 +8,15 @@ env:
 jobs:
   test:
     runs-on: macos-latest
-    strategy:
-      matrix:
-        node-version: [10.15.1]
     steps:
       - name: Extract Branch Name
         run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
       - uses: actions/checkout@v1
         with:
           ref: ${{ env.BRANCH }}
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: lts/*
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
