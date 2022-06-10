@@ -1,6 +1,6 @@
 name: Install, Build & Run Jest
 
-on: [pull_request]
+on: [push]
 env:
   CHILD_CONCURRENCY: 1
   NODE_ENV: test
