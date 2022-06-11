@@ -1,4 +1,4 @@
-name: Install, Build & Run Cypress
+name: Install, Build & Run Jest
 
 on: [push]
 env:
@@ -7,38 +7,19 @@ env:
   COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
 jobs:
   test:
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        node-version: [10.15.1]
+    runs-on: ubuntu-latest
     steps:
       - name: Extract Branch Name
         run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
         with:
           ref: ${{ env.BRANCH }}
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Cache Yarn Modules
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Cache Cypress
-        uses: actions/cache@v1
-        with:
-          path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
+          node-version: lts/*
+      - name: Yarn install cache
+        uses: c-hive/gha-yarn-cache@v1
       - name: Install Packages
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn;
+        run: yarn --prefer-offline
       - name: Run Coverage Tests
-        run: yarn test;
+        run: yarn test
