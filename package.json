@@ -15,7 +15,7 @@
     "build": "styleguidist build",
     "deploy": "sleep 2 && git push",
     "test": "jest __tests__ && cat ./coverage/lcov.info | coveralls",
-    "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline"
+    "prepack": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline"
   },
   "keywords": [
     "tsv",
