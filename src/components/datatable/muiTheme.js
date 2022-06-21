@@ -14,6 +14,7 @@ export const getMuiTheme = createMuiTheme({
         // '&:first-child': { top:'0 !important' },
         '&:nth-child(1)': {
           position: 'sticky',
+          zIndex: 15,
           top: '48px',
           background: 'white',
         },
