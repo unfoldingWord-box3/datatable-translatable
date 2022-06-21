@@ -178,6 +178,12 @@ export const getColumnsFilterOptions = ({
           }
         }
       });
+      if (_columnsFilterOptions[columnIndex]) {
+        _columnsFilterOptions[columnIndex].sort();
+        _columnsFilterOptions[columnIndex].sort(function(a, b) {
+          return a - b;
+        });
+      }
     });
   });
   return _columnsFilterOptions;
