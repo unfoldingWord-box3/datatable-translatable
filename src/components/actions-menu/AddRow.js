@@ -96,7 +96,7 @@ function AddRowMenu({
               options={state.columnsFilterOptions[i]}
               value={newRow[i]}
               onChange={(event, newValue) => {
-                newRow[i] = newValue;
+                newRow[i] = newValue === null ? '' : newValue;
               }}
               onInputChange={(event, newValue) => {
                 newRow[i] = newValue;
