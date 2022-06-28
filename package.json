@@ -1,6 +1,6 @@
 {
   "name": "datatable-translatable",
-  "version": "1.0.5",
+  "version": "1.0.10",
   "license": "MIT",
   "description": "A Component Library for Translating DataTables using React and MaterialUI.",
   "homepage": "https://datatable-translatable.netlify.com/",
@@ -15,7 +15,7 @@
     "build": "styleguidist build",
     "deploy": "sleep 2 && git push",
     "test": "jest __tests__ && cat ./coverage/lcov.info | coveralls",
-    "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline"
+    "prepack": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline"
   },
   "keywords": [
     "tsv",
