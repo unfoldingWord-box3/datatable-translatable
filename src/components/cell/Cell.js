@@ -40,7 +40,6 @@ function BlockEditableWrapper({
     </Typography>
   );
   const originalValue = original || '*empty*';
-  const translationValue = translation || '\u00A0';
   const { actions } = useContext(MarkdownContext);
 
   return (
@@ -73,24 +72,26 @@ function BlockEditableWrapper({
             <div data-test={'id_'+dataTestId+'_'+columnData.name+'_content'} className="editableWrapper">
               { columnsFilterOptions && columnsFilterOptions[columnIndex-1] && columnsFilterOptions[columnIndex-1].length > 0 ?
                 <Autocomplete
-                  value={translationValue}
+                  value={translation}
                   options={columnsFilterOptions[columnIndex-1]}
                   freeSolo
                   onChange={(event, newValue) => {
                     if (typeof newValue === 'string' ) {
                       handleEdit(newValue);
+
                       if (actions && actions.setIsChanged) {
                         actions.setIsChanged(true);
-                      }                  
+                      }
                     }
                   }}
                   handleHomeEndKeys
                   renderInput={(params) => <TextField {...params} onBlur={(event) => {
                     if ( event ) {
                       handleEdit(event.target.value);
+
                       if (actions && actions.setIsChanged) {
                         actions.setIsChanged(true);
-                      }                  
+                      }
                     }
                   } }
                   />
@@ -101,7 +102,7 @@ function BlockEditableWrapper({
                   key={`${rowIndex}-${columnIndex}-target`}
                   debounce={1000}
                   preview={preview}
-                  markdown={translationValue}
+                  markdown={translation || '\u00A0'}
                   editable={true}
                   inputFilters={inputFilters}
                   outputFilters={outputFilters}
