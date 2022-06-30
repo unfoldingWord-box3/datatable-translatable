@@ -57,10 +57,14 @@ function DataTable({
     rowHeader,
   } = config;
   const dataTableElement = useRef();
+  const [page, setPage] = useState(0);
+  const [clickedPage, setClickedPage] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(options.rowsPerPage || 25);
   const [preview, setPreview] = useState(false);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
   const [isAutoSaveChanged, setIsAutoSaveChanged] = useState(false);
+  const [saveRowId, setSaveRowId] = React.useState('');
+  const [pagination, setPagination] = React.useState(true);
 
   const { state, actions } = useContext(DataTableContext);
   const {
@@ -77,13 +81,13 @@ function DataTable({
     setIsAutoSaveChanged(true);
   }, [_cellEdit, setIsAutoSaveChanged]);
 
-  const changePage = useCallback(function (page) {
-    dataTableElement.current.changePage(page);
-  }, [dataTableElement]);
+  // const changePage = useCallback(function (page) {
+  //   dataTableElement.current.changePage(page);
+  // }, [dataTableElement]);
 
-  useDeepEffect(() => {
-    changePage(0);
-  }, [changePage]);
+  // useDeepEffect(() => {
+  //   changePage(0);
+  // }, [changePage]);
   
   // Push "isChanged," so app knows when SAVE button is enabled.
   // See also Translatable in markdown-translatable.
@@ -131,7 +135,7 @@ function DataTable({
     setColumnsShow(_columnsShow);
   }, [columnsShow]);
 
-  const scrollToTop = useCallback(() => {
+  const scrollToTop = useCallback((lastpage) => {
     window.scrollTo(0, 0);
     // if (dataTableElement && dataTableElement.current) {
     //   window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
@@ -179,6 +183,7 @@ function DataTable({
   );
 
   const _options = useMemo(() => ({
+    pagination: pagination,
     responsive: 'scrollFullHeight',
     fixedHeaderOptions,
     resizableColumns: false,
@@ -189,12 +194,44 @@ function DataTable({
     rowsPerPageOptions,
     onChangeRowsPerPage,
     onColumnViewChange,
-    onChangePage: scrollToTop,
+    // onChangePage: scrollToTop,
+    onChangePage: (currentPage) => {
+      setPage(currentPage)
+      console.log("onChangePage() currentPage=", currentPage)
+    },
+    onSearchOpen:() =>{
+      setPagination(false)
+    },
+    onSearchClose: () =>{
+      const testRefId = saveRowId;
+      console.log("onSearchClose() saveRowId:", saveRowId);
+      // dataTableElement.current.changePage(clickedPage);
+      if (testRefId){
+        const element = document.getElementById(testRefId);
+        if ( element ) {
+          element.scrollIntoView();
+        } else {
+          alert(`Element id not found: ${testRefId}`);
+        }
+        // setPagination(true);
+      }
+    },
+    onRowClick: (rowData) => {
+      const getRowData = rowData[1].props.tableMeta.rowData
+      const [chapter] = getRowData[2].split(delimiters.cell);
+      const [verse] = getRowData[3].split(delimiters.cell);
+      const [uid] = getRowData[4].split(delimiters.cell);
+      const rowId = `header-${chapter}-${verse}-${uid}`;
+      setSaveRowId(rowId);
+      // setClickedPage(page);
+      // scrollToTop(page);
+      console.log("onRowClick()", rowId)
+    },
     download: false,
     print: false,
     customToolbar,
     ...options,
-  }), [customToolbar, onChangeRowsPerPage, onColumnViewChange, options, rowsPerPage, scrollToTop]);
+  }), [pagination, customToolbar, onChangeRowsPerPage, onColumnViewChange, options, rowsPerPage, scrollToTop]);
 
   const _data = useMemo(() => getData({
     data, columnNames, rowHeader,
