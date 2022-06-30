@@ -34,22 +34,26 @@ function Component() {
 
     onSearchClose: () =>{
       const testRefId = saveRowId;
-      const element = document.getElementById(testRefId);
-      if ( element ) {
-        element.scrollIntoView();
-      } else {
-        alert(`Element id not found: ${testRefId}`);
+      if (testRefId){
+        const element = document.getElementById(testRefId);
+        if ( element ) {
+          element.scrollIntoView();
+        } else {
+          alert(`Element id not found: ${testRefId}`);
+        }
       }
+      
     },
 
     onFilterChipClose: () =>{
-      console.log('dsddddd')
       const testRefId = saveRowId;
-      const element = document.getElementById(testRefId);
-      if ( element ) {
-        element.scrollIntoView();
-      } else {
-        alert(`Element id not found: ${testRefId}`);
+      if (testRefId){
+        const element = document.getElementById(testRefId);
+        if ( element ) {
+          element.scrollIntoView();
+        } else {
+          alert(`Element id not found: ${testRefId}`);
+        }
       }
     },
 
@@ -103,7 +107,7 @@ function Component() {
 
   const onEdit = (content) => {
     console.log("onEdit: Autosave...");
-    console.log({content});
+    // console.log({content});
   };
 
   const onValidate = () => {
@@ -192,7 +196,6 @@ function Component() {
     },
 
     onFilterChipClose: () =>{
-      console.log('dsddddd')
       const testRefId = saveRowId;
       const element = document.getElementById(testRefId);
       if ( element ) {
@@ -202,11 +205,9 @@ function Component() {
       }
     },
     onFilterDialogOpen:() =>{
-      console.log('dsddddd')
       setPagination(false)
     },
     onSearchOpen:() =>{
-      console.log('dsddddd')
       setPagination(false)
     }
   };
