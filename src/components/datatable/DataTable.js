@@ -58,6 +58,7 @@ function DataTable({
   } = config;
   const dataTableElement = useRef();
   const [page, setPage] = useState(0);
+  const [savePage, setSavePage] = useState(0);
   const [clickedPage, setClickedPage] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(options.rowsPerPage || 25);
   const [preview, setPreview] = useState(false);
@@ -137,7 +138,7 @@ function DataTable({
   }, [columnsShow]);
 
   const scrollToTop = useCallback(() => {
-    console.log("sssssssssssssssssssss")
+    console.log("scrollToTop()")
     window.scrollTo(0, 0);
     if (dataTableElement && dataTableElement.current) {
       window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
@@ -185,34 +186,36 @@ function DataTable({
   );
 
   useEffect(() => {
-    console.log("searchClose", searchClose, pagination, saveRowId )
-    if(searchClose){
-      if (saveRowId){
-        const element = document.getElementById(saveRowId);
-        if(element){
-          element.scrollIntoView()
-          console.log("ssssssssssss",element)
-        } else{
-          console.log("element not found", saveRowId)
-        }
-      }
-      // console.log()
-      setSearchClose(false)
-      
-      setTimeout(()=>{
-        setPagination(true);
-        console.log("setpagination-True")
-      }
-      ,5000)
-      
-    }
-    
+    console.log("searchClose, pagination, saveRowId=", 
+      searchClose, pagination, saveRowId 
+    );
 
+    if( searchClose ) {
+      if ( saveRowId ) {
+        console.log("Setting pagination to true!");
+        setPagination(true);
+        console.log("returning to page:", savePage);
+        dataTableElement.current.changePage(savePage);
+        console.log("Next, in 1s scroll to ", saveRowId);
+        setTimeout( 
+          () => {
+            const element = document.getElementById(saveRowId);
+            element.scrollIntoView()
+            console.log("Scrolling done.")
+          },
+          1000
+        );
+      } else {
+        // go ahead and set pagination back on
+        setPagination(true);
+      }
+      setSearchClose(false);
+    }
   }, [searchClose, saveRowId]);
 
-  useEffect(()=>{
-    console.log("pagination", pagination)
-  }), [pagination]
+  // useEffect(()=>{
+  //   console.log("pagination, page", pagination, page)
+  // }), [pagination, page]
 
   const _options = {
     pagination: pagination,
@@ -224,6 +227,7 @@ function DataTable({
     display: 'excluded',
     rowsPerPage,
     rowsPerPageOptions,
+    page: page,
     onChangeRowsPerPage,
     onColumnViewChange,
     // onChangePage: scrollToTop,
@@ -239,12 +243,18 @@ function DataTable({
     },
 
     onRowClick: (rowData) => {
+      if ( !pagination ) {
+        // do not update rowId when user is doing a search
+        // we know a search is being used if pagination is off
+        return
+      }
       const getRowData = rowData[1].props.tableMeta.rowData
       const [chapter] = getRowData[2].split(delimiters.cell);
       const [verse] = getRowData[3].split(delimiters.cell);
       const [uid] = getRowData[4].split(delimiters.cell);
       const rowId = `header-${chapter}-${verse}-${uid}`;
       setSaveRowId(rowId);
+      setSavePage(page);
       // setClickedPage(page);
       // scrollToTop(page);
       console.log("onRowClick()", rowId)
@@ -317,30 +327,32 @@ DataTable.defaultProps = {
 
 /* code graveyard
 
-  const _onValidate = useCallback(() => {
-    // NOTE! the content on-screen, in-memory does NOT include
-    // the headers. So the initial value of tsvRows will be the headers.
-    let tsvRows = "Book\tChapter\tVerse\tID\tSupportReference\tOrigQuote\tOccurrence\tGLQuote\tOccurrenceNote\n";
-    if (state && state.data) {
-      let rows = state.data;
-      for (let i = 0; i < rows.length; i++) {
-        let _row = rows[i];
-        let _tsvRow = "";
-        // now each cell has both source and target values, delimited by tab
-        for (let j = 0; j < _row.length; j++) {
-          let values = _row[j].split("\t");
-          let targetValue = values[1];
-          targetValue = targetValue.replaceAll('\\[', '[').replaceAll('\\]', ']');
-          _tsvRow = _tsvRow + targetValue + "\t";
+    if( searchClose ) {
+      if (saveRowId){
+        const element = document.getElementById(saveRowId);
+        if( element ){
+          console.log("before scrollIntoView() with element=",element);
+          element.scrollIntoView();
+          console.log("after scrollIntoView()");
+        } else{
+          console.log("element not found", saveRowId);
         }
-        // add new row and a newline at end of row
-        _tsvRow = _tsvRow.trim('\t');
-        // check if row has content on target side
-        if ( _tsvRow === '' ) continue;
-        tsvRows = tsvRows + _tsvRow + "\n";
       }
+      // console.log()
+      setSearchClose(false);
+      const spTimeout = 10000;
+      setTimeout(
+        () => {
+          console.log(`Setting pagination to true in ${spTimeout}ms ...`)
+          setPagination(true);
+          console.log("Pagination now set to true!")
+          console.log("returning to page:", savePage);
+          dataTableElement.current.changePage(savePage);
+          const element = document.getElementById(saveRowId);
+          element.scrollIntoView();
+        },
+        spTimeout
+      );
     }
-    onValidate && onValidate(tsvRows);
-  }, [onValidate, state]);
 
 */
