@@ -65,6 +65,7 @@ function DataTable({
   const [isAutoSaveChanged, setIsAutoSaveChanged] = useState(false);
   const [saveRowId, setSaveRowId] = React.useState('');
   const [pagination, setPagination] = React.useState(true);
+  const [searchClose, setSearchClose] = React.useState(false);
 
   const { state, actions } = useContext(DataTableContext);
   const {
@@ -135,11 +136,12 @@ function DataTable({
     setColumnsShow(_columnsShow);
   }, [columnsShow]);
 
-  const scrollToTop = useCallback((lastpage) => {
+  const scrollToTop = useCallback(() => {
+    console.log("sssssssssssssssssssss")
     window.scrollTo(0, 0);
-    // if (dataTableElement && dataTableElement.current) {
-    //   window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
-    // }
+    if (dataTableElement && dataTableElement.current) {
+      window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
+    }
   }, []);
 
   const onChangeRowsPerPage = useCallback(() => (rows) => {
@@ -182,7 +184,37 @@ function DataTable({
     [_onSave, markdownState.isChanged, preview, togglePreview, _onValidate, onValidate]
   );
 
-  const _options = useMemo(() => ({
+  useEffect(() => {
+    console.log("searchClose", searchClose, pagination, saveRowId )
+    if(searchClose){
+      if (saveRowId){
+        const element = document.getElementById(saveRowId);
+        if(element){
+          element.scrollIntoView()
+          console.log("ssssssssssss",element)
+        } else{
+          console.log("element not found", saveRowId)
+        }
+      }
+      // console.log()
+      setSearchClose(false)
+      
+      setTimeout(()=>{
+        setPagination(true);
+        console.log("setpagination-True")
+      }
+      ,5000)
+      
+    }
+    
+
+  }, [searchClose, saveRowId]);
+
+  useEffect(()=>{
+    console.log("pagination", pagination)
+  }), [pagination]
+
+  const _options = {
     pagination: pagination,
     responsive: 'scrollFullHeight',
     fixedHeaderOptions,
@@ -203,19 +235,9 @@ function DataTable({
       setPagination(false)
     },
     onSearchClose: () =>{
-      const testRefId = saveRowId;
-      console.log("onSearchClose() saveRowId:", saveRowId);
-      // dataTableElement.current.changePage(clickedPage);
-      if (testRefId){
-        const element = document.getElementById(testRefId);
-        if ( element ) {
-          element.scrollIntoView();
-        } else {
-          alert(`Element id not found: ${testRefId}`);
-        }
-        // setPagination(true);
-      }
+      setSearchClose(true) 
     },
+
     onRowClick: (rowData) => {
       const getRowData = rowData[1].props.tableMeta.rowData
       const [chapter] = getRowData[2].split(delimiters.cell);
@@ -231,7 +253,7 @@ function DataTable({
     print: false,
     customToolbar,
     ...options,
-  }), [pagination, customToolbar, onChangeRowsPerPage, onColumnViewChange, options, rowsPerPage, scrollToTop]);
+  } //), [pagination, customToolbar, onChangeRowsPerPage, onColumnViewChange, options, rowsPerPage, scrollToTop]);
 
   const _data = useMemo(() => getData({
     data, columnNames, rowHeader,
