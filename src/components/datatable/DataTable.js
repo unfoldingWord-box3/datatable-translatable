@@ -232,7 +232,8 @@ function DataTable({
     onColumnViewChange,
     // onChangePage: scrollToTop,
     onChangePage: (currentPage) => {
-      setPage(currentPage)
+      setPage(currentPage);
+      scrollToTop();
       console.log("onChangePage() currentPage=", currentPage)
     },
     onSearchOpen:() =>{
