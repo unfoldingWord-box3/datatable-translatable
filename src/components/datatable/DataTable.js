@@ -1,7 +1,3 @@
-import { Toolbar } from '../..';
-import { getMuiTheme } from './muiTheme';
-import { DataTableContext, DataTableContextProvider } from './DataTable.context';
-import { getColumns, getData } from './helpers';
 
 import React, {
   useState, useContext, useRef, useCallback, useMemo, useEffect,
@@ -13,6 +9,10 @@ import MUIDataTable from 'mui-datatables';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import { MarkdownContext, MarkdownContextProvider } from 'markdown-translatable';
+import { Toolbar } from '../..';
+import { getColumns, getData } from './helpers';
+import { DataTableContext, DataTableContextProvider } from './DataTable.context';
+import { getMuiTheme } from './muiTheme';
 
 const fixedHeaderOptions = { xAxis: false, yAxis: false };
 const rowsPerPageOptions = [25, 50, 100];
@@ -57,16 +57,11 @@ function DataTable({
     rowHeader,
   } = config;
   const dataTableElement = useRef();
-  const [page, setPage] = useState(0);
-  const [clickedPage, setClickedPage] = useState(null);
-  const [rowsPerPage, setRowsPerPage] = useState(options.rowsPerPage || 25);
   const [preview, setPreview] = useState(false);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
   const [isAutoSaveChanged, setIsAutoSaveChanged] = useState(false);
-  const [saveRowId, setSaveRowId] = React.useState('');
-  const [pagination, setPagination] = React.useState(true);
-  const [searchClose, setSearchClose] = React.useState(false);
-
+  const [lastClickedDataIndex, setLastClickedDataIndex] = React.useState('');
+  let needToScroll = false;
   const { state, actions } = useContext(DataTableContext);
   const {
     columnNames, data, columnsFilterOptions,
@@ -82,14 +77,23 @@ function DataTable({
     setIsAutoSaveChanged(true);
   }, [_cellEdit, setIsAutoSaveChanged]);
 
-  // const changePage = useCallback(function (page) {
-  //   dataTableElement.current.changePage(page);
-  // }, [dataTableElement]);
+  // We have to do it this way because https://github.com/gregnb/mui-datatables/issues/756#issuecomment-510191071
+  const changePage = useCallback(function (page) {
+    dataTableElement.current.changePage(page);
+  }, [dataTableElement]);
 
-  // useDeepEffect(() => {
-  //   changePage(0);
-  // }, [changePage]);
-  
+  useDeepEffect(() => {
+    changePage(0);
+  }, [changePage]);
+
+  const scrollToLastClicked = () => {
+    if (lastClickedDataIndex) {
+      const newPage = Math.floor(lastClickedDataIndex / dataTableElement.current.state.rowsPerPage);
+      needToScroll = true;
+      changePage(newPage);
+    }
+  };
+
   // Push "isChanged," so app knows when SAVE button is enabled.
   // See also Translatable in markdown-translatable.
   useEffect(() => {
@@ -112,19 +116,16 @@ function DataTable({
   }, [actions, onSave, markdownActions]);
 
   useDeepEffect(() => {
-    console.log("useDeepEffect for isAutoSaveChanged");
-    if (onEdit && isAutoSaveChanged)
-    {
+    if (onEdit && isAutoSaveChanged) {
       const savedFile = actions.targetFileSave();
       onEdit(savedFile);
-      
       setIsAutoSaveChanged(false);
       // if (markdownActions && markdownActions.setIsAutoSaveChanged) {
       //   markdownActions.setIsAutoSaveChanged(false);
       // }
     }
   }, [isAutoSaveChanged, onEdit, markdownActions, actions]);
-  
+
   const onColumnViewChange = useCallback((changedColumn, action) => {
     let _columnsShow = [...columnsShow];
 
@@ -136,39 +137,39 @@ function DataTable({
     setColumnsShow(_columnsShow);
   }, [columnsShow]);
 
-  const scrollToTop = useCallback(() => {
-    console.log("sssssssssssssssssssss")
-    window.scrollTo(0, 0);
+  const scrollToTop = () => {
+    console.log('scroll to top');
+
     if (dataTableElement && dataTableElement.current) {
       window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
+    } else {
+      window.scrollTo(0, 0);
     }
-  }, []);
-
-  const onChangeRowsPerPage = useCallback(() => (rows) => {
-    setRowsPerPage(rows);
-    scrollToTop();
-  }, [scrollToTop]);
+  };
 
   const _onValidate = useCallback(() => {
     // Note 1: the content on-screen, in-memory does NOT include
-    // the headers. Since this component has no awareness of 
+    // the headers. Since this component has no awareness of
     // specific resource requirements, the header must be added
     // as first row by the app itself.
 
     // Note 2: the content on-screen, in-memory contains both
     // source and target data. The target data must be teased
-    // out. A new array of rows (target rows) will be created 
+    // out. A new array of rows (target rows) will be created
     // and this is the data that will be passed to the validation
     // closure passed to this component.
     let targetRows = [];
+
     if (state && state.data) {
       let rows = state.data;
+
       for (let i = 0; i < rows.length; i++) {
         let row = rows[i];
         let targetRow = [];
+
         // now each cell has both source and target values, delimited by tab
         for (let j = 0; j < row.length; j++) {
-          let values = row[j].split("\t");
+          let values = row[j].split('\t');
           let targetValue = values[1];
           targetValue = targetValue.replaceAll('\\[', '[').replaceAll('\\]', ']');
           targetRow.push(targetValue);
@@ -181,79 +182,44 @@ function DataTable({
 
   const customToolbar = useCallback(() =>
     <Toolbar preview={preview} onPreview={togglePreview} changed={markdownState.isChanged} onSave={_onSave} onValidate={onValidate ? _onValidate : undefined} />,
-    [_onSave, markdownState.isChanged, preview, togglePreview, _onValidate, onValidate]
+  [_onSave, markdownState.isChanged, preview, togglePreview, _onValidate, onValidate],
   );
 
-  useEffect(() => {
-    console.log("searchClose", searchClose, pagination, saveRowId )
-    if(searchClose){
-      if (saveRowId){
-        const element = document.getElementById(saveRowId);
-        if(element){
-          element.scrollIntoView()
-          console.log("ssssssssssss",element)
-        } else{
-          console.log("element not found", saveRowId)
-        }
-      }
-      // console.log()
-      setSearchClose(false)
-      
-      setTimeout(()=>{
-        setPagination(true);
-        console.log("setpagination-True")
-      }
-      ,5000)
-      
-    }
-    
-
-  }, [searchClose, saveRowId]);
-
-  useEffect(()=>{
-    console.log("pagination", pagination)
-  }), [pagination]
-
   const _options = {
-    pagination: pagination,
     responsive: 'scrollFullHeight',
     fixedHeaderOptions,
     resizableColumns: false,
     selectableRows: 'none',
     rowHover: false,
     display: 'excluded',
-    rowsPerPage,
+    rowsPerPage: 25,
     rowsPerPageOptions,
-    onChangeRowsPerPage,
+    onChangeRowsPerPage: scrollToTop,
     onColumnViewChange,
-    // onChangePage: scrollToTop,
-    onChangePage: (currentPage) => {
-      setPage(currentPage)
-      console.log("onChangePage() currentPage=", currentPage)
+    onSearchClose: scrollToLastClicked,
+    onFilterChange: (changed, filters ) => {
+      if ( filters.filter((filter) => filter.length).length <= 0) {
+        scrollToLastClicked();
+      }
     },
-    onSearchOpen:() =>{
-      setPagination(false)
+    onRowClick: (rowData, { dataIndex }) => {
+      setLastClickedDataIndex(dataIndex);
     },
-    onSearchClose: () =>{
-      setSearchClose(true) 
-    },
+    onChangePage: () => {
+      if ( needToScroll ) {
+        needToScroll = false;
+        const element = document.getElementById('MUIDataTableBodyRow-' + lastClickedDataIndex);
 
-    onRowClick: (rowData) => {
-      const getRowData = rowData[1].props.tableMeta.rowData
-      const [chapter] = getRowData[2].split(delimiters.cell);
-      const [verse] = getRowData[3].split(delimiters.cell);
-      const [uid] = getRowData[4].split(delimiters.cell);
-      const rowId = `header-${chapter}-${verse}-${uid}`;
-      setSaveRowId(rowId);
-      // setClickedPage(page);
-      // scrollToTop(page);
-      console.log("onRowClick()", rowId)
+        if (element) {
+          element.scrollIntoView();
+        }
+      }
     },
     download: false,
     print: false,
     customToolbar,
     ...options,
-  } //), [pagination, customToolbar, onChangeRowsPerPage, onColumnViewChange, options, rowsPerPage, scrollToTop]);
+  };
 
   const _data = useMemo(() => getData({
     data, columnNames, rowHeader,

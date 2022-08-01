@@ -23,47 +23,6 @@ function Component() {
     page: 0,
     rowsPerPage: 10,
     rowsPerPageOptions: [10, 25, 50, 100],
-    onRowClick: (rowData) => {
-      const getRowData = rowData[1].props.tableMeta.rowData
-      const [chapter] = getRowData[2].split(delimiters.cell);
-      const [verse] = getRowData[3].split(delimiters.cell);
-      const [uid] = getRowData[4].split(delimiters.cell);
-      const rowId = `header-${chapter}-${verse}-${uid}`;
-      setSaveRowId(rowId)
-    },
-
-    onSearchClose: () =>{
-      const testRefId = saveRowId;
-      if (testRefId){
-        const element = document.getElementById(testRefId);
-        if ( element ) {
-          element.scrollIntoView();
-        } else {
-          alert(`Element id not found: ${testRefId}`);
-        }
-      }
-      
-    },
-
-    onFilterChipClose: () =>{
-      const testRefId = saveRowId;
-      if (testRefId){
-        const element = document.getElementById(testRefId);
-        if ( element ) {
-          element.scrollIntoView();
-        } else {
-          alert(`Element id not found: ${testRefId}`);
-        }
-      }
-    },
-
-    onFilterDialogOpen:() =>{
-      setPagination(false)
-      
-    },
-    onSearchOpen:() =>{
-      setPagination(false)
-    },
   };
   
 
