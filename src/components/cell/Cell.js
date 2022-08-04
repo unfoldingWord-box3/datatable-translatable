@@ -18,6 +18,7 @@ const inputFilters = [
 // screen to memory and thus to file
 const outputFilters = [
   [/^\u200B/,''], [/\u200B$/,''],
+  [/^\u00A0/,''], [/\u00A0$/,''],
   [/<br>/gi, '\n'],
   ['\n\n> ', '\\n\\n> '],
 ];
