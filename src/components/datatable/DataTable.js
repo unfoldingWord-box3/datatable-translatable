@@ -49,6 +49,8 @@ function DataTable({
   onContentIsDirty,
   sourceFile,
   generateRowId: _generateRowId,
+  originalFontFamily,
+  translationFontFamily,
   ...props
 }) {
   const {
@@ -229,6 +231,7 @@ function DataTable({
     columnNames, columnsFilter, columnsFilterOptions,
     columnsShow, delimiters, rowHeader,
     generateRowId, cellEdit, preview,
+    originalFontFamily, translationFontFamily,
   }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader]);
 
   return (
