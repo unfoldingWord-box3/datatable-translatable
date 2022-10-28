@@ -232,7 +232,7 @@ function DataTable({
     columnsShow, delimiters, rowHeader,
     generateRowId, cellEdit, preview,
     originalFontFamily, translationFontFamily,
-  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader]);
+  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader, originalFontFamily, translationFontFamily]);
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
