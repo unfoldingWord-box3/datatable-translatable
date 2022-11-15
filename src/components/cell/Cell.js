@@ -33,8 +33,10 @@ function BlockEditableWrapper({
   handleEdit,
   dataTestId,
   columnsFilterOptions,
+  originalFontFamily,
+  translationFontFamily,
 }) {
-  const classes = useStyles();
+  const classes = useStyles({ originalFontFamily, translationFontFamily });
   const subheading = (
     <Typography className={classes.subheading} variant='subtitle2' align='left' color='textSecondary'>
       {columnData.name}
@@ -132,6 +134,8 @@ function Cell(props) {
     delimiters,
     columnsFilterOptions,
     generateRowId = () => {},
+    originalFontFamily,
+    translationFontFamily,
   } = props;
   const classes = useStyles();
   const [original, translation] = value.split(delimiters.cell);
@@ -156,6 +160,8 @@ function Cell(props) {
         handleEdit={handleEdit}
         dataTestId = {generateRowId(rowData)}
         columnsFilterOptions={columnsFilterOptions}
+        originalFontFamily={originalFontFamily}
+        translationFontFamily={translationFontFamily}
       />
     </div>
   );

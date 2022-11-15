@@ -7,6 +7,7 @@ export function getColumns({
   columnNames, columnsFilter, columnsFilterOptions,
   columnsShow, delimiters, rowHeader,
   generateRowId, cellEdit, preview,
+  originalFontFamily, translationFontFamily,
 }) {
   let columns = columnNames.map((_name) => {
     const name = _name?.trim();
@@ -38,7 +39,7 @@ export function getColumns({
           const { tableState = {} } = tableMeta;
           const { rowsPerPage, page } = tableState || {};
           const cellProps = {
-            generateRowId, value, tableMeta, onEdit: cellEdit, delimiters, rowsPerPage, page, preview, columnsFilterOptions,
+            generateRowId, value, tableMeta, onEdit: cellEdit, delimiters, rowsPerPage, page, preview, columnsFilterOptions, originalFontFamily, translationFontFamily,
           };
           return <Cell {...cellProps} />;
         },
