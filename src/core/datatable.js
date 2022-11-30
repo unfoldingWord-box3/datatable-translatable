@@ -178,9 +178,10 @@ export const getColumnsFilterOptions = ({
           }
         }
       });
+
       if (_columnsFilterOptions[columnIndex]) {
         _columnsFilterOptions[columnIndex].sort(); // sort SupportReference
-        _columnsFilterOptions[columnIndex].sort(function(a, b){return a-b}); // sort chapters and verses
+        _columnsFilterOptions[columnIndex].sort(sortSKU); // sort chapters and verses
       }
     });
   });
@@ -304,4 +305,23 @@ export function getOffset(element) {
     top: rect.top + win.pageYOffset,
     left: rect.left + win.pageXOffset,
   };
+}
+
+function sortSKU( a, b ) {
+  var aParts = a.split( ':' ),
+    bParts = b.split( ':' ),
+    partCount = aParts.length,
+    i;
+
+  if ( aParts.length != bParts.length ) {
+    return aParts.length - bParts.length;
+  }
+
+  for ( i = 0 ; i < partCount ; i++ ) {
+    if ( aParts[i] != bParts[i] ) {
+      return +aParts[i] - +bParts[i];
+    }
+  }
+  //Exactly the same
+  return 0;
 }
