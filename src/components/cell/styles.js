@@ -2,18 +2,20 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   root: {},
-  original: {
+  original: props => ({
     padding: '0 8px',
     background: '#eee4',
     display: 'table-cell',
     width: '50%',
-  },
-  translation: {
+    fontFamily: props.originalFontFamily || 'inherit',
+  }),
+  translation: props => ({
     padding: '0 15px',
     background: '#eee4',
     display: 'table-cell',
     width: '50%',
-  },
+    fontFamily: props.translationFontFamily || 'inherit',
+  }),
   subheading: {
     fontSize: '0.8em',
     fontStyle: 'italic',
@@ -48,7 +50,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   divSubheading: {
-    display: 'table-cell', 
+    display: 'table-cell',
     minWidth: '7em'
   },
   divOccurrence: {
