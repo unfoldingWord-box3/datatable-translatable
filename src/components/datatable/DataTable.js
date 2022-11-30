@@ -49,6 +49,8 @@ function DataTable({
   onContentIsDirty,
   sourceFile,
   generateRowId: _generateRowId,
+  originalFontFamily,
+  translationFontFamily,
   ...props
 }) {
   const {
@@ -229,7 +231,8 @@ function DataTable({
     columnNames, columnsFilter, columnsFilterOptions,
     columnsShow, delimiters, rowHeader,
     generateRowId, cellEdit, preview,
-  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader]);
+    originalFontFamily, translationFontFamily,
+  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader, originalFontFamily, translationFontFamily]);
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
