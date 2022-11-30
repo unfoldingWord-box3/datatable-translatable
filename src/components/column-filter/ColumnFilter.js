@@ -33,13 +33,11 @@ function ColumnFilter({
         <MenuItem value={'All'} key={0}>
           {'All'}
         </MenuItem>
-        <div style={{ maxHeight: '300px' }}>
-          {optionValues.map((filterValue, _filterIndex) => (
-            <MenuItem value={filterValue} key={_filterIndex + 1} >
-              {filterValue != null ? filterValue.toString() : ''}
-            </MenuItem>
-          ))}
-        </div>
+        {optionValues.map((filterValue, _filterIndex) => (
+          <MenuItem value={filterValue} key={_filterIndex + 1} >
+            {filterValue != null ? filterValue.toString() : ''}
+          </MenuItem>
+        ))}
       </Select>
     </FormControl>
   );
