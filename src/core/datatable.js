@@ -313,12 +313,12 @@ function sortSKU( a, b ) {
     partCount = aParts.length,
     i;
 
-  if ( aParts.length != bParts.length ) {
+  if ( aParts.length !== bParts.length ) {
     return aParts.length - bParts.length;
   }
 
   for ( i = 0 ; i < partCount ; i++ ) {
-    if ( aParts[i] != bParts[i] ) {
+    if ( aParts[i] !== bParts[i] ) {
       return +aParts[i] - +bParts[i];
     }
   }
