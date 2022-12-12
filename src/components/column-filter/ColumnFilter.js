@@ -5,7 +5,9 @@ import {
   Select,
   MenuItem,
   Input,
+  TextField,
 } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 function ColumnFilter({
   filterList,
@@ -20,8 +22,35 @@ function ColumnFilter({
   };
 
   return (
-    <FormControl key={filterIndex} fullWidth >
-      <InputLabel htmlFor={column.name}>{column.label}</InputLabel>
+    <>
+    {/* // <FormControl key={filterIndex} fullWidth > */}
+      <Autocomplete
+      value={optionValues}
+      disablePortal
+      // id="combo-box-demo"
+      freeSolo
+      options={optionValues}
+      onChange={(event) => {
+        if (event) {
+          handleChange(event);
+
+          // if (actions && actions.setIsChanged) {
+          //   actions.setIsChanged(true);
+          // }
+        }
+      }}
+      handleHomeEndKeys
+      blurOnSelect
+      // sx={{ width: 300 }
+      renderInput={(params) => <TextField {...params} label={column.name}
+       onBlur={(event) => {
+        if ( event ) {
+          handleChange(event);
+        }
+      } } 
+      />}
+    />
+      {/* <InputLabel htmlFor={column.name}>{column.label}</InputLabel>
       <Select
         data-test-id={column.name}
         fullWidth
@@ -38,8 +67,9 @@ function ColumnFilter({
             {filterValue != null ? filterValue.toString() : ''}
           </MenuItem>
         ))}
-      </Select>
-    </FormControl>
+      </Select> */}
+    {/* // </FormControl> */}
+    </>
   );
 };
 
