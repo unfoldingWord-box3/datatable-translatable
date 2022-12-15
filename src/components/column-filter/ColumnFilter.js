@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Input,
-} from '@material-ui/core';
+import { TextField } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 function ColumnFilter({
   filterList,
@@ -20,26 +15,20 @@ function ColumnFilter({
   };
 
   return (
-    <FormControl key={filterIndex} fullWidth >
-      <InputLabel htmlFor={column.name}>{column.label}</InputLabel>
-      <Select
-        data-test-id={column.name}
-        fullWidth
-        value={filterList[filterIndex].length ? filterList[filterIndex].toString() : 'All'}
-        name={column.name}
-        onChange={handleChange}
-        input={<Input name={column.name} id={column.name} />}
-      >
-        <MenuItem value={'All'} key={0}>
-          {'All'}
-        </MenuItem>
-        {optionValues.map((filterValue, _filterIndex) => (
-          <MenuItem value={filterValue} key={_filterIndex + 1} >
-            {filterValue != null ? filterValue.toString() : ''}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <>
+      <Autocomplete
+      value={filterList[filterIndex].length ? filterList[filterIndex].toString() : 'All'}
+      disablePortal
+      style={{overflow: 'visible'}}
+      options={optionValues}
+      onChange={(event,newValue) => {
+        onChange(newValue, filterIndex, column.name);
+      }}
+      handleHomeEndKeys
+      renderInput={(params) => <TextField {...params} label={column.name}
+      />}
+    />
+    </>
   );
 };
 
