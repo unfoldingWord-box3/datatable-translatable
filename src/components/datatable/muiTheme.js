@@ -40,6 +40,7 @@ export const getMuiTheme = createMuiTheme({
     MuiToolbar: {
       root: {
         top: 0,
+        overflow: 'visible',
         position: 'sticky',
         background: 'white',
         zIndex: '100',
@@ -55,6 +56,10 @@ export const getMuiTheme = createMuiTheme({
         background: 'white',
       },
     },
+    MuiGridListTile: { tile: { overflow: 'visible' } },
+    MuiPopover: { paper: { overflowX: 'visible', overflowY: 'visible' } },
+    MuiGridList: { root: { overflowY: 'visible' } },
     MuiTableFooter: { root: { borderTop: '1px solid #ccc' } },
+    MuiAutocomplete: { popper: { top: '100%' } },
   },
 });

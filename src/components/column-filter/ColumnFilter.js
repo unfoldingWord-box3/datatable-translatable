@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Input,
-  TextField,
-} from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 function ColumnFilter({
@@ -23,52 +16,18 @@ function ColumnFilter({
 
   return (
     <>
-    {/* // <FormControl key={filterIndex} fullWidth > */}
       <Autocomplete
-      value={optionValues}
+      value={filterList[filterIndex].length ? filterList[filterIndex].toString() : 'All'}
       disablePortal
-      // id="combo-box-demo"
-      freeSolo
+      style={{overflow: 'visible'}}
       options={optionValues}
-      onChange={(event) => {
-        if (event) {
-          handleChange(event);
-
-          // if (actions && actions.setIsChanged) {
-          //   actions.setIsChanged(true);
-          // }
-        }
+      onChange={(event,newValue) => {
+        onChange(newValue, filterIndex, column.name);
       }}
       handleHomeEndKeys
-      blurOnSelect
-      // sx={{ width: 300 }
       renderInput={(params) => <TextField {...params} label={column.name}
-       onBlur={(event) => {
-        if ( event ) {
-          handleChange(event);
-        }
-      } } 
       />}
     />
-      {/* <InputLabel htmlFor={column.name}>{column.label}</InputLabel>
-      <Select
-        data-test-id={column.name}
-        fullWidth
-        value={filterList[filterIndex].length ? filterList[filterIndex].toString() : 'All'}
-        name={column.name}
-        onChange={handleChange}
-        input={<Input name={column.name} id={column.name} />}
-      >
-        <MenuItem value={'All'} key={0}>
-          {'All'}
-        </MenuItem>
-        {optionValues.map((filterValue, _filterIndex) => (
-          <MenuItem value={filterValue} key={_filterIndex + 1} >
-            {filterValue != null ? filterValue.toString() : ''}
-          </MenuItem>
-        ))}
-      </Select> */}
-    {/* // </FormControl> */}
     </>
   );
 };
