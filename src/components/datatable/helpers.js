@@ -4,14 +4,15 @@ import { Cell , HeaderCell } from '../cell';
 
 
 export function getColumns({
-  columnNames, columnsFilter, columnsFilterOptions,
+  columnNames, columnsFilter, columnsFilterOptions, columnsMap = {},
   columnsShow, delimiters, rowHeader,
   generateRowId, cellEdit, preview,
   originalFontFamily, translationFontFamily,
 }) {
   let columns = columnNames.map((_name) => {
     const name = _name?.trim();
-
+    const { options, ...props } = columnsMap[name] || {};
+    const { filterOptions: customFilterOptions, ...customOptions } = options || {};
     const offset = rowHeader ? 1 : 0;
     let filterOptions;
 
@@ -25,6 +26,7 @@ export function getColumns({
             filterList, onChange, column, offset, columnsFilterOptions, filterIndex,
           })
         ),
+        ...customFilterOptions
       };
     };
     return {
@@ -44,7 +46,9 @@ export function getColumns({
           return <Cell {...cellProps} />;
         },
         customFilterListOptions: { render: (value) => (`${name} - ${value}`) },
+        ...customOptions
       },
+      ...props
     };
   });
 
