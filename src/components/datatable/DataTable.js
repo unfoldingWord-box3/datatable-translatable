@@ -51,6 +51,8 @@ function DataTable({
   generateRowId: _generateRowId,
   originalFontFamily,
   translationFontFamily,
+  columnsMap,
+  columns: extraColumns = [],
   ...props
 }) {
   const {
@@ -231,12 +233,12 @@ function DataTable({
     columnNames, columnsFilter, columnsFilterOptions,
     columnsShow, delimiters, rowHeader,
     generateRowId, cellEdit, preview,
-    originalFontFamily, translationFontFamily,
-  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader, originalFontFamily, translationFontFamily]);
+    originalFontFamily, translationFontFamily,columnsMap,
+  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader, originalFontFamily, translationFontFamily, columnsMap]);
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
-      <DatatableMemo dataTableElement={dataTableElement} columns={columns} data={_data} options={_options} {...props} />
+      <DatatableMemo dataTableElement={dataTableElement} columns={[...columns, ...extraColumns]} data={_data} options={_options} {...props} />
     </MuiThemeProvider>
   );
 }
@@ -270,6 +272,10 @@ DataTable.propTypes = {
     */
     rowHeader: PropTypes.func,
   }).isRequired,
+  /** Object to override columns settings */
+  columnsMap: PropTypes.object,
+  /** Array of extra columns */
+  columns: PropTypes.array,
   /** Options to override or pass through to MUIDataTables.
    *  https://github.com/gregnb/mui-datatables
    */
