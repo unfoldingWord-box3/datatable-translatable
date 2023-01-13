@@ -1,21 +1,20 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
-  root: {},
-  original: props => ({
+const useStyles = makeStyles({
+  original: {
     padding: '0 8px',
     background: '#eee4',
     display: 'table-cell',
     width: '50%',
-    fontFamily: props.originalFontFamily || 'inherit',
-  }),
-  translation: props => ({
+    fontFamily: 'var(--datatable-original-font-family, inherit)',
+  },
+  translation: {
     padding: '0 15px',
     background: '#eee4',
     display: 'table-cell',
     width: '50%',
-    fontFamily: props.translationFontFamily || 'inherit',
-  }),
+    fontFamily: 'var(--datatable-translation-font-family, inherit)',
+  },
   subheading: {
     fontSize: '0.8em',
     fontStyle: 'italic',
@@ -37,31 +36,25 @@ const useStyles = makeStyles(theme => ({
   gridOriginal: {
     marginTop:'-15px',
     marginLeft:'2px',
-    padding: '15px 10px 0px 28px'
+    padding: '15px 10px 0px 28px',
   },
   divRow: {
-    display: 'table-row',
-    width: '100%',
+    'display': 'table-row',
+    'width': '100%',
     '& .editableWrapper': {
       marginTop:'-1em',
       marginLeft:'2px',
       display: 'table-cell',
-      width:'100%'
-    }
+      width:'100%',
+    },
   },
   divSubheading: {
     display: 'table-cell',
-    minWidth: '7em'
+    minWidth: '7em',
   },
-  divOccurrence: {
-    marginTop: '1em',
-    '& .editableWrapper': {
-      // marginTop: '1em'
-    }
-  },
-  divTranslation: {
-    marginTop: '1em'
-  }
-}));
+  divOccurrence: { marginTop: '1em' },
+  divTranslation: { marginTop: '1em' },
+});
+
 
 export default useStyles;
