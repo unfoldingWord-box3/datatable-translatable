@@ -61,5 +61,15 @@ export const getMuiTheme = createMuiTheme({
     MuiGridList: { root: { overflowY: 'visible' } },
     MuiTableFooter: { root: { borderTop: '1px solid #ccc' } },
     MuiAutocomplete: { popper: { top: '100%' } },
+    MUIDataTableBodyCell: { root: { '&:focus-within': { background: 'rgba(0,0,0,0.05)' } } },
+    MUIDataTableBodyRow: {
+      root: {
+        '&:focus-within': {
+          'boxShadow': 'grey 0px 0px 5px inset',
+          'background': 'rgba(0,0,0,0.01)',
+          '& .header-row': { background: 'rgba(0,0,0,0.05) !important' },
+        },
+      },
+    },
   },
 });
