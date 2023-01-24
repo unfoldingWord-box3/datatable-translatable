@@ -1,26 +1,37 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
-  root: {},
-  original: props => ({
+  'root': {
+    '&.show': { animation: `$myEffect 3000ms ${theme.transitions.easing.easeInOut}` },
+  },
+  '@keyframes myEffect': {
+    '0%': { background: 'transparent' },
+    '17%': { background: 'grey' },
+    '34%': { background: 'transparent' },
+    '51%': { background: 'grey' },
+    '68%': { background: 'transparent' },
+    '85%': { background: 'grey' },
+    '100%': { background: 'transparent' },
+  },
+  'original': props => ({
     padding: '0 8px',
     background: '#eee4',
     display: 'table-cell',
     width: '50%',
     fontFamily: props.originalFontFamily || 'inherit',
   }),
-  translation: props => ({
+  'translation': props => ({
     padding: '0 15px',
     background: '#eee4',
     display: 'table-cell',
     width: '50%',
     fontFamily: props.translationFontFamily || 'inherit',
   }),
-  subheading: {
+  'subheading': {
     fontSize: '0.8em',
     fontStyle: 'italic',
   },
-  rowHeader: {
+  'rowHeader': {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -30,38 +41,36 @@ const useStyles = makeStyles(theme => ({
     position: 'sticky',
     top: 100,
   },
-  row: {
+  'row': {
     display: 'table',
     width: '100%',
   },
-  gridOriginal: {
+  'gridOriginal': {
     marginTop:'-15px',
     marginLeft:'2px',
     padding: '15px 10px 0px 28px'
   },
-  divRow: {
-    display: 'table-row',
-    width: '100%',
+  'divRow': {
+    'display': 'table-row',
+    'width': '100%',
     '& .editableWrapper': {
       marginTop:'-1em',
       marginLeft:'2px',
       display: 'table-cell',
-      width:'100%'
-    }
+      width:'100%',
+    },
   },
-  divSubheading: {
+  'divSubheading': {
     display: 'table-cell',
-    minWidth: '7em'
+    minWidth: '7em',
   },
-  divOccurrence: {
-    marginTop: '1em',
+  'divOccurrence': {
+    'marginTop': '1em',
     '& .editableWrapper': {
       // marginTop: '1em'
-    }
+    },
   },
-  divTranslation: {
-    marginTop: '1em'
-  }
+  'divTranslation': { 'marginTop': '1em' },
 }));
 
 export default useStyles;

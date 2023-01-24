@@ -48,14 +48,26 @@ function AddRowMenu({
   const handleRowAdd = () => {
     rowAddBelow({ rowIndex, rowData: newRow });
     handleClose();
+
     if (actions && actions.setIsChanged) {
       actions.setIsChanged(true);
-    }                  
+    }
 
     setTimeout(() => {
       const rowBelow = getRowElement(generateRowId, rowData, 1);
 
       if (rowBelow) {
+        rowBelow.classList.add('show');
+        const parentRow = rowBelow.closest('.MuiTableRow-root');
+
+        if ( parentRow ) {
+          const allRows = parentRow.querySelectorAll('.MuiTableCell-root.MuiTableCell-body > div > div');
+
+          allRows.forEach((rowCell) => {
+            rowCell.classList.add('show');
+          });
+        }
+
         const top = getOffset(rowBelow).top - rowBelow.offsetHeight;
         document.documentElement.scrollTop = top - 20;
         document.body.scrollTop = top - 20;
