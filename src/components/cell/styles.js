@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
   'gridOriginal': {
     marginTop:'-15px',
     marginLeft:'2px',
-    padding: '15px 10px 0px 28px'
+    padding: '15px 10px 0px 28px',
   },
   'divRow': {
     'display': 'table-row',

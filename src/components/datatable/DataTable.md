@@ -89,6 +89,8 @@ function Component() {
             config={config}
             options={options}
             generateRowId={generateRowId}
+            originalFontFamily="helvetica"
+            translationFontFamily="z003"
         />
     );
 }

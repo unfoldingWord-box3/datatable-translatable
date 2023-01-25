@@ -233,12 +233,14 @@ function DataTable({
     columnNames, columnsFilter, columnsFilterOptions,
     columnsShow, delimiters, rowHeader,
     generateRowId, cellEdit, preview,
-    originalFontFamily, translationFontFamily,columnsMap,
-  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader, originalFontFamily, translationFontFamily, columnsMap]);
+    columnsMap,
+  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader, columnsMap]);
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
-      <DatatableMemo dataTableElement={dataTableElement} columns={[...columns, ...extraColumns]} data={_data} options={_options} {...props} />
+      <div style={ { '--datatable-original-font-family': originalFontFamily, '--datatable-translation-font-family': translationFontFamily } }>
+        <DatatableMemo dataTableElement={dataTableElement} columns={[...columns, ...extraColumns]} data={_data} options={_options} {...props} />
+      </div>
     </MuiThemeProvider>
   );
 }

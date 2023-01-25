@@ -170,20 +170,20 @@ export const getColumnsFilterOptions = ({
       values.forEach(value => {
         if (value) {
           if (!_columnsFilterOptions[columnIndex]) {
-            _columnsFilterOptions[columnIndex] = [];
+            _columnsFilterOptions[columnIndex] = new Set();
           }
 
-          if (!_columnsFilterOptions[columnIndex].includes(value)) {
-            _columnsFilterOptions[columnIndex].push(value);
+          if (!_columnsFilterOptions[columnIndex].has(value)) {
+            _columnsFilterOptions[columnIndex].add(value);
           }
         }
       });
-
-      if (_columnsFilterOptions[columnIndex]) {
-        _columnsFilterOptions[columnIndex].sort(); // sort SupportReference
-        _columnsFilterOptions[columnIndex].sort(sortSKU); // sort chapters and verses
-      }
     });
+  });
+  columnIndices.forEach(columnIndex => {
+    if (_columnsFilterOptions[columnIndex]) {
+      _columnsFilterOptions[columnIndex] = [..._columnsFilterOptions[columnIndex]].sort(sortSKU);// sort chapters and verses
+    }
   });
   return _columnsFilterOptions;
 };
