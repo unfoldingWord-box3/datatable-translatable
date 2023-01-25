@@ -68,10 +68,14 @@ function Component() {
     };
 
     const generateRowId = (rowData) => {
-        const [chapter] = rowData[2].split(delimiters.cell);
-        const [verse] = rowData[3].split(delimiters.cell);
-        const [uid] = rowData[4].split(delimiters.cell);
+        const [chapterFromOriginal, chapterFromTranslation] = rowData[2].split(delimiters.cell);
+        const chapter = chapterFromOriginal || chapterFromTranslation;
+        const [verseFromOriginal, verseFromTranslation] = rowData[3].split(delimiters.cell);
+        const verse = verseFromOriginal || verseFromTranslation;
+        const [uidFromOriginal, uidFromTranslation] = rowData[4].split(delimiters.cell);
+        const uid = uidFromOriginal || uidFromTranslation;
         return `header-${chapter}-${verse}-${uid}`;
+        
     };
 
     return (
