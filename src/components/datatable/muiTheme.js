@@ -67,6 +67,7 @@ export const getMuiTheme = createMuiTheme({
         '&:focus-within': {
           'boxShadow': 'grey 0px 0px 5px inset',
           'background': 'rgba(0,0,0,0.01)',
+          'border': '3px solid #31ade3',
           '& .header-row': { background: 'rgba(0,0,0,0.05) !important' },
         },
       },
