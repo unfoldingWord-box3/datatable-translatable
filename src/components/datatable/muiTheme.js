@@ -1,6 +1,12 @@
 import { createMuiTheme } from '@material-ui/core/styles';
+import lightBlue from '@material-ui/core/colors/lightBlue';
 
 export const getMuiTheme = createMuiTheme({
+  palette: {
+    background: {
+      pulsing: lightBlue[50],
+    },
+  },
   typography: { useNextVariants: true },
   overrides: {
     MuiIconButton: { root: { padding: '8px' } },
