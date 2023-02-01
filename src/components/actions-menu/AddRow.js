@@ -61,11 +61,17 @@ function AddRowMenu({
         const parentRow = rowBelow.closest('.MuiTableRow-root');
 
         if ( parentRow ) {
-          const allRows = parentRow.querySelectorAll('.MuiTableCell-root.MuiTableCell-body > div > div');
+          const allRows = parentRow.querySelectorAll('.MuiTableCell-root.MuiTableCell-body > div > div > div');
 
           allRows.forEach((rowCell) => {
             rowCell.classList.add('show');
           });
+
+          const firstEditableContent = parentRow.querySelector('[contenteditable="true"]');
+
+          if ( firstEditableContent ) {
+            firstEditableContent.focus();
+          }
         }
 
         const top = getOffset(rowBelow).top - rowBelow.offsetHeight;

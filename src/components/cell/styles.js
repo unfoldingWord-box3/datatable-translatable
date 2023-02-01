@@ -44,6 +44,7 @@ const useStyles = makeStyles(theme => ({
   'row': {
     display: 'table',
     width: '100%',
+    '&.show': { animation: `$myEffect 3000ms ${theme.transitions.easing.easeInOut}` },
   },
   'gridOriginal': {
     marginTop:'-15px',
