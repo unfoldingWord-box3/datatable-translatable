@@ -65,7 +65,7 @@ function DataTable({
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
   const [isAutoSaveChanged, setIsAutoSaveChanged] = useState(false);
   const [lastClickedDataIndex, setLastClickedDataIndex] = React.useState('');
-  let needToScroll = false;
+  const [needToScroll, setNeedToScroll] = useState(false);
   const { state, actions } = useContext(DataTableContext);
   const {
     columnNames, data, columnsFilterOptions,
@@ -90,11 +90,16 @@ function DataTable({
     changePage(0);
   }, [changePage]);
 
+  const scrollToIndex = useCallback( (index) => {
+    setLastClickedDataIndex(index);
+    const newPage = Math.floor(index / dataTableElement.current.state.rowsPerPage);
+    setNeedToScroll(true);
+    changePage(newPage);
+  }, [dataTableElement, changePage]);
+
   const scrollToLastClicked = () => {
     if (lastClickedDataIndex) {
-      const newPage = Math.floor(lastClickedDataIndex / dataTableElement.current.state.rowsPerPage);
-      needToScroll = true;
-      changePage(newPage);
+      scrollToIndex(lastClickedDataIndex);
     }
   };
 
@@ -211,7 +216,7 @@ function DataTable({
     },
     onChangePage: () => {
       if ( needToScroll ) {
-        needToScroll = false;
+        setNeedToScroll(false);
         const element = document.getElementById('MUIDataTableBodyRow-' + lastClickedDataIndex);
 
         if (element) {
@@ -233,8 +238,8 @@ function DataTable({
     columnNames, columnsFilter, columnsFilterOptions,
     columnsShow, delimiters, rowHeader,
     generateRowId, cellEdit, preview,
-    columnsMap,
-  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader, columnsMap]);
+    columnsMap, scrollToIndex,
+  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader, columnsMap, scrollToIndex]);
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>

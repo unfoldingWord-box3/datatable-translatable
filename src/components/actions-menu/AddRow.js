@@ -27,6 +27,7 @@ function AddRowMenu({
   rowAddBelow,
   button,
   generateRowId,
+  scrollToIndex,
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
@@ -52,6 +53,8 @@ function AddRowMenu({
     if (actions && actions.setIsChanged) {
       actions.setIsChanged(true);
     }
+
+    scrollToIndex(rowIndex + 1);
 
     setTimeout(() => {
       const rowBelow = getRowElement(generateRowId, rowData, 1);

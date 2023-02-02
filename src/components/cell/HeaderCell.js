@@ -14,6 +14,7 @@ function HeaderCell(props) {
     rowHeader,
     delimiters,
     generateRowId = () => {},
+    scrollToIndex,
   } = props;
   const classes = useStyles();
   const rowHeaderComponent = rowHeader(rowData.slice(1), <ActionsMenu
@@ -21,6 +22,7 @@ function HeaderCell(props) {
     rowData={rowData}
     rowIndex={rowIndex}
     delimiters={delimiters}
+    scrollToIndex={scrollToIndex}
   />);
   return (
     <div className={'header-row ' + classes.root} id={generateRowId(rowData)}>
@@ -43,6 +45,8 @@ HeaderCell.propTypes = {
     /** Delimiters to convert a row into cells "\t" */
     cell: PropTypes.string.isRequired,
   }).isRequired,
+  /** Callback to scroll to a row when a new row is added beyond current page. */
+  scrollToIndex: PropTypes.func,
 };
 
 HeaderCell.defaultProps = {
