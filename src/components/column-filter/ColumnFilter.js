@@ -9,27 +9,33 @@ function ColumnFilter({
   column,
   optionValues,
 }) {
-  const handleChange = (event) => {
-    const value = event.target.value;
-    if (value) onChange(value, filterIndex, column.name);
+  const handleChange = (event, newValue) => {
+    onChange(newValue, filterIndex, column.name);
+
+    if ( ! newValue ) {
+      // I don't know why but this must be done twice to properly clear the filter.
+      onChange(newValue, filterIndex, column.name);
+    }
   };
 
   return (
     <>
       <Autocomplete
-      value={filterList[filterIndex].length ? filterList[filterIndex].toString() : 'All'}
-      disablePortal
-      style={{overflow: 'visible'}}
-      options={optionValues}
-      onChange={(event,newValue) => {
-        onChange(newValue, filterIndex, column.name);
-      }}
-      handleHomeEndKeys
-      renderInput={(params) => <TextField {...params} label={column.name}
-      />}
-    />
+        value={filterList[filterIndex].length ? filterList[filterIndex].toString() : null}
+        disablePortal
+        style={{ overflow: 'visible' }}
+        options={optionValues}
+        onChange={handleChange}
+        handleHomeEndKeys
+        renderInput={(params) => <TextField
+          {...params}
+          label={column.name}
+          placeholder="All"
+          InputLabelProps={{ shrink: true }}
+        />}
+      />
     </>
   );
-};
+}
 
 export default ColumnFilter;
