@@ -2,15 +2,13 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   'root': {
-    '&.show': { animation: `$myEffect 4000ms ${theme.transitions.easing.easeInOut}` },
+    '&.show': { animation: `$myEffect 2000ms ${theme.transitions.easing.easeInOut}` },
   },
   '@keyframes myEffect': {
     '0%': { background: 'transparent' },
-    '17%': { background: theme.palette.background.pulsing },
-    '34%': { background: 'transparent' },
-    '51%': { background: theme.palette.background.pulsing },
-    '68%': { background: 'transparent' },
-    '85%': { background: theme.palette.background.pulsing },
+    '25%': { background: theme.palette.background.pulsing },
+    '50%': { background: 'transparent' },
+    '75%': { background: theme.palette.background.pulsing },
     '100%': { background: 'transparent' },
   },
   'original': props => ({
@@ -44,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   'row': {
     display: 'table',
     width: '100%',
-    '&.show': { animation: `$myEffect 4000ms ${theme.transitions.easing.easeInOut}` },
+    '&.show': { animation: `$myEffect 2000ms ${theme.transitions.easing.easeInOut}` },
   },
   'gridOriginal': {
     marginTop:'-15px',
