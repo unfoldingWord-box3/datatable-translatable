@@ -27,6 +27,7 @@ function AddRowMenu({
   rowAddBelow,
   button,
   generateRowId,
+  scrollToIndex,
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
@@ -53,6 +54,8 @@ function AddRowMenu({
       actions.setIsChanged(true);
     }
 
+    scrollToIndex(rowIndex + 1);
+
     setTimeout(() => {
       const rowBelow = getRowElement(generateRowId, rowData, 1);
 
@@ -61,11 +64,17 @@ function AddRowMenu({
         const parentRow = rowBelow.closest('.MuiTableRow-root');
 
         if ( parentRow ) {
-          const allRows = parentRow.querySelectorAll('.MuiTableCell-root.MuiTableCell-body > div > div');
+          const allRows = parentRow.querySelectorAll('.MuiTableCell-root.MuiTableCell-body > div > div > div');
 
           allRows.forEach((rowCell) => {
             rowCell.classList.add('show');
           });
+
+          const firstEditableContent = parentRow.querySelector('[contenteditable="true"]');
+
+          if ( firstEditableContent ) {
+            firstEditableContent.focus();
+          }
         }
 
         const top = getOffset(rowBelow).top - rowBelow.offsetHeight;

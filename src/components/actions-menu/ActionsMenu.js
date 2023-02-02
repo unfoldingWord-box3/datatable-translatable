@@ -20,6 +20,7 @@ function RowMenu({
   rowData,
   delimiters,
   generateRowId,
+  scrollToIndex,
 }) {
   const classes = useStyles();
   const { state, actions } = useContext(DataTableContext);
@@ -104,6 +105,7 @@ function RowMenu({
         rowAddBelow={rowAddBelow}
         button={addRowButton}
         generateRowId={generateRowId}
+        scrollToIndex={scrollToIndex}
       />
       <DeleteRow
         rowData={rowData}

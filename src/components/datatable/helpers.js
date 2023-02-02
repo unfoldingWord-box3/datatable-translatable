@@ -6,7 +6,7 @@ import { Cell , HeaderCell } from '../cell';
 export function getColumns({
   columnNames, columnsFilter, columnsFilterOptions, columnsMap = {},
   columnsShow, delimiters, rowHeader,
-  generateRowId, cellEdit, preview,
+  generateRowId, cellEdit, preview, scrollToIndex,
 }) {
   let columns = columnNames.map((_name) => {
     const name = _name?.trim();
@@ -58,7 +58,7 @@ export function getColumns({
         filter: false,
         customBodyRender:(_, tableMeta) => {
           const cellProps = {
-            generateRowId, tableMeta, delimiters, rowHeader,
+            generateRowId, tableMeta, delimiters, rowHeader, scrollToIndex
           };
           return <HeaderCell {...cellProps} />;
         },
