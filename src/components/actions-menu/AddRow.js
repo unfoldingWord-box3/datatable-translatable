@@ -61,10 +61,10 @@ function AddRowMenu({
 
       if (rowBelow) {
         rowBelow.classList.add('show');
-        const parentRow = rowBelow.closest('.MuiTableRow-root');
+        const parentRow = rowBelow.closest('tr');
 
         if ( parentRow ) {
-          const allRows = parentRow.querySelectorAll('.MuiTableCell-root.MuiTableCell-body > div > div > div');
+          const allRows = parentRow.querySelectorAll('td > div > div > div');
 
           allRows.forEach((rowCell) => {
             rowCell.classList.add('show');
@@ -73,7 +73,10 @@ function AddRowMenu({
           const firstEditableContent = parentRow.querySelector('[contenteditable="true"]');
 
           if ( firstEditableContent ) {
-            firstEditableContent.focus();
+            setTimeout(() => {
+              // Use setTimeout because https://stackoverflow.com/a/37162116/545378
+              firstEditableContent.focus();
+            });
           }
         }
 
