@@ -91,7 +91,7 @@ export const rowGenerate = ({
     const column = columnNames[index];
     const values = Object.keys(rowsIndex[column]).length;
     const valuesRatio = values / rowCount;
-    const duplicateValue = (valuesRatio < 0.5);
+    const duplicateValue = (valuesRatio < 0.65); // If the value is reused many times then it should be duplicated.
 
     const valuesLengths = Object.keys(lengthIndex[column]);
     const valuesLengthsLength = valuesLengths.length;
