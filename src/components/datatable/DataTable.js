@@ -67,6 +67,8 @@ function DataTable({
   const [lastClickedDataIndex, setLastClickedDataIndex] = React.useState('');
   const [needToScroll, setNeedToScroll] = useState(false);
   const { state, actions } = useContext(DataTableContext);
+  const dataTableState = useRef();
+
   const {
     columnNames, data, columnsFilterOptions,
   } = state;
@@ -92,10 +94,13 @@ function DataTable({
 
   const scrollToIndex = useCallback( (index) => {
     setLastClickedDataIndex(index);
-    const newPage = Math.floor(index / dataTableElement.current.state.rowsPerPage);
+    const state = dataTableState.current;
+    const displayedRows = state.displayData;
+    const displayedRowIndex = displayedRows.findIndex((row) => row.dataIndex === index);
+    const newPage = Math.floor(displayedRowIndex / dataTableElement.current.state.rowsPerPage);
     setNeedToScroll(true);
     changePage(newPage);
-  }, [dataTableElement, changePage]);
+  }, [dataTableElement, changePage,dataTableState]);
 
   const scrollToLastClicked = () => {
     if (lastClickedDataIndex) {
@@ -205,6 +210,9 @@ function DataTable({
     rowsPerPageOptions,
     onChangeRowsPerPage: scrollToTop,
     onColumnViewChange,
+    onTableChange: function (action, state) {
+      dataTableState.current = state;
+    },
     onSearchClose: scrollToLastClicked,
     onFilterChange: (changed, filters ) => {
       if ( filters.filter((filter) => filter.length).length <= 0) {
