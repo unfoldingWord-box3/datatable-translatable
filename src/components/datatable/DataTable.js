@@ -96,7 +96,7 @@ function DataTable({
     setLastClickedDataIndex(index);
     const state = dataTableState.current;
     const displayedRows = state.displayData;
-    const displayedRowIndex = displayedRows.findIndex((row) => row.dataIndex === index);
+    const displayedRowIndex = displayedRows.findIndex((row) => row.dataIndex === (index - 1)) + 1;
     const newPage = Math.floor(displayedRowIndex / dataTableElement.current.state.rowsPerPage);
     setNeedToScroll(true);
     changePage(newPage);
