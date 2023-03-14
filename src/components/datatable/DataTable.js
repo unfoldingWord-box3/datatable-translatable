@@ -246,8 +246,9 @@ function DataTable({
     columnNames, columnsFilter, columnsFilterOptions,
     columnsShow, delimiters, rowHeader,
     generateRowId, cellEdit, preview,
+    originalFontFamily, translationFontFamily,
     columnsMap, scrollToIndex,
-  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader, columnsMap, scrollToIndex]);
+  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader, originalFontFamily, translationFontFamily, columnsMap, scrollToIndex]);
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
