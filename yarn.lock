@@ -5959,10 +5959,10 @@ extend@^3.0.0, extend@~3.0.2:
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
   integrity sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==
 
-extensible-rcl@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/extensible-rcl/-/extensible-rcl-1.0.2.tgz#879919916e2710b796c9d22d6940d9d89a14e2f0"
-  integrity sha512-jhI51yXcZ+tXRMYP/vHz64Esublp8xQVMxxvSXDaQMHSUXhdAfRc+pLt4c0p3goMv1M23iYkI4Ryq0Ca+X+JnQ==
+extensible-rcl@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/extensible-rcl/-/extensible-rcl-1.1.0.tgz#ed69f704277d05d4a8d559e1d863a1ef2428636e"
+  integrity sha512-i9Zr6tSs4G398cXEGyN8z4zfHvI0eDa40AcII1V8YNS4BFGezBkXkgQtnR/2xiYH4fLbnnCg9OcYaVfKwnb7iw==
 
 external-editor@^3.0.3:
   version "3.1.0"

@@ -83,8 +83,8 @@ function Component() {
     return `header-${chapter}-${verse}-${uid}`;
   };
 
-  const onRenderToolbar = ({ pushItem }) =>
-    pushItem(<button>custom button</button>);
+  const onRenderToolbar = ({ items }) =>
+    items.pushItem(<button>custom button</button>);
 
   return (
     <DataTableWrapper
