@@ -4,95 +4,104 @@ import _sourceFile from "./mocks/en_tn_57-TIT";
 import targetFile from "./mocks/ru_tn_57-TIT";
 
 function Component() {
-    const [sourceFile, setSourceFile] = React.useState(_sourceFile);
-    const [savedFile, setSavedFile] = React.useState(targetFile);
+  const [sourceFile, setSourceFile] = React.useState(_sourceFile);
+  const [savedFile, setSavedFile] = React.useState(targetFile);
 
-    //Uncomment this to test a page change from a new source file
-    // setTimeout(() => {
-    //   setSourceFile(targetFile);
-    // }, 5000)
+  //Uncomment this to test a page change from a new source file
+  // setTimeout(() => {
+  //   setSourceFile(targetFile);
+  // }, 5000)
 
-    const delimiters = { row: "\n", cell: "\t" };
+  const delimiters = { row: "\n", cell: "\t" };
 
-    const options = {
-        page: 0,
-        rowsPerPage: 10,
-        rowsPerPageOptions: [10, 25, 50, 100],
+  const options = {
+    page: 0,
+    rowsPerPage: 10,
+    rowsPerPageOptions: [10, 25, 50, 100],
+  };
+
+  const rowHeader = (rowData, actionsMenu) => {
+    const book = rowData[0].split(delimiters.cell).find((value) => value);
+    const chapter = rowData[1].split(delimiters.cell).find((value) => value);
+    const verse = rowData[2].split(delimiters.cell).find((value) => value);
+    const styles = {
+      typography: {
+        lineHeight: "1.0",
+        fontWeight: "bold",
+      },
     };
-
-    const rowHeader = (rowData, actionsMenu) => {
-        const book = rowData[0].split(delimiters.cell).find((value) => value);
-        const chapter = rowData[1].split(delimiters.cell).find((value) => value);
-        const verse = rowData[2].split(delimiters.cell).find((value) => value);
-        const styles = {
-            typography: {
-                lineHeight: "1.0",
-                fontWeight: "bold",
-            },
-        };
-        const component = (
-            <>
-                <Typography variant="h6" style={styles.typography}>
-                    {`${book} ${chapter}:${verse}`}
-                </Typography>
-                {actionsMenu}
-            </>
-        );
-        return component;
-    };
-
-    const config = {
-        compositeKeyIndices: [0, 1, 2, 3],
-        columnsFilter: ["Chapter", "SupportReference"],
-        columnsShowDefault: [
-            "SupportReference",
-            "OrigQuote",
-            "Occurrence",
-            "OccurrenceNote",
-        ],
-        rowHeader,
-    };
-
-    const onSave = (_savedFile) => {
-        setSavedFile(_savedFile);
-        alert(_savedFile);
-    };
-
-    const onEdit = (content) => {
-        console.log("onEdit: Autosave...");
-        console.log({content});
-    };
-
-    const onValidate = () => {
-        alert("Validate!")
-    };
-
-    const generateRowId = (rowData) => {
-        const [chapterFromOriginal, chapterFromTranslation] = rowData[2].split(delimiters.cell);
-        const chapter = chapterFromOriginal || chapterFromTranslation;
-        const [verseFromOriginal, verseFromTranslation] = rowData[3].split(delimiters.cell);
-        const verse = verseFromOriginal || verseFromTranslation;
-        const [uidFromOriginal, uidFromTranslation] = rowData[4].split(delimiters.cell);
-        const uid = uidFromOriginal || uidFromTranslation;
-        return `header-${chapter}-${verse}-${uid}`;
-        
-    };
-
-    return (
-        <DataTableWrapper
-            sourceFile={sourceFile}
-            targetFile={savedFile}
-            onSave={onSave}
-            onEdit={onEdit}
-            onValidate={onValidate}
-            delimiters={delimiters}
-            config={config}
-            options={options}
-            generateRowId={generateRowId}
-            originalFontFamily="helvetica"
-            translationFontFamily="z003"
-        />
+    const component = (
+      <>
+        <Typography variant="h6" style={styles.typography}>
+          {`${book} ${chapter}:${verse}`}
+        </Typography>
+        {actionsMenu}
+      </>
     );
+    return component;
+  };
+
+  const config = {
+    compositeKeyIndices: [0, 1, 2, 3],
+    columnsFilter: ["Chapter", "SupportReference"],
+    columnsShowDefault: [
+      "SupportReference",
+      "OrigQuote",
+      "Occurrence",
+      "OccurrenceNote",
+    ],
+    rowHeader,
+  };
+
+  const onSave = (_savedFile) => {
+    setSavedFile(_savedFile);
+    alert(_savedFile);
+  };
+
+  const onEdit = (content) => {
+    console.log("onEdit: Autosave...");
+    console.log({ content });
+  };
+
+  const onValidate = () => {
+    alert("Validate!");
+  };
+
+  const generateRowId = (rowData) => {
+    const [chapterFromOriginal, chapterFromTranslation] = rowData[2].split(
+      delimiters.cell
+    );
+    const chapter = chapterFromOriginal || chapterFromTranslation;
+    const [verseFromOriginal, verseFromTranslation] = rowData[3].split(
+      delimiters.cell
+    );
+    const verse = verseFromOriginal || verseFromTranslation;
+    const [uidFromOriginal, uidFromTranslation] = rowData[4].split(
+      delimiters.cell
+    );
+    const uid = uidFromOriginal || uidFromTranslation;
+    return `header-${chapter}-${verse}-${uid}`;
+  };
+
+  const onRenderToolbar = ({ pushItem }) =>
+    pushItem(<button>custom button</button>);
+
+  return (
+    <DataTableWrapper
+      sourceFile={sourceFile}
+      targetFile={savedFile}
+      onRenderToolbar={onRenderToolbar}
+      onSave={onSave}
+      onEdit={onEdit}
+      onValidate={onValidate}
+      delimiters={delimiters}
+      config={config}
+      options={options}
+      generateRowId={generateRowId}
+      originalFontFamily="helvetica"
+      translationFontFamily="z003"
+    />
+  );
 }
 <Component />;
 ```
@@ -104,6 +113,7 @@ The columns used in new TSV format are:
 Reference, ID, Tags, SupportReference, Quote, Occurrence, and Annotation.
 
 Thus to obtain Book, Chapter, Verse (BCV):
+
 - Book: comes from the name of the file; is not present in the file itself
 - Chapter and Verse: come from the "Reference" (first) column and is in "1:1" format.
 
@@ -168,8 +178,8 @@ function Component() {
   };
 
   const onValidate = () => {
-    alert("Validate!")
-  }
+    alert("Validate!");
+  };
   const generateRowId = (rowData) => {
     const reference = rowData[1].split(delimiters.cell)[0];
     const [chapter, verse] = reference.split(":");
