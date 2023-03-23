@@ -71,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
 Toolbar.propTypes = {
   /** Current state of preview toggle */
   preview: PropTypes.bool,
+  onRenderItems: PropTypes.func,
   /** Handle click of Preview Button  */
   onPreview: PropTypes.func.isRequired,
   /** Has the file changed for Save to be enabled */

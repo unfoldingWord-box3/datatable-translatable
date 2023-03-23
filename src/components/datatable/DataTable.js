@@ -364,6 +364,7 @@ DataTable.propTypes = {
   onSave: PropTypes.func.isRequired,
   /** The callback to validate the edited targetFile */
   onValidate: PropTypes.func,
+  onRenderToolbar: PropTypes.func,
   /** The delimiters for converting the file into rows/columns */
   delimiters: PropTypes.shape({
     /** Delimiters to convert a files into rows "\n" */
