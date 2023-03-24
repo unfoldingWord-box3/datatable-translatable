@@ -1,18 +1,28 @@
-
 import React, {
-  useState, useContext, useRef, useCallback, useMemo, useEffect,
-} from 'react';
-import isEqual from 'lodash.isequal';
-import useDeepEffect from 'use-deep-compare-effect';
-import PropTypes from 'prop-types';
-import MUIDataTable from 'mui-datatables';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+  useState,
+  useContext,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
+import isEqual from "lodash.isequal";
+import useDeepEffect from "use-deep-compare-effect";
+import PropTypes from "prop-types";
+import MUIDataTable from "mui-datatables";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 
-import { MarkdownContext, MarkdownContextProvider } from 'markdown-translatable';
-import { Toolbar } from '../..';
-import { getColumns, getData } from './helpers';
-import { DataTableContext, DataTableContextProvider } from './DataTable.context';
-import { getMuiTheme } from './muiTheme';
+import {
+  MarkdownContext,
+  MarkdownContextProvider,
+} from "markdown-translatable";
+import { Toolbar } from "../..";
+import { getColumns, getData } from "./helpers";
+import {
+  DataTableContext,
+  DataTableContextProvider,
+} from "./DataTable.context";
+import { getMuiTheme } from "./muiTheme";
 
 const fixedHeaderOptions = { xAxis: false, yAxis: false };
 const rowsPerPageOptions = [25, 50, 100];
@@ -28,20 +38,30 @@ export default function DataTableWrapper(props) {
 }
 
 // eslint-disable-next-line react/display-name
-const DatatableMemo = React.memo(function ({
-  columns, options, data, dataTableElement,
-}) {
-  return (<MUIDataTable ref={dataTableElement} columns={columns} options={options} data={data} />);
-}, (prevProps, nextProps) => {
-  const equal = isEqual(prevProps.data, nextProps.data) &&
-    isEqual(prevProps.columns, nextProps.columns) &&
-    isEqual(prevProps.options, nextProps.options);
-  return equal;
-});
+const DatatableMemo = React.memo(
+  function ({ columns, options, data, dataTableElement }) {
+    return (
+      <MUIDataTable
+        ref={dataTableElement}
+        columns={columns}
+        options={options}
+        data={data}
+      />
+    );
+  },
+  (prevProps, nextProps) => {
+    const equal =
+      isEqual(prevProps.data, nextProps.data) &&
+      isEqual(prevProps.columns, nextProps.columns) &&
+      isEqual(prevProps.options, nextProps.options);
+    return equal;
+  }
+);
 
 function DataTable({
   options = {},
   delimiters,
+  onRenderToolbar,
   config,
   onSave,
   onEdit,
@@ -55,52 +75,59 @@ function DataTable({
   columns: extraColumns = [],
   ...props
 }) {
-  const {
-    columnsFilter,
-    columnsShowDefault,
-    rowHeader,
-  } = config;
+  const { columnsFilter, columnsShowDefault, rowHeader } = config;
   const dataTableElement = useRef();
   const [preview, setPreview] = useState(false);
   const [columnsShow, setColumnsShow] = useState(columnsShowDefault);
   const [isAutoSaveChanged, setIsAutoSaveChanged] = useState(false);
-  const [lastClickedDataIndex, setLastClickedDataIndex] = React.useState('');
+  const [lastClickedDataIndex, setLastClickedDataIndex] = React.useState("");
   const [needToScroll, setNeedToScroll] = useState(false);
   const { state, actions } = useContext(DataTableContext);
   const dataTableState = useRef();
 
-  const {
-    columnNames, data, columnsFilterOptions,
-  } = state;
+  const { columnNames, data, columnsFilterOptions } = state;
   const { cellEdit: _cellEdit } = actions;
 
-  const { state: markdownState, actions: markdownActions } = useContext(MarkdownContext) || {};
+  const { state: markdownState, actions: markdownActions } =
+    useContext(MarkdownContext) || {};
 
   const generateRowId = useCallback(_generateRowId, []);
 
-  const cellEdit = useCallback(parms => {
-    _cellEdit(parms);
-    setIsAutoSaveChanged(true);
-  }, [_cellEdit, setIsAutoSaveChanged]);
+  const cellEdit = useCallback(
+    (parms) => {
+      _cellEdit(parms);
+      setIsAutoSaveChanged(true);
+    },
+    [_cellEdit, setIsAutoSaveChanged]
+  );
 
   // We have to do it this way because https://github.com/gregnb/mui-datatables/issues/756#issuecomment-510191071
-  const changePage = useCallback(function (page) {
-    dataTableElement.current.changePage(page);
-  }, [dataTableElement]);
+  const changePage = useCallback(
+    function (page) {
+      dataTableElement.current.changePage(page);
+    },
+    [dataTableElement]
+  );
 
   useDeepEffect(() => {
     changePage(0);
   }, [changePage]);
 
-  const scrollToIndex = useCallback( (index) => {
-    setLastClickedDataIndex(index);
-    const state = dataTableState.current;
-    const displayedRows = state.displayData;
-    const displayedRowIndex = displayedRows.findIndex((row) => row.dataIndex === (index - 1)) + 1;
-    const newPage = Math.floor(displayedRowIndex / dataTableElement.current.state.rowsPerPage);
-    setNeedToScroll(true);
-    changePage(newPage);
-  }, [dataTableElement, changePage,dataTableState]);
+  const scrollToIndex = useCallback(
+    (index) => {
+      setLastClickedDataIndex(index);
+      const state = dataTableState.current;
+      const displayedRows = state.displayData;
+      const displayedRowIndex =
+        displayedRows.findIndex((row) => row.dataIndex === index - 1) + 1;
+      const newPage = Math.floor(
+        displayedRowIndex / dataTableElement.current.state.rowsPerPage
+      );
+      setNeedToScroll(true);
+      changePage(newPage);
+    },
+    [dataTableElement, changePage, dataTableState]
+  );
 
   const scrollToLastClicked = () => {
     if (lastClickedDataIndex) {
@@ -140,22 +167,28 @@ function DataTable({
     }
   }, [isAutoSaveChanged, onEdit, markdownActions, actions]);
 
-  const onColumnViewChange = useCallback((changedColumn, action) => {
-    let _columnsShow = [...columnsShow];
+  const onColumnViewChange = useCallback(
+    (changedColumn, action) => {
+      let _columnsShow = [...columnsShow];
 
-    if (action === 'add') {
-      _columnsShow.push(changedColumn);
-    } else if (action === 'remove') {
-      _columnsShow = _columnsShow.filter(col => col !== changedColumn);
-    }
-    setColumnsShow(_columnsShow);
-  }, [columnsShow]);
+      if (action === "add") {
+        _columnsShow.push(changedColumn);
+      } else if (action === "remove") {
+        _columnsShow = _columnsShow.filter((col) => col !== changedColumn);
+      }
+      setColumnsShow(_columnsShow);
+    },
+    [columnsShow]
+  );
 
   const scrollToTop = () => {
-    console.log('scroll to top');
+    console.log("scroll to top");
 
     if (dataTableElement && dataTableElement.current) {
-      window.scrollTo(0, dataTableElement.current.tableRef.offsetParent.offsetTop);
+      window.scrollTo(
+        0,
+        dataTableElement.current.tableRef.offsetParent.offsetTop
+      );
     } else {
       window.scrollTo(0, 0);
     }
@@ -183,9 +216,11 @@ function DataTable({
 
         // now each cell has both source and target values, delimited by tab
         for (let j = 0; j < row.length; j++) {
-          let values = row[j].split('\t');
+          let values = row[j].split("\t");
           let targetValue = values[1];
-          targetValue = targetValue.replaceAll('\\[', '[').replaceAll('\\]', ']');
+          targetValue = targetValue
+            .replaceAll("\\[", "[")
+            .replaceAll("\\]", "]");
           targetRow.push(targetValue);
         }
         targetRows.push(targetRow);
@@ -194,18 +229,34 @@ function DataTable({
     onValidate && onValidate(targetRows);
   }, [onValidate, state]);
 
-  const customToolbar = useCallback(() =>
-    <Toolbar preview={preview} onPreview={togglePreview} changed={markdownState.isChanged} onSave={_onSave} onValidate={onValidate ? _onValidate : undefined} />,
-  [_onSave, markdownState.isChanged, preview, togglePreview, _onValidate, onValidate],
+  const customToolbar = useCallback(
+    () => (
+      <Toolbar
+        preview={preview}
+        onRenderItems={onRenderToolbar}
+        onPreview={togglePreview}
+        changed={markdownState.isChanged}
+        onSave={_onSave}
+        onValidate={onValidate ? _onValidate : undefined}
+      />
+    ),
+    [
+      _onSave,
+      markdownState.isChanged,
+      preview,
+      togglePreview,
+      _onValidate,
+      onValidate,
+    ]
   );
 
   const _options = {
-    responsive: 'scrollFullHeight',
+    responsive: "scrollFullHeight",
     fixedHeaderOptions,
     resizableColumns: false,
-    selectableRows: 'none',
+    selectableRows: "none",
     rowHover: false,
-    display: 'excluded',
+    display: "excluded",
     rowsPerPage: 25,
     rowsPerPageOptions,
     onChangeRowsPerPage: scrollToTop,
@@ -214,8 +265,8 @@ function DataTable({
       dataTableState.current = state;
     },
     onSearchClose: scrollToLastClicked,
-    onFilterChange: (changed, filters ) => {
-      if ( filters.filter((filter) => filter.length).length <= 0) {
+    onFilterChange: (changed, filters) => {
+      if (filters.filter((filter) => filter.length).length <= 0) {
         scrollToLastClicked();
       }
     },
@@ -223,9 +274,11 @@ function DataTable({
       setLastClickedDataIndex(dataIndex);
     },
     onChangePage: () => {
-      if ( needToScroll ) {
+      if (needToScroll) {
         setNeedToScroll(false);
-        const element = document.getElementById('MUIDataTableBodyRow-' + lastClickedDataIndex);
+        const element = document.getElementById(
+          "MUIDataTableBodyRow-" + lastClickedDataIndex
+        );
 
         if (element) {
           element.scrollIntoView();
@@ -238,22 +291,65 @@ function DataTable({
     ...options,
   };
 
-  const _data = useMemo(() => getData({
-    data, columnNames, rowHeader,
-  }), [columnNames, data, rowHeader]);
+  const _data = useMemo(
+    () =>
+      getData({
+        data,
+        columnNames,
+        rowHeader,
+      }),
+    [columnNames, data, rowHeader]
+  );
 
-  const columns = useMemo(() => getColumns({
-    columnNames, columnsFilter, columnsFilterOptions,
-    columnsShow, delimiters, rowHeader,
-    generateRowId, cellEdit, preview,
-    originalFontFamily, translationFontFamily,
-    columnsMap, scrollToIndex,
-  }), [cellEdit, columnNames, columnsFilter, columnsFilterOptions, columnsShow, delimiters, generateRowId, preview, rowHeader, originalFontFamily, translationFontFamily, columnsMap, scrollToIndex]);
+  const columns = useMemo(
+    () =>
+      getColumns({
+        columnNames,
+        columnsFilter,
+        columnsFilterOptions,
+        columnsShow,
+        delimiters,
+        rowHeader,
+        generateRowId,
+        cellEdit,
+        preview,
+        originalFontFamily,
+        translationFontFamily,
+        columnsMap,
+        scrollToIndex,
+      }),
+    [
+      cellEdit,
+      columnNames,
+      columnsFilter,
+      columnsFilterOptions,
+      columnsShow,
+      delimiters,
+      generateRowId,
+      preview,
+      rowHeader,
+      originalFontFamily,
+      translationFontFamily,
+      columnsMap,
+      scrollToIndex,
+    ]
+  );
 
   return (
     <MuiThemeProvider theme={getMuiTheme}>
-      <div style={ { '--datatable-original-font-family': originalFontFamily, '--datatable-translation-font-family': translationFontFamily } }>
-        <DatatableMemo dataTableElement={dataTableElement} columns={[...columns, ...extraColumns]} data={_data} options={_options} {...props} />
+      <div
+        style={{
+          "--datatable-original-font-family": originalFontFamily,
+          "--datatable-translation-font-family": translationFontFamily,
+        }}
+      >
+        <DatatableMemo
+          dataTableElement={dataTableElement}
+          columns={[...columns, ...extraColumns]}
+          data={_data}
+          options={_options}
+          {...props}
+        />
       </div>
     </MuiThemeProvider>
   );
@@ -268,6 +364,7 @@ DataTable.propTypes = {
   onSave: PropTypes.func.isRequired,
   /** The callback to validate the edited targetFile */
   onValidate: PropTypes.func,
+  onRenderToolbar: PropTypes.func,
   /** The delimiters for converting the file into rows/columns */
   delimiters: PropTypes.shape({
     /** Delimiters to convert a files into rows "\n" */
@@ -285,7 +382,7 @@ DataTable.propTypes = {
     columnsShowDefault: PropTypes.arrayOf(PropTypes.string).isRequired,
     /** Function to render the row header.
      * `rowHeader(rowData) => React Component`
-    */
+     */
     rowHeader: PropTypes.func,
   }).isRequired,
   /** Object to override columns settings */
@@ -300,11 +397,10 @@ DataTable.propTypes = {
 
 DataTable.defaultProps = {
   delimiters: {
-    row: '\n',
-    cell: '\t',
+    row: "\n",
+    cell: "\t",
   },
 };
-
 
 /* code graveyard
 
