@@ -31,6 +31,7 @@ function AddRowMenu({
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
+  const [warningEmptyContent, setWarningEmptyContent] = useState(false);
 
   const { state } = useContext(DataTableContext);
   // console.log("Datatable Context state:", state);
@@ -46,8 +47,21 @@ function AddRowMenu({
     setNewRow();
   };
 
+  const handleCloseWarning = () => {
+    setWarningEmptyContent(false);
+  };
+
   const handleRowAdd = () => {
-    rowAddBelow({ rowIndex, rowData: newRow });
+    // newRow[3].replace(' ','');
+    console.log('Row added', newRow);
+
+    if (newRow[3] === '') {
+      setWarningEmptyContent(true);
+      alert('You made a mistake. Need to add content in id field. So we cannot add a row below');
+    } else {
+      console.log('Row added', newRow);
+      rowAddBelow({ rowIndex, rowData: newRow });
+    }
     handleClose();
 
     if (actions && actions.setIsChanged) {
@@ -60,6 +74,7 @@ function AddRowMenu({
       const rowBelow = getRowElement(generateRowId, rowData, 1);
 
       if (rowBelow) {
+        console.log('Row added2', rowBelow);
         rowBelow.classList.add('show');
         const parentRow = rowBelow.closest('tr');
 
@@ -162,12 +177,35 @@ function AddRowMenu({
     );
   }
 
+  let emptyContentWarning = <div />;
+
+  emptyContentWarning = (
+    <Dialog
+      open={warningEmptyContent}
+      onClose={handleClose}
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-description"
+      classes={{ paper: classes.paper }}
+    >
+      <DialogContent id="dialog-warning">
+      You made a mistake in row. Need to add content in id.
+      So we cannot add a row below
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseWarning} color="primary" autoFocus>
+            Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+
   return (
     <>
       <div onClick={handleOpen}>
         {button}
       </div>
       {dialogComponent}
+      {emptyContentWarning}
     </>
   );
 }
