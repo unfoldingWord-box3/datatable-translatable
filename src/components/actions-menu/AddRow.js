@@ -58,18 +58,19 @@ function AddRowMenu({
   },[data, foundIDIndex]);
 
   const handleRowAdd = () => {
-    let newID = newRow[foundIDIndex].replace(/\s/g,'');
+    let rowData = [...newRow];
+    let newID = rowData[foundIDIndex].replace(/\s/g,'');
 
     if (foundIDIndex !== -1) {
-      newRow[foundIDIndex] = newID;
+      rowData[foundIDIndex] = newID;
     }
 
-    if (newRow[foundIDIndex] === '') {
+    if (rowData[foundIDIndex] === '') {
       const newID = generateRandomUID(allIDs);
-      newRow[foundIDIndex] = newID;
-      rowAddBelow({ rowIndex, rowData: newRow });
+      rowData[foundIDIndex] = newID;
+      rowAddBelow({ rowIndex, rowData });
     } else {
-      rowAddBelow({ rowIndex, rowData: newRow });
+      rowAddBelow({ rowIndex, rowData });
     }
     handleClose();
 
