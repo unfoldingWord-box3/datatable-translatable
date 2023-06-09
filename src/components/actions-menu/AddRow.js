@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import isEqual from 'lodash.isequal';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -16,7 +16,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import { MarkdownContext } from 'markdown-translatable';
 import { DataTableContext } from '../datatable/DataTable.context';
-import { getRowElement, getOffset } from '../../core/datatable';
+import { getRowElement, getOffset, generateRandomUID } from '../../core/datatable';
 
 
 function AddRowMenu({
@@ -31,10 +31,9 @@ function AddRowMenu({
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
-  const [warningEmptyContent, setWarningEmptyContent] = useState(false);
-
   const { state } = useContext(DataTableContext);
-  // console.log("Datatable Context state:", state);
+  // console.log('Datatable Context state:', state);
+  const { data } = state;
   const { actions } = useContext(MarkdownContext);
 
 
@@ -47,19 +46,29 @@ function AddRowMenu({
     setNewRow();
   };
 
-  const handleCloseWarning = () => {
-    setWarningEmptyContent(false);
-  };
+  let foundIDIndex = useMemo(() => {
+    return columnNames.findIndex((row) => row.toUpperCase() === 'ID');
+  },[columnNames]);
+
+  const allIDs = useMemo(() => {
+    return data?.map((row) =>{
+      const [sourceID, targetID] = row[foundIDIndex]?.split('\t');
+      return sourceID || targetID;
+    });
+  },[data, foundIDIndex]);
 
   const handleRowAdd = () => {
-    // newRow[3].replace(' ','');
-    console.log('Row added', newRow);
+    let newID = newRow[foundIDIndex].replace(/\s/g,'');
 
-    if (newRow[3] === '') {
-      setWarningEmptyContent(true);
-      alert('You made a mistake. Need to add content in id field. So we cannot add a row below');
+    if (foundIDIndex !== -1) {
+      newRow[foundIDIndex] = newID;
+    }
+
+    if (newRow[foundIDIndex] === '') {
+      const newID = generateRandomUID(allIDs);
+      newRow[foundIDIndex] = newID;
+      rowAddBelow({ rowIndex, rowData: newRow });
     } else {
-      console.log('Row added', newRow);
       rowAddBelow({ rowIndex, rowData: newRow });
     }
     handleClose();
@@ -177,35 +186,12 @@ function AddRowMenu({
     );
   }
 
-  let emptyContentWarning = <div />;
-
-  emptyContentWarning = (
-    <Dialog
-      open={warningEmptyContent}
-      onClose={handleClose}
-      aria-labelledby="dialog-title"
-      aria-describedby="dialog-description"
-      classes={{ paper: classes.paper }}
-    >
-      <DialogContent id="dialog-warning">
-      You made a mistake in row. Need to add content in id.
-      So we cannot add a row below
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCloseWarning} color="primary" autoFocus>
-            Cancel
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-
   return (
     <>
       <div onClick={handleOpen}>
         {button}
       </div>
       {dialogComponent}
-      {emptyContentWarning}
     </>
   );
 }
