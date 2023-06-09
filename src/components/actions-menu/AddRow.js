@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import isEqual from 'lodash.isequal';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -16,7 +16,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import { MarkdownContext } from 'markdown-translatable';
 import { DataTableContext } from '../datatable/DataTable.context';
-import { getRowElement, getOffset } from '../../core/datatable';
+import { getRowElement, getOffset, generateRandomUID } from '../../core/datatable';
 
 
 function AddRowMenu({
@@ -31,9 +31,9 @@ function AddRowMenu({
 }) {
   const [open, setOpen] = useState(false);
   const [newRow, setNewRow] = useState();
-
   const { state } = useContext(DataTableContext);
-  // console.log("Datatable Context state:", state);
+  // console.log('Datatable Context state:', state);
+  const { data } = state;
   const { actions } = useContext(MarkdownContext);
 
 
@@ -46,8 +46,32 @@ function AddRowMenu({
     setNewRow();
   };
 
+  let foundIDIndex = useMemo(() => {
+    return columnNames.findIndex((row) => row.toUpperCase() === 'ID');
+  },[columnNames]);
+
+  const allIDs = useMemo(() => {
+    return data?.map((row) =>{
+      const [sourceID, targetID] = row[foundIDIndex]?.split('\t');
+      return sourceID || targetID;
+    });
+  },[data, foundIDIndex]);
+
   const handleRowAdd = () => {
-    rowAddBelow({ rowIndex, rowData: newRow });
+    let newRowData = [...newRow];
+    let newID = newRowData[foundIDIndex].replace(/\s/g,'');
+
+    if (foundIDIndex !== -1) {
+      newRowData[foundIDIndex] = newID;
+    }
+
+    if (newRowData[foundIDIndex] === '') {
+      const newID = generateRandomUID(allIDs);
+      newRowData[foundIDIndex] = newID;
+      rowAddBelow({ rowIndex, rowData: newRowData });
+    } else {
+      rowAddBelow({ rowIndex, rowData: newRowData });
+    }
     handleClose();
 
     if (actions && actions.setIsChanged) {
@@ -60,6 +84,7 @@ function AddRowMenu({
       const rowBelow = getRowElement(generateRowId, rowData, 1);
 
       if (rowBelow) {
+        console.log('Row added2', rowBelow);
         rowBelow.classList.add('show');
         const parentRow = rowBelow.closest('tr');
 
