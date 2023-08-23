@@ -101,22 +101,33 @@ export const rowGenerate = ({
     if (duplicateValue) {
       newValue = value;
     } else if (needRandomId) {
-      const { length } = value;
-      let notUnique = true;
-      let counter = 0;
       const allIds = Object.keys(rowsIndex[column]);
-      const UNIQUE_COUNTER_THRESHOLD = 1000;
-      while ( notUnique && counter < UNIQUE_COUNTER_THRESHOLD ) {
-        newValue = randomId({ length });
-        notUnique = allIds.includes(newValue);
-        counter++;
-      }
-      if ( counter >= UNIQUE_COUNTER_THRESHOLD) {console.log("Duplicate IDs found after " + UNIQUE_COUNTER_THRESHOLD + " tries")}
+      newValue = generateRandomUID(allIds);
     }
     return newValue;
   });
   return newRow;
 };
+
+export function generateRandomUID(allIds=[], defaultLength=4) {
+  let sampleID = allIds[0];
+  let length = sampleID?.length || defaultLength;
+  let notUnique = true;
+  let counter = 0;
+  let newID = '';
+  const UNIQUE_COUNTER_THRESHOLD = 1000;
+
+  while ( notUnique && counter < UNIQUE_COUNTER_THRESHOLD ) {
+    newID = randomId({ length });
+    notUnique = allIds.includes(newID);
+    counter++;
+  }
+
+  if ( counter >= UNIQUE_COUNTER_THRESHOLD) {
+    console.log('Duplicate IDs found after ' + UNIQUE_COUNTER_THRESHOLD + ' tries')
+  }
+  return newID;
+}
 
 export const correlateData = ({
   sourceRows, targetRows, compositeKeyIndices, delimiters,

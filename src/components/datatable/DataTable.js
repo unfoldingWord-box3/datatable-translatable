@@ -247,6 +247,7 @@ function DataTable({
       togglePreview,
       _onValidate,
       onValidate,
+      onRenderToolbar
     ]
   );
 
