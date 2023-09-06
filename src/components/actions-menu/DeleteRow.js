@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import isEqual from 'lodash.isequal';
 import {
   Button,
@@ -12,6 +12,7 @@ import {
 import {
 } from '@material-ui/icons';
 import { getRowElement, getOffset } from '../../core/datatable';
+import { MarkdownContext } from 'markdown-translatable';
 
 function DeleteRowMenu({
   rowData,
@@ -22,6 +23,8 @@ function DeleteRowMenu({
   button,
   generateRowId,
 }) {
+  const { actions } = useContext(MarkdownContext);
+
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -37,6 +40,11 @@ function DeleteRowMenu({
     const rowAbove = getRowElement(generateRowId, rowData, position);
     rowDelete({ rowIndex });
     handleClose();
+
+    if (actions && actions.setIsChanged) {
+      actions.setIsChanged(true);
+    }
+
     setTimeout(() => {
       if (rowAbove) {
         const top = getOffset(rowAbove).top;
