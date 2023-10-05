@@ -177,6 +177,7 @@ function DataTable({
         _columnsShow = _columnsShow.filter((col) => col !== changedColumn);
       }
       setColumnsShow(_columnsShow);
+      scrollToLastClicked()
     },
     [columnsShow]
   );
@@ -282,7 +283,8 @@ function DataTable({
         );
 
         if (element) {
-          element.scrollIntoView();
+          element.scrollIntoView({ behavior: 'smooth' });
+          element.classList.add('show')
         }
       }
     },
