@@ -114,18 +114,24 @@ function DataTable({
     changePage(0);
   }, [changePage]);
 
+  useEffect(() => {
+    scrollToIndex(lastClickedDataIndex);
+  },[columnsShow, preview])
+
   const scrollToIndex = useCallback(
     (index) => {
-      setLastClickedDataIndex(index);
-      const state = dataTableState.current;
-      const displayedRows = state.displayData;
-      const displayedRowIndex =
+      if(index){
+        setLastClickedDataIndex(index);
+        const state = dataTableState.current;
+        const displayedRows = state.displayData;
+        const displayedRowIndex =
         displayedRows.findIndex((row) => row.dataIndex === index - 1) + 1;
-      const newPage = Math.floor(
+        const newPage = Math.floor(
         displayedRowIndex / dataTableElement.current.state.rowsPerPage
       );
       setNeedToScroll(true);
       changePage(newPage);
+      }     
     },
     [dataTableElement, changePage, dataTableState]
   );
@@ -276,7 +282,7 @@ function DataTable({
         scrollToLastClicked();
       }
     },
-    onRowClick: (rowData, { dataIndex }) => {
+    onRowClick: (rowData,{ dataIndex }) => {
       setLastClickedDataIndex(dataIndex);
     },
     onChangePage: (action) => {
@@ -287,8 +293,19 @@ function DataTable({
             "MUIDataTableBodyRow-" + lastClickedDataIndex
           );
           if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-            // element.classList.add('show')
+            element.scrollIntoView();
+            const parentRow = element.closest('tr');
+            const allRows = parentRow.querySelectorAll('td > div > div > div');
+            allRows.forEach((rowCell) => {
+              rowCell.classList.add('show');
+            });
+            const firstEditableContent = parentRow.querySelector('[contenteditable="true"]');
+            if ( firstEditableContent ) {
+              setTimeout(() => {
+                // Use setTimeout because https://stackoverflow.com/a/37162116/545378
+                firstEditableContent.focus();
+              });
+            }
           }
         }else{
           if (action >= prevPageNumber){
