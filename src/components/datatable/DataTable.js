@@ -84,6 +84,7 @@ function DataTable({
   const [needToScroll, setNeedToScroll] = useState(false);
   const { state, actions } = useContext(DataTableContext);
   const dataTableState = useRef();
+  const currentPageNumber = useRef(0);
 
   const { columnNames, data, columnsFilterOptions } = state;
   const { cellEdit: _cellEdit } = actions;
@@ -177,21 +178,25 @@ function DataTable({
         _columnsShow = _columnsShow.filter((col) => col !== changedColumn);
       }
       setColumnsShow(_columnsShow);
+      scrollToLastClicked()
     },
     [columnsShow]
   );
 
-  const scrollToTop = () => {
-    console.log("scroll to top");
-
+  // Scroll to bottom when navigating to previous page
+  const scrollToBottom = (action) => {
     if (dataTableElement && dataTableElement.current) {
-      window.scrollTo(
-        0,
-        dataTableElement.current.tableRef.offsetParent.offsetTop
-      );
-    } else {
-      window.scrollTo(0, 0);
+      dataTableElement.current.tableRef.scrollIntoView({ block: 'end' });
     }
+      currentPageNumber.current = action
+  };
+
+  // Scroll to Top when navigating to next page
+  const scrollToTop = (action) => {
+    if (dataTableElement && dataTableElement.current) {
+      dataTableElement.current.tableRef.scrollIntoView({ block: 'start' });
+    } 
+    currentPageNumber.current = action
   };
 
   const _onValidate = useCallback(() => {
@@ -274,17 +279,24 @@ function DataTable({
     onRowClick: (rowData, { dataIndex }) => {
       setLastClickedDataIndex(dataIndex);
     },
-    onChangePage: () => {
-      if (needToScroll) {
-        setNeedToScroll(false);
-        const element = document.getElementById(
-          "MUIDataTableBodyRow-" + lastClickedDataIndex
-        );
-
-        if (element) {
-          element.scrollIntoView();
+    onChangePage: (action) => {
+      const prevPageNumber = currentPageNumber.current
+        if (needToScroll) {
+          setNeedToScroll(false);
+          const element = document.getElementById(
+            "MUIDataTableBodyRow-" + lastClickedDataIndex
+          );
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+            // element.classList.add('show')
+          }
+        }else{
+          if (action >= prevPageNumber){
+          scrollToTop(action);
+        }else{
+          scrollToBottom(action)
         }
-      }
+        }
     },
     download: false,
     print: false,
