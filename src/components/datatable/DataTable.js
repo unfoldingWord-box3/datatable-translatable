@@ -189,6 +189,10 @@ function DataTable({
     [columnsShow]
   );
 
+  if(columnsShow){
+    localStorage.setItem('StoredColumn', columnsShow);
+  }
+
   // Scroll to bottom when navigating to previous page
   const scrollToBottom = (action) => {
     if (dataTableElement && dataTableElement.current) {
