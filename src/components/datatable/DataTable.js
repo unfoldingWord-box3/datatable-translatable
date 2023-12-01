@@ -188,7 +188,7 @@ function DataTable({
     [columnsShow, scrollToLastClicked]
   );
 
-  if(columnsShow){
+  if (columnsShow) {
     localStorage.setItem('StoredColumn', columnsShow);
   }
 
@@ -285,8 +285,8 @@ function DataTable({
         scrollToLastClicked();
       }
     },
-    onRowClick: (rowData,{ dataIndex }) => {
-            setLastClickedDataIndex(dataIndex);
+    onRowClick: (rowData, { dataIndex }) => {
+      setLastClickedDataIndex(dataIndex);
     },
     onChangePage: (action) => {
       const prevPageNumber = currentPageNumber.current
@@ -303,17 +303,17 @@ function DataTable({
             rowCell.classList.add('show');
           });
           const firstEditableContent = parentRow.querySelector('[contenteditable="true"]');
-          if ( firstEditableContent ) {
+          if (firstEditableContent) {
             setTimeout(() => {
               // Use setTimeout because https://stackoverflow.com/a/37162116/545378
               firstEditableContent.focus();
             });
           }
         }
-      }else{
-        if (action >= prevPageNumber){
+      } else {
+        if (action >= prevPageNumber) {
           scrollToTop(action);
-        }else{
+        } else {
           scrollToBottom(action)
         }
       }
