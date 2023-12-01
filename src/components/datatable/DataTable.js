@@ -116,7 +116,7 @@ function DataTable({
 
   useEffect(() => {
     scrollToIndex(lastClickedDataIndex);
-  }, [columnsShow, lastClickedDataIndex, preview, scrollToIndex]);
+  }, [columnsShow, preview, scrollToIndex]);
 
   const scrollToIndex = useCallback(
     (index) => {
