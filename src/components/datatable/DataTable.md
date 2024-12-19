@@ -50,6 +50,9 @@ function Component() {
       "Occurrence",
       "OccurrenceNote",
     ],
+    newRowDefaultValues: {
+      SupportReference: ""
+    },
     rowHeader,
   };
 

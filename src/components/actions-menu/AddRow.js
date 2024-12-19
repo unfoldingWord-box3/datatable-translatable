@@ -33,7 +33,7 @@ function AddRowMenu({
   const [newRow, setNewRow] = useState();
   const { state } = useContext(DataTableContext);
   // console.log('Datatable Context state:', state);
-  const { data } = state;
+  const { data, newRowDefaultValues } = state;
   const { actions } = useContext(MarkdownContext);
 
 
@@ -134,11 +134,15 @@ function AddRowMenu({
             onChange={(event) => {
               newRow[i] = event.target.value;
             }}
+            data-test-id={`add-row-input-${name}`}
             fullWidth
           />
         );
 
-        if ( state.columnsFilterOptions[i] && state.columnsFilterOptions[i].length > 0 ) {
+        if (state.columnsFilterOptions[i] && state.columnsFilterOptions[i].length > 0) {
+          if (typeof newRowDefaultValues?.[name] === 'string') {
+            newRow[i] = newRowDefaultValues[name];
+          }
           text = (
             <Autocomplete
               key={i}
@@ -150,6 +154,7 @@ function AddRowMenu({
               onInputChange={(event, newValue) => {
                 newRow[i] = newValue;
               }}
+              data-test-id={`add-row-autocomplete-${name}`}
               renderInput={(params) => <TextField {...params} label={name} margin="normal" />}
               freeSolo={true}
             />

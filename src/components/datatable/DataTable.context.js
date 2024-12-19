@@ -22,6 +22,7 @@ export function DataTableContextProvider({
   config: {
     compositeKeyIndices,
     columnsFilter,
+    newRowDefaultValues,
   },
 }) {
   const [data, setData] = useState({});
@@ -175,6 +176,7 @@ export function DataTableContextProvider({
       data,
       changed,
       columnsFilterOptions,
+      newRowDefaultValues,
     },
     actions,
   }), [actions, changed, columnNames, columnsFilterOptions, data]);

@@ -418,6 +418,15 @@ DataTable.propTypes = {
      * `rowHeader(rowData) => React Component`
      */
     rowHeader: PropTypes.func,
+    /** Object to override new row values 
+     * @example
+     * {
+     *   "id": "1",
+     *   "supportReference": "",
+     *   "occurrence": "2"
+     * }
+    */
+    newRowDefaultValues: PropTypes.objectOf(PropTypes.string),
   }).isRequired,
   /** Object to override columns settings */
   columnsMap: PropTypes.object,
